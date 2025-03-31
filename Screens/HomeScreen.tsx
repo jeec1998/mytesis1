@@ -37,7 +37,6 @@ const HomeScreen: React.FC = () => {
       setMessages((prev) => [...prev, userMsg]);
       setInput('');
 
-      // Simulación de respuesta automática de la IA
       setTimeout(() => {
         const botReply: Message = {
           id: (Date.now() + 1).toString(),
@@ -76,6 +75,7 @@ const HomeScreen: React.FC = () => {
             placeholder="Escribe tu mensaje..."
             value={input}
             onChangeText={setInput}
+            placeholderTextColor="#555"
           />
           <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
             <Text style={styles.sendText}>Enviar</Text>
@@ -91,52 +91,54 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#D6E6F2', // azul predominante
   },
   innerContainer: {
     flex: 1,
   },
   messageList: {
-    padding: 10,
+    padding: 12,
   },
   messageBubble: {
-    padding: 10,
-    borderRadius: 10,
+    padding: 12,
+    borderRadius: 16,
     marginBottom: 10,
     maxWidth: '80%',
     shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
   },
   userBubble: {
-    alignSelf: 'flex-end', 
-    backgroundColor: '#DCF8C6',
+    alignSelf: 'flex-end',
+    backgroundColor: '#A7C7E7', // azul usuario
   },
   botBubble: {
-    alignSelf: 'flex-start', 
-    backgroundColor: '#E8EAF6',
+    alignSelf: 'flex-start',
+    backgroundColor: '#EDF4FB', // azul claro IA
   },
   messageText: {
+    fontSize: 16,
     color: '#333',
   },
   inputContainer: {
     flexDirection: 'row',
-    padding: 10,
-    borderTopColor: '#ccc',
+    padding: 12,
+    borderTopColor: '#bbb',
     borderTopWidth: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#E5F0FF',
   },
   textInput: {
     flex: 1,
-    backgroundColor: '#eee',
+    backgroundColor: '#D0E4FF', // input más azul
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 10,
     marginRight: 10,
+    fontSize: 16,
   },
   sendButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#2F80ED', // azul profundo botón
     borderRadius: 20,
     paddingHorizontal: 20,
     justifyContent: 'center',
@@ -144,5 +146,6 @@ const styles = StyleSheet.create({
   sendText: {
     color: '#fff',
     fontWeight: 'bold',
+    fontSize: 16,
   },
 });

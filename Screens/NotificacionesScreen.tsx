@@ -1,4 +1,3 @@
-// screens/NotificacionesScreen.tsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
@@ -6,7 +5,9 @@ const NotificacionesScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>🔔 Notificaciones</Text>
-      <Text style={styles.text}>Aquí verás tus notificaciones importantes.</Text>
+      <Text style={styles.text}>
+        Aquí verás tus notificaciones importantes.
+      </Text>
     </View>
   );
 };
@@ -18,16 +19,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#D6E6F2',
     padding: 20,
   },
   title: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: 'bold',
+    color: '#2F80ED',
     marginBottom: 10,
   },
   text: {
     fontSize: 16,
-    color: '#666',
+    color: '#444',
+    textAlign: 'center',
   },
 });

@@ -45,7 +45,7 @@ const CustomDrawer: React.FC<Props> = ({ visible, onClose, navigation }) => {
           <View>
             {currentRouteName !== 'Home' && (
               <TouchableOpacity onPress={() => goToScreen('Home')}>
-                <Text style={styles.drawerItem}>🏠Inicio</Text>
+                <Text style={styles.drawerItem}>🏠 Inicio</Text>
               </TouchableOpacity>
             )}
             {currentRouteName !== 'Perfil' && (
@@ -60,7 +60,7 @@ const CustomDrawer: React.FC<Props> = ({ visible, onClose, navigation }) => {
             )}
           </View>
           <TouchableOpacity>
-            <Text style={styles.drawerItem}>📤 Cerrar sesión</Text>
+            <Text style={[styles.drawerItem, styles.logout]}>📤 Cerrar sesión</Text>
           </TouchableOpacity>
         </View>
       </Animated.View>
@@ -76,8 +76,8 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     bottom: 0,
-    width: screenWidth * 0.6,
-    backgroundColor: '#fff',
+    width: screenWidth * 0.65,
+    backgroundColor: '#D6E6F2',
     paddingTop: 50,
     paddingHorizontal: 20,
     elevation: 5,
@@ -92,12 +92,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: '#A7C7E7',
+    color: '#2F4F6E',
+    fontWeight: '500',
+  },
+  logout: {
+    color: '#C62828',
+    borderBottomColor: '#C62828',
   },
   overlay: {
     position: 'absolute',
     top: 0,
-    left: screenWidth * 0.6,
+    left: screenWidth * 0.65,
     right: 0,
     bottom: 0,
     backgroundColor: 'rgba(0,0,0,0.3)',
