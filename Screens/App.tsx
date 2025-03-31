@@ -18,7 +18,7 @@ const App: React.FC = () => {
         screenOptions={({ navigation }) => ({
           headerLeft: () => (
             <TouchableOpacity onPress={() => setMenuVisible(true)} style={{ paddingLeft: 15 }}>
-              <Text style={{ fontSize: 24 }}>☰</Text>
+              <Text style={{ fontSize: 30 }}>☰</Text>
             </TouchableOpacity>
           ),
         })}

@@ -1,5 +1,4 @@
-// components/CustomDrawer.tsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   Modal,
   TouchableOpacity,
@@ -9,7 +8,7 @@ import {
   Dimensions,
   View,
 } from 'react-native';
-import { NavigationProp } from '@react-navigation/native';
+import { useNavigationState, NavigationProp } from '@react-navigation/native';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -20,7 +19,10 @@ interface Props {
 }
 
 const CustomDrawer: React.FC<Props> = ({ visible, onClose, navigation }) => {
-  const translateX = new Animated.Value(-screenWidth);
+  const translateX = useRef(new Animated.Value(-screenWidth)).current;
+
+  const state = useNavigationState((state) => state);
+  const currentRouteName = state.routes[state.index].name;
 
   useEffect(() => {
     Animated.timing(translateX, {
@@ -30,14 +32,9 @@ const CustomDrawer: React.FC<Props> = ({ visible, onClose, navigation }) => {
     }).start();
   }, [visible]);
 
-  const goToProfile = () => {
-    onClose(); // Cierra el menú
-    navigation.navigate('Perfil');
-   
-  };
-  const goToNotificaciones = () => {
-    onClose(); ;
-    navigation.navigate('Notificaciones');
+  const goToScreen = (screen: string) => {
+    onClose();
+    navigation.navigate(screen);
   };
 
   return (
@@ -46,12 +43,21 @@ const CustomDrawer: React.FC<Props> = ({ visible, onClose, navigation }) => {
       <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
         <View style={styles.menuContent}>
           <View>
-            <TouchableOpacity onPress={goToProfile}>
-              <Text style={styles.drawerItem}>👤 Perfil</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={goToNotificaciones}>
-    <Text style={styles.drawerItem}>🔔 Notificaciones</Text>
-  </TouchableOpacity>
+            {currentRouteName !== 'Home' && (
+              <TouchableOpacity onPress={() => goToScreen('Home')}>
+                <Text style={styles.drawerItem}>🏠Inicio</Text>
+              </TouchableOpacity>
+            )}
+            {currentRouteName !== 'Perfil' && (
+              <TouchableOpacity onPress={() => goToScreen('Perfil')}>
+                <Text style={styles.drawerItem}>👤 Perfil</Text>
+              </TouchableOpacity>
+            )}
+            {currentRouteName !== 'Notificaciones' && (
+              <TouchableOpacity onPress={() => goToScreen('Notificaciones')}>
+                <Text style={styles.drawerItem}>🔔 Notificaciones</Text>
+              </TouchableOpacity>
+            )}
           </View>
           <TouchableOpacity>
             <Text style={styles.drawerItem}>📤 Cerrar sesión</Text>
