@@ -1,13 +1,15 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin'); 
-
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './index.web.tsx',
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    environment: {
+      module: false, // ✅ evita error de "exports is not defined"
+    },
   },
   resolve: {
     alias: {
@@ -15,14 +17,16 @@ module.exports = {
       'react-native/Libraries/Utilities/codegenNativeComponent':
         require.resolve('./shims/codegenNativeComponent.web.js'),
     },
-    extensions: ['.web.tsx', '.tsx', '.ts', '.js'],
+    extensions: ['.web.tsx', '.tsx', '.ts', '.web.js', '.js', '.json'],
+    mainFields: ['browser', 'module', 'main'],
   },
-  
   module: {
     rules: [
       {
         test: /\.(js|ts|tsx)$/,
-        exclude: /node_modules/,
+        resolve: {
+          fullySpecified: false,
+        },
         use: 'babel-loader',
       },
       {
@@ -38,7 +42,6 @@ module.exports = {
       },
     ],
   },
-  
   plugins: [
     new HtmlWebpackPlugin({
       template: './web/index.html',
@@ -46,8 +49,8 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: path.resolve(__dirname, 'web/home.html'), 
-          to: 'home.html', 
+          from: path.resolve(__dirname, 'web/home.html'),
+          to: 'home.html',
         },
       ],
     }),
@@ -56,6 +59,7 @@ module.exports = {
     static: {
       directory: path.join(__dirname, 'dist'),
     },
-    port: 3000,
+    port: 3001,
+    host: 'localhost',
   },
 };

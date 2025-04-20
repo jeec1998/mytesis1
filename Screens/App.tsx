@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Platform, View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 
@@ -16,37 +17,6 @@ const Stack = createNativeStackNavigator();
 const App: React.FC = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  // 👉 Si es Web: mostrar pantalla personalizada
-  if (Platform.OS === 'web') {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-  
-    const handleLoginWeb = () => {
-      window.location.href = '/home.html';
-    };
-  
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Iniciar Sesión (Web)</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Correo electrónico"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Contraseña"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-        <Button title="Ingresar" onPress={handleLoginWeb} />
-      </View>
-    );
-  }
-  
 
   // 👉 Si es Android/iOS: usar navegación nativa
   return (
@@ -114,3 +84,4 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+

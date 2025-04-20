@@ -1,3 +1,4 @@
+//home
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,22 +6,289 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Home</title>
   <style>
-    body {
-      font-family: sans-serif;
-      background-color: #f0f8ff;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background-color: #f4f9ff; color: #333; }
+
+    nav {
+      background-color: #4A90E2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      flex-wrap: wrap;
+    }
+    nav .logo { color: white; font-size: 22px; font-weight: bold; }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      padding: 6px 10px;
+      transition: background 0.3s;
+    }
+    nav ul li a:hover {
+      background-color: #357ABD;
+      border-radius: 5px;
+    }
+
+    main { padding: 30px; }
+    h2 { color: #4A90E2; margin-bottom: 20px; }
+
+    form {
+      max-width: 600px;
+      margin-bottom: 30px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 10px 16px;
+      background-color: #4A90E2;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 6px;
+    }
+
+    button:hover {
+      background-color: #357ABD;
+    }
+
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      width: 240px;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, #4A90E2, #3b7dc4);
+      color: white;
+      padding: 16px;
+      font-weight: bold;
+      font-size: 16px;
       text-align: center;
-      padding-top: 100px;
     }
-    h1 {
-      color: #2e8b57;
+
+    .card-content {
+      padding: 16px;
     }
-    p {
-      font-size: 18px;
+
+    .card p {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .card button {
+      margin: 4px 4px 0 0;
+      font-size: 12px;
     }
   </style>
 </head>
 <body>
-  <h1>¡Bienvenido a la Página Home!</h1>
-  <p>Has iniciado sesión correctamente desde la versión web 🚀</p>
+
+  <nav>
+    <div class="logo">Panel</div>
+    <ul>
+      <li><a href="#">Perfil</a></li>
+      <li><a href="#">Materias</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <h2>Gestión de Materias</h2>
+    <form id="materiaForm">
+      <input type="text" id="nombre" placeholder="Nombre de la materia" required />
+      <input type="text" id="curso" placeholder="Curso" required />
+      <button type="submit">Guardar Materia</button>
+    </form>
+
+    <div class="cards-container" id="materiasContainer"></div>
+  </main>
+
+  <script>
+    const form = document.getElementById('materiaForm');
+    const nombreInput = document.getElementById('nombre');
+    const cursoInput = document.getElementById('curso');
+    const container = document.getElementById('materiasContainer');
+    const API = 'http://localhost:3000/Subjects';
+
+    function getAuthHeaders() {
+      const token = localStorage.getItem('accessToken');
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      };
+    }
+
+    function getUserIdFromToken() {
+      const token = localStorage.getItem('accessToken');
+      if (!token) return null;
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload._id;
+      } catch (e) {
+        console.error('Token inválido:', e);
+        return null;
+      }
+    }
+
+    async function fetchMaterias() {
+      const userId = getUserIdFromToken();
+      if (!userId) {
+        alert('No se pudo identificar al usuario. Inicia sesión nuevamente.');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API}/usuario/${userId}`, {
+          method: 'GET',
+          headers: getAuthHeaders()
+        });
+        const data = await res.json();
+        renderMaterias(data);
+      } catch (error) {
+        console.error('Error al obtener materias:', error);
+      }
+    }
+
+    function renderMaterias(materias) {
+      container.innerHTML = '';
+      materias.forEach(m => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        card.innerHTML = `
+          <div class="card-header">${m.name}</div>
+          <div class="card-content">
+            <p><strong>Curso:</strong> ${m.curso || 'Sin curso'}</p>
+            <div>
+              <button onclick="editarMateria('${m._id}', '${m.name}', '${m.curso || ''}')">✏️editar</button>
+              <button onclick="eliminarMateria('${m._id}')">🗑️eliminar</button>
+              <button onclick="verEstudiantes('${m._id}')">👥estudiantes</button>
+              <button onclick="agregarRecursos('${m._id}')">📎agregar materias</button>
+            </div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    async function agregarMateria(e) {
+      e.preventDefault();
+
+      const materia = {
+        name: nombreInput.value,
+        curso: cursoInput.value
+      };
+
+      try {
+        const res = await fetch(API, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(materia)
+        });
+
+        if (res.ok) {
+          form.reset();
+          await fetchMaterias();
+        } else {
+          const error = await res.json();
+          alert(error.message || 'Error al agregar materia');
+        }
+      } catch (error) {
+        alert('Error de conexión al agregar materia');
+      }
+    }
+
+    async function eliminarMateria(id) {
+      if (!confirm('¿Estás seguro de eliminar esta materia?')) return;
+
+      try {
+        const res = await fetch(`${API}/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+
+        if (res.ok) {
+          fetchMaterias();
+        } else {
+          const error = await res.json();
+          alert(error.message || 'No se pudo eliminar la materia');
+        }
+      } catch (error) {
+        alert('Error de conexión al eliminar materia');
+        console.error(error);
+      }
+    }
+
+    function editarMateria(id, nombre, curso) {
+      nombreInput.value = nombre;
+      cursoInput.value = curso;
+
+      form.onsubmit = async function editarSubmitHandler(e) {
+        e.preventDefault();
+
+        try {
+          const res = await fetch(`${API}/${id}`, {
+            method: 'PUT',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({
+              name: nombreInput.value,
+              curso: cursoInput.value
+            })
+          });
+
+          if (res.ok) {
+            form.reset();
+            form.onsubmit = agregarMateria;
+            fetchMaterias();
+          } else {
+            const error = await res.json();
+            alert(error.message || 'Error al editar materia');
+          }
+        } catch (error) {
+          alert('Error de conexión al editar materia');
+        }
+      };
+    }
+
+    function verEstudiantes(materiaId) {
+      window.location.href = `ver-estudiantes.html?materiaId=${materiaId}`;
+    }
+
+    function agregarRecursos(materiaId) {
+      window.location.href = `agregar-recursos.html?materiaId=${materiaId}`;
+    }
+
+    form.onsubmit = agregarMateria;
+    fetchMaterias();
+  </script>
 </body>
 </html>
