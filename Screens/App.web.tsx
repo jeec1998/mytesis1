@@ -1,5 +1,32 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
+
+// 🔑 Función para decodificar JWT
+interface JwtPayload {
+  _id: string;
+  email: string;
+  role: 'admin' | 'docente' | 'alumno';
+  iat?: number;
+  exp?: number;
+}
+
+const decodeToken = (token: string): JwtPayload | null => {
+  try {
+    const base64Payload = token.split('.')[1];
+    const decodedPayload = atob(base64Payload);
+    return JSON.parse(decodedPayload);
+  } catch (err) {
+    console.error('Error decodificando el token:', err);
+    return null;
+  }
+};
+
 
 const App = () => {
   const [nombreUsuario, setNombreUsuario] = useState('');
@@ -17,7 +44,29 @@ const App = () => {
       if (res.ok) {
         const data = await res.json();
         localStorage.setItem('accessToken', data.accessToken);
-        window.location.href = '/home.html';
+
+        // Decodifica el token y extrae los datos
+        const payload = decodeToken(data.accessToken);
+        if (!payload) {
+          setError('Token inválido');
+          return;
+        }
+
+        // Guarda datos útiles
+        localStorage.setItem('userId', payload._id);
+        localStorage.setItem('userEmail', payload.email);
+        localStorage.setItem('userRole', payload.role);
+
+        // Redirige según el rol
+        if (payload.role === 'admin') {
+          window.location.href = '/admin.html';
+        } else if (payload.role === 'docente') {
+          window.location.href = '/home.html';
+        } else if (payload.role === 'alumno') {
+          window.location.href = '/home-alumno.html';
+        } else {
+          setError('Rol desconocido');
+        }
       } else {
         const data = await res.json();
         setError(data.message || 'Credenciales inválidas');
@@ -29,13 +78,15 @@ const App = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.card}>
       <Text style={styles.title}>Iniciar Sesión</Text>
+
       <TextInput
         style={styles.input}
         placeholder="Usuario"
         value={nombreUsuario}
         onChangeText={setNombreUsuario}
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
@@ -44,17 +95,62 @@ const App = () => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button title="Ingresar" onPress={handleLoginWeb} />
-      {error && <Text style={styles.error}>{error}</Text>}
+
+      <TouchableOpacity style={styles.button} onPress={handleLoginWeb}>
+        <Text style={styles.buttonText}>Ingresar</Text>
+      </TouchableOpacity>
+
+      {error ? <Text style={styles.error}>{error}</Text> : null}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-  title: { fontSize: 24, marginBottom: 20 },
-  input: { width: '100%', height: 45, borderWidth: 1, paddingHorizontal: 10, marginBottom: 15, backgroundColor: '#fff' },
-  error: { color: 'red', marginTop: 10 },
+  card: {
+    width: '100%',
+    maxWidth: 500,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 40,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 6,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#4A90E2',
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  input: {
+    height: 48,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    marginBottom: 16,
+    backgroundColor: '#f9f9f9',
+  },
+  button: {
+    backgroundColor: '#4A90E2',
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  error: {
+    color: 'red',
+    marginTop: 14,
+    textAlign: 'center',
+  },
 });
 
 export default App;

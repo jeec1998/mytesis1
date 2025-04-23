@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agregar Recursos</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f9ff;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav {
+      background-color: #4A90E2;
+      padding: 12px 24px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    main {
+      padding: 30px;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    h2 {
+      color: #4A90E2;
+      margin-bottom: 20px;
+    }
+
+    form {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin-bottom: 40px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    textarea,
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 10px 16px;
+      background-color: #4A90E2;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #357ABD;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="home.html">← Volver al inicio</a>
+  </nav>
+
+  <main>
+    <h2>Agregar Recursos a la Materia</h2>
+
+    <form id="recursoForm" enctype="multipart/form-data">
+      <input type="hidden" id="materiaId" name="materiaId">
+
+      <label for="titulo">Título del recurso</label>
+      <input type="text" id="titulo" name="titulo" required>
+
+      <label for="descripcion">Descripción</label>
+      <textarea id="descripcion" name="descripcion" rows="4" required></textarea>
+
+      <label for="archivo">Seleccionar archivo (PDF, audio, video, imagen, etc.)</label>
+      <input type="file" id="archivo" name="archivo" required>
+
+      <button type="submit">Subir Recurso</button>
+    </form>
+
+    <div id="mensaje"></div>
+  </main>
+
+  <script>
+    const API_UPLOAD = 'http://localhost:3000/recursos'; // Ajusta esto a tu endpoint real
+    const params = new URLSearchParams(window.location.search);
+    const materiaId = params.get('materiaId');
+
+    if (!materiaId) {
+      alert("No se proporcionó un ID de materia");
+      window.location.href = "home.html";
+    }
+
+    document.getElementById('materiaId').value = materiaId;
+
+    document.getElementById('recursoForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData();
+      formData.append('materiaId', document.getElementById('materiaId').value);
+      formData.append('titulo', document.getElementById('titulo').value);
+      formData.append('descripcion', document.getElementById('descripcion').value);
+      formData.append('archivo', document.getElementById('archivo').files[0]);
+
+      try {
+        const res = await fetch(API_UPLOAD, {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || 'Error al subir recurso');
+        }
+
+        document.getElementById('mensaje').textContent = '✅ Recurso subido correctamente';
+        document.getElementById('recursoForm').reset();
+      } catch (err) {
+        document.getElementById('mensaje').textContent = `⛔ ${err.message}`;
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>

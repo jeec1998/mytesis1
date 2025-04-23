@@ -1,48 +1,90 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  Image,
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
+import { API } from '@env';
 type Props = {
   navigation: NativeStackNavigationProp<any>;
+  onLogout: () => void;
 };
 
-const ProfileScreen: React.FC<Props> = ({ navigation }) => {
+const ProfileScreen: React.FC<Props> = ({ navigation, onLogout }) => {
+  const [user, setUser] = useState({
+    nombre: '',
+    correo: '',
+    telefono: '',
+  });
+
   const handleEdit = () => {
     Alert.alert('Editar perfil', 'Funcionalidad aún no implementada.');
   };
 
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('accessToken');
+    onLogout();
+  };
+
+  const getProfile = async () => {
+    try {
+      const token = await AsyncStorage.getItem('accessToken');
+      if (!token) throw new Error('Token no disponible');
+
+      const res = await fetch(`${API}/users/perfil`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+
+      const data = await res.json();
+      setUser({
+        nombre: data.usuario.nombre || '',
+        correo: data.usuario.correo || '',
+        telefono: data.usuario.telefono || '',
+      });
+    } catch (error) {
+      console.error('❌ Error al obtener perfil:', error);
+      Alert.alert('Error', 'No se pudo obtener el perfil');
+    }
+  };
+
+  useEffect(() => {
+    getProfile();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Image
-        source={{ uri: 'https://i.pravatar.cc/150?img=12' }}
-        style={styles.avatar}
-      />
-      <Text style={styles.name}>Juan Pérez</Text>
+      <Text style={styles.name}>{user.nombre}</Text>
 
       <View style={styles.card}>
         <Text style={styles.label}>Nombre completo</Text>
-        <Text style={styles.value}>Juan Antonio Pérez Andrade</Text>
+        <Text style={styles.value}>{user.nombre}</Text>
       </View>
 
       <View style={styles.card}>
         <Text style={styles.label}>Correo electrónico</Text>
-        <Text style={styles.value}>📧 juan.perez@email.com</Text>
+        <Text style={styles.value}>📧 {user.correo}</Text>
       </View>
 
       <View style={styles.card}>
         <Text style={styles.label}>Teléfono</Text>
-        <Text style={styles.value}>📱 +593 987654321</Text>
+        <Text style={styles.value}>📱 {user.telefono}</Text>
       </View>
 
       <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
         <Text style={styles.editButtonText}>✏️ Editar Perfil</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={[styles.editButton, { backgroundColor: '#E94E4E', marginTop: 15 }]} onPress={handleLogout}>
+        <Text style={styles.editButtonText}>🔒 Cerrar sesión</Text>
       </TouchableOpacity>
     </View>
   );
@@ -56,14 +98,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 60,
     backgroundColor: '#D6E6F2',
-  },
-  avatar: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    marginBottom: 15,
-    borderWidth: 3,
-    borderColor: '#2F80ED',
   },
   name: {
     fontSize: 24,
@@ -93,7 +127,6 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   editButton: {
-    marginTop: 30,
     backgroundColor: '#2F80ED',
     paddingVertical: 12,
     paddingHorizontal: 30,

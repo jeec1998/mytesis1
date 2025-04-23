@@ -1,8 +1,11 @@
-
 import React, { useState } from 'react';
-import { Platform, View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 
-// Solo para Android/iOS:
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -12,33 +15,41 @@ import NotificacionesScreen from './NotificacionesScreen';
 import CustomDrawer from './CustomDrawer';
 import LoginScreen from './LoginScreen';
 
-const Stack = createNativeStackNavigator();
+export type RootStackParamList = {
+  Login: undefined;
+  HomeScreen: undefined; // ✅ debe llamarse exactamente igual
+  Perfil: undefined;
+  Notificaciones: undefined;
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const App: React.FC = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // 👉 Si es Android/iOS: usar navegación nativa
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator screenOptions={{ headerTitleAlign: 'center' }}>
         {!isLoggedIn ? (
           <Stack.Screen name="Login" options={{ headerShown: false }}>
-            {(props) => <LoginScreen {...props} onLogin={() => setIsLoggedIn(true)} />}
+            {(props) => (
+              <LoginScreen {...props} onLogin={() => setIsLoggedIn(true)} />
+            )}
           </Stack.Screen>
         ) : (
           <>
-            <Stack.Screen
-              name="Home"
-              options={{
-                title: 'Inicio',
-                headerLeft: () => (
-                  <TouchableOpacity onPress={() => setMenuVisible(true)} style={{ paddingLeft: 15 }}>
-                    <Text style={{ fontSize: 30 }}>☰</Text>
-                  </TouchableOpacity>
-                ),
-              }}
-            >
+            <Stack.Screen name="HomeScreen" options={{
+              title: 'Inicio',
+              headerLeft: () => (
+                <TouchableOpacity
+                  onPress={() => setMenuVisible(true)}
+                  style={{ paddingLeft: 15 }}
+                >
+                  <Text style={{ fontSize: 30 }}>☰</Text>
+                </TouchableOpacity>
+              ),
+            }}>
               {(props) => (
                 <>
                   <CustomDrawer
@@ -50,7 +61,13 @@ const App: React.FC = () => {
                 </>
               )}
             </Stack.Screen>
-            <Stack.Screen name="Perfil" component={ProfileScreen} />
+
+            <Stack.Screen name="Perfil">
+              {(props) => (
+                <ProfileScreen {...props} onLogout={() => setIsLoggedIn(false)} />
+              )}
+            </Stack.Screen>
+
             <Stack.Screen name="Notificaciones" component={NotificacionesScreen} />
           </>
         )}
@@ -59,29 +76,4 @@ const App: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#f5f5f5',
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-  },
-  input: {
-    width: '100%',
-    height: 45,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    marginBottom: 15,
-    borderRadius: 8,
-    backgroundColor: '#fff',
-  },
-});
-
 export default App;
-

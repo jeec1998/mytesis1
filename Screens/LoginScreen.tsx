@@ -1,36 +1,64 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-
-type RootStackParamList = {
-  Login: undefined;
-  Home: undefined;
-};
+import { RootStackParamList } from './App';
+import { API } from '@env';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'> & {
   onLogin: () => void;
 };
 
 const LoginScreen: React.FC<Props> = ({ onLogin }) => {
-  const [email, setEmail] = useState('');
+  const [nombreUsuario, setNombreUsuario] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleLogin = () => {
-    if (Platform.OS === 'web') {
-      window.location.href = '/home.html';
-    } else {
-      onLogin();
+  
+
+  const handleLogin = async () => {
+    try {
+      const res = await fetch(`${API}/users/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombreUsuario, password }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        await AsyncStorage.setItem('accessToken', data.accessToken);
+
+        if (Platform.OS === 'web') {
+          window.location.href = '/home.html';
+        } else {
+          onLogin(); // ✅ esto permite cambiar el estado en App.tsx
+        }
+      } else {
+        const data = await res.json();
+        setError(data.message || 'Credenciales inválidas');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Error de red: no se pudo conectar al servidor');
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Iniciar sesión</Text>
+      <Text style={styles.title}>Iniciar Sesión</Text>
       <TextInput
         style={styles.input}
-        placeholder="Correo electrónico"
-        value={email}
-        onChangeText={setEmail}
+        placeholder="Usuario"
+        value={nombreUsuario}
+        onChangeText={setNombreUsuario}
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
@@ -42,23 +70,14 @@ const LoginScreen: React.FC<Props> = ({ onLogin }) => {
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Ingresar</Text>
       </TouchableOpacity>
+      {error ? <Text style={styles.error}>{error}</Text> : null}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 30,
-    fontWeight: 'bold',
-  },
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
+  title: { fontSize: 24, marginBottom: 30, fontWeight: 'bold' },
   input: {
     width: '100%',
     height: 45,
@@ -69,15 +88,13 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   button: {
-    backgroundColor: '#4CAF50',
-    paddingVertical: 12,
+    backgroundColor: '#4A90E2',
+    paddingVertical: 14,
     paddingHorizontal: 30,
-    borderRadius: 6,
+    borderRadius: 8,
   },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
+  buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+  error: { color: 'red', marginTop: 10, textAlign: 'center' },
 });
 
 export default LoginScreen;
