@@ -1,17 +1,206 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Estudiantes</title>
-</head>
-<body>
-  <h2>Estudiantes de la Materia</h2>
-  <div id="contenido"></div>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docentes</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background-color: #f4f9ff; color: #333; }
+    nav {
+      background-color: #4A90E2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+    }
+    nav .logo { color: white; font-size: 22px; font-weight: bold; }
+    nav ul { list-style: none; display: flex; gap: 20px; }
+    nav ul li a { color: white; text-decoration: none; font-size: 16px; }
+    nav ul li a:hover { background-color: #357ABD; border-radius: 5px; padding: 6px 10px; }
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const materiaId = params.get('materiaId');
-    document.getElementById('contenido').textContent = `Materia ID: ${materiaId}`;
-  </script>
+    main { padding: 30px; max-width: 1000px; margin: auto; }
+    h2 { color: #4A90E2; margin-bottom: 20px; }
+
+    #btnMostrarForm {
+      background-color: #4A90E2;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    #btnMostrarForm:hover { background-color: #357ABD; }
+
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+    form input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+    form button { background-color: #4A90E2; color: white; border: none; border-radius: 6px; padding: 10px 16px; font-size: 14px; cursor: pointer; }
+    form button:hover { background-color: #357ABD; }
+    .botones-form { display: flex; gap: 10px; }
+
+    #buscadorDocente { padding: 10px; margin-bottom: 20px; width: 100%; border: 1px solid #ccc; border-radius: 6px; }
+    table { width: 100%; border-collapse: collapse; background-color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
+    th, td { padding: 12px 16px; border-bottom: 1px solid #ddd; text-align: center; }
+    th { background-color: #4A90E2; color: white; }
+    tr:hover { background-color: #f1f1f1; }
+    button.action { padding: 8px 12px; background-color: #4A90E2; color: white; border: none; border-radius: 6px; cursor: pointer; margin-right: 6px; font-size: 14px; }
+    button.action:hover { background-color: #357ABD; }
+  </style>
+</head>
+
+<body>
+<nav>
+  <div class="logo">Panel</div>
+  <ul>
+    <li><a href="perfil.html">Perfil</a></li>
+  </ul>
+</nav>
+
+<main>
+  <h2 id="tituloForm">Docentes</h2>
+  <button id="btnMostrarForm">➕ Agregar Docente</button>
+
+  <form id="formDocente">
+    <input type="text" id="nombreDocente" placeholder="Nombre completo" required>
+    <input type="text" id="nombreUsuarioDocente" placeholder="Nombre de usuario" required>
+    <input type="email" id="emailDocente" placeholder="Correo electrónico" required>
+    <input type="password" id="passwordDocente" placeholder="Contraseña" required>
+    <input type="password" id="confirmarPasswordDocente" placeholder="Confirmar contraseña" required>
+    <input type="text" id="telefonoDocente" placeholder="Teléfono" required>
+    <div class="botones-form">
+      <button type="submit" id="btnGuardar">Guardar Docente</button>
+      <button type="button" id="btnCancelar" style="background-color: gray; display: none;">Cancelar</button>
+    </div>
+  </form>
+
+  <input type="text" id="buscadorDocente" placeholder="Buscar docente por nombre...">
+  <div id="docentesContainer"></div>
+</main>
+
+<script>
+const API_USERS = 'http://localhost:3000/users';
+let todosLosDocentes = [];
+let editandoId = null;
+
+function getAuthHeaders() {
+  const token = localStorage.getItem('accessToken');
+  return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
+}
+
+async function fetchDocentes() {
+  const res = await fetch(API_USERS, { method: 'GET', headers: getAuthHeaders() });
+  const data = await res.json();
+  todosLosDocentes = data.filter(user => user.role === 'docente');
+  renderTablaDocentes(todosLosDocentes);
+}
+
+function renderTablaDocentes(docentes) {
+  const container = document.getElementById('docentesContainer');
+  if (!docentes.length) {
+    container.innerHTML = '<p>No hay docentes registrados.</p>';
+    return;
+  }
+  let html = '<table><thead><tr><th>Nombre</th><th>Correo</th><th>Acciones</th></tr></thead><tbody>';
+  docentes.forEach(doc => {
+    html += `<tr>
+      <td>${doc.name}</td>
+      <td>${doc.email}</td>
+      <td>
+        <button class="action" onclick="verMateriasDocente('${doc._id}', '${doc.name}')">📘 Ver Materias</button>
+        <button class="action" onclick="editarDocente('${doc._id}')">✏️ Editar</button>
+        <button class="action" onclick="eliminarDocente('${doc._id}')">🗑️ Eliminar</button>
+      </td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+function verMateriasDocente(id, nombre) {
+  window.location.href = `materias-docentes.html?docenteId=${id}&nombre=${encodeURIComponent(nombre)}`;
+}
+
+async function eliminarDocente(id) {
+  if (!confirm('¿Seguro que quieres eliminar este docente?')) return;
+  const res = await fetch(`${API_USERS}/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+  if (res.ok) fetchDocentes();
+}
+
+async function editarDocente(id) {
+  const res = await fetch(`${API_USERS}/${id}`, { method: 'GET', headers: getAuthHeaders() });
+  if (res.ok) {
+    const docente = await res.json();
+    document.getElementById('nombreDocente').value = docente.name;
+    document.getElementById('nombreUsuarioDocente').value = docente.nombreUsuario;
+    document.getElementById('emailDocente').value = docente.email;
+    document.getElementById('telefonoDocente').value = docente.telefono;
+    document.getElementById('passwordDocente').value = '';
+    document.getElementById('confirmarPasswordDocente').value = '';
+    editandoId = docente._id;
+    mostrarFormulario(true);
+  }
+}
+
+function mostrarFormulario(editando = false) {
+  document.getElementById('formDocente').style.display = 'flex';
+  document.getElementById('btnMostrarForm').style.display = 'none';
+  document.getElementById('btnCancelar').style.display = 'inline-block';
+  document.getElementById('btnGuardar').textContent = editando ? 'Actualizar Docente' : 'Guardar Docente';
+}
+
+function ocultarFormulario() {
+  document.getElementById('formDocente').reset();
+  document.getElementById('formDocente').style.display = 'none';
+  document.getElementById('btnMostrarForm').style.display = 'inline-block';
+  document.getElementById('btnCancelar').style.display = 'none';
+  editandoId = null;
+}
+
+document.getElementById('btnMostrarForm').onclick = () => mostrarFormulario(false);
+document.getElementById('btnCancelar').onclick = () => ocultarFormulario();
+
+document.getElementById('formDocente').onsubmit = async (e) => {
+  e.preventDefault();
+  const password = document.getElementById('passwordDocente').value;
+  const confirmar = document.getElementById('confirmarPasswordDocente').value;
+  if (password !== confirmar) return alert('Las contraseñas no coinciden.');
+  const nuevoDocente = {
+    name: document.getElementById('nombreDocente').value,
+    nombreUsuario: document.getElementById('nombreUsuarioDocente').value,
+    email: document.getElementById('emailDocente').value,
+    password,
+    telefono: document.getElementById('telefonoDocente').value,
+    role: 'docente'
+  };
+  const url = editandoId ? `${API_USERS}/${editandoId}` : API_USERS;
+  const method = editandoId ? 'PUT' : 'POST';
+  const res = await fetch(url, { method, headers: getAuthHeaders(), body: JSON.stringify(nuevoDocente) });
+  if (res.ok) {
+    alert(editandoId ? 'Docente actualizado correctamente' : 'Docente registrado exitosamente');
+    ocultarFormulario();
+    fetchDocentes();
+  }
+};
+
+document.getElementById('buscadorDocente').addEventListener('input', function() {
+  const termino = this.value.toLowerCase();
+  const filtrados = todosLosDocentes.filter(docente => docente.name.toLowerCase().includes(termino));
+  renderTablaDocentes(filtrados);
+});
+
+fetchDocentes();
+</script>
+
 </body>
 </html>

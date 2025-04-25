@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { API } from '@env';
+const { API } = process.env; // Asegúrate de que la variable de entorno esté configurada correctamente
 type Props = {
   navigation: NativeStackNavigationProp<any>;
   onLogout: () => void;

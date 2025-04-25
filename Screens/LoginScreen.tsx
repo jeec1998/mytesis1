@@ -10,7 +10,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from './App';
-import { API } from '@env';
+const { API } = process.env; 
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'> & {
   onLogin: () => void;

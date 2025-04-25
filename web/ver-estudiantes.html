@@ -1,17 +1,342 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Estudiantes</title>
-</head>
-<body>
-  <h2>Estudiantes de la Materia</h2>
-  <div id="contenido"></div>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registrar Alumno</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background-color: #f4f9ff; color: #333; }
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const materiaId = params.get('materiaId');
-    document.getElementById('contenido').textContent = `Materia ID: ${materiaId}`;
-  </script>
+    nav {
+      background-color: #4A90E2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      flex-wrap: wrap;
+    }
+
+    nav .logo { color: white; font-size: 22px; font-weight: bold; }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      padding: 6px 10px;
+      transition: background 0.3s;
+    }
+
+    nav ul li a:hover {
+      background-color: #357ABD;
+      border-radius: 5px;
+    }
+
+    main { padding: 30px; }
+    h2 { color: #4A90E2; margin-bottom: 20px; }
+
+    form {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      max-width: 500px;
+      margin: 0 auto 40px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    form input, form select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .form-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    form button {
+      padding: 10px 16px;
+      background-color: #4A90E2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    form button:hover {
+      background-color: #357ABD;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background-color: #4A90E2;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .table-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+      form, .table-container {
+        width: 90%;
+        margin: auto;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+
+  <nav>
+    <div class="logo">Panel</div>
+    <ul>
+      <li><a id="volverBtn" href="#">← Volver</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <h2 id="tituloFormulario">Registrar Alumno</h2>
+
+    <form id="alumnoForm">
+      <input type="text" id="name" placeholder="Nombre completo" required />
+      <input type="text" id="nombreUsuario" placeholder="Nombre de usuario" required />
+      <input type="email" id="email" placeholder="Correo electrónico" required />
+      <input type="password" id="password" placeholder="Contraseña" required />
+      <input type="text" id="telefono" placeholder="Teléfono" />
+      <input type="text" id="telefonorepresentante" placeholder="Teléfono del representante" />
+
+      <div id="estiloCheckboxes">
+        <label><input type="checkbox" name="estilo" value="activo" /> Activo</label><br/>
+        <label><input type="checkbox" name="estilo" value="reflexivo" /> Reflexivo</label><br/>
+        <label><input type="checkbox" name="estilo" value="teorico" /> Teórico</label><br/>
+        <label><input type="checkbox" name="estilo" value="pragmatico" /> Pragmático</label>
+      </div>
+
+      <input type="hidden" id="createbysubject" />
+      <div style="display: flex; gap: 10px;">
+        <button type="submit" id="submitBtn">Registrar Alumno</button>
+        <button type="button" id="cancelarBtn">Cancelar</button>
+      </div>
+    </form>
+
+    <div class="table-container">
+      <h2>Alumnos Registrados</h2>
+      <table id="tablaAlumnos">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Representante</th>
+            <th>Estilo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+
+<script>
+const API = 'http://localhost:3000/users';
+const form = document.getElementById('alumnoForm');
+const submitBtn = document.getElementById('submitBtn');
+const cancelarBtn = document.getElementById('cancelarBtn');
+const tablaAlumnosBody = document.querySelector('#tablaAlumnos tbody');
+const tituloFormulario = document.getElementById('tituloFormulario');
+
+let editandoAlumnoId = null;
+
+const params = new URLSearchParams(window.location.search);
+const materiaId = params.get('materiaId');
+const docenteId = params.get('docenteId');
+const nombreDocente = params.get('nombre');
+
+if (docenteId && nombreDocente) {
+  document.getElementById('volverBtn').href = `materias-docentes.html?docenteId=${docenteId}&nombre=${encodeURIComponent(nombreDocente)}`;
+} else {
+  document.getElementById('volverBtn').href = 'admin.html';
+}
+
+if (materiaId) {
+  document.getElementById('createbysubject').value = materiaId;
+} else {
+  alert('No se encontró la materia.');
+}
+
+function getAuthHeaders() {
+  const token = localStorage.getItem('accessToken');
+  return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const estilosSeleccionados = Array.from(document.querySelectorAll('input[name="estilo"]:checked'))
+    .map(checkbox => checkbox.value);
+
+  const alumno = {
+    name: document.getElementById('name').value,
+    nombreUsuario: document.getElementById('nombreUsuario').value,
+    email: document.getElementById('email').value,
+    password: document.getElementById('password').value,
+    telefono: document.getElementById('telefono').value,
+    telefonorepresentante: document.getElementById('telefonorepresentante').value,
+    estilo: estilosSeleccionados,
+    createbysubject: materiaId,
+    role: 'alumno'
+  };
+
+  try {
+    const url = PUT ? `${API}/${editandoAlumnoId}` : API;
+    const method = editandoAlumnoId ? 'PUT' : 'POST';
+
+    const res = await fetch(url, {
+      method,
+      headers: getAuthHeaders(),
+      body: JSON.stringify(alumno)
+    });
+
+    if (res.ok) {
+      alert(editandoAlumnoId ? 'Alumno actualizado correctamente' : 'Alumno registrado exitosamente');
+      resetFormulario();
+      cargarAlumnos();
+    } else {
+      const error = await res.json();
+      alert(error.message || 'Error en operación');
+    }
+  } catch (error) {
+    console.error(error);
+    alert('Error de conexión');
+  }
+});
+
+cancelarBtn.addEventListener('click', resetFormulario);
+
+function resetFormulario() {
+  form.reset();
+  document.getElementById('createbysubject').value = materiaId;
+  editandoAlumnoId = null;
+  submitBtn.textContent = 'Registrar Alumno';
+  cancelarBtn.style.display = 'none';
+  tituloFormulario.textContent = 'Registrar Alumno';
+}
+
+async function cargarAlumnos() {
+  try {
+    const res = await fetch(`${API}/materia/${materiaId}`, {
+      method: 'GET',
+      headers: getAuthHeaders()
+    });
+    const alumnos = await res.json();
+
+    tablaAlumnosBody.innerHTML = '';
+
+    if (alumnos.length === 0) {
+      tablaAlumnosBody.innerHTML = '<tr><td colspan="4">No hay alumnos registrados.</td></tr>';
+      return;
+    }
+
+    alumnos.forEach(alumno => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${alumno.name}</td>
+        <td>${alumno.telefonorepresentante || '-'}</td>
+        <td>${Array.isArray(alumno.estilo) ? alumno.estilo.join(', ') : alumno.estilo || '-'}</td>
+        <td>
+          <button onclick="editarAlumno('${alumno._id}')" style="background-color:#4A90E2; color:white; border:none; padding:6px 12px; border-radius:6px; margin-right:6px;">✏️ Editar</button>
+          <button onclick="eliminarAlumno('${alumno._id}')" style="background-color:#E94E77; color:white; border:none; padding:6px 12px; border-radius:6px;">🗑️ Eliminar</button>
+        </td>
+      `;
+      tablaAlumnosBody.appendChild(row);
+    });
+
+  } catch (error) {
+    console.error('Error al cargar alumnos:', error);
+  }
+}
+
+async function eliminarAlumno(id) {
+  if (!confirm('¿Seguro que deseas eliminar este alumno?')) return;
+  try {
+    const res = await fetch(`${API}/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
+    });
+    if (res.ok) {
+      alert('Alumno eliminado correctamente');
+      cargarAlumnos();
+    } else {
+      const error = await res.json();
+      alert(error.message || 'Error al eliminar alumno');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error de conexión');
+  }
+}
+
+async function editarAlumno(id) {
+  try {
+    const res = await fetch(`${API}/${id}`, {
+      method: 'GET',
+      headers: getAuthHeaders()
+    });
+    if (res.ok) {
+      const alumno = await res.json();
+      document.getElementById('name').value = alumno.name;
+      document.getElementById('nombreUsuario').value = alumno.nombreUsuario;
+      document.getElementById('email').value = alumno.email;
+      document.getElementById('telefono').value = alumno.telefono || '';
+      document.getElementById('telefonorepresentante').value = alumno.telefonorepresentante || '';
+
+      const checkboxes = document.querySelectorAll('input[name="estilo"]');
+      checkboxes.forEach(cb => cb.checked = Array.isArray(alumno.estilo) && alumno.estilo.includes(cb.value));
+
+      editandoAlumnoId = alumno._id;
+      submitBtn.textContent = 'Actualizar Alumno';
+      cancelarBtn.style.display = 'inline-block';
+      tituloFormulario.textContent = 'Editar Alumno';
+    }
+  } catch (error) {
+    console.error('Error al cargar alumno:', error);
+    alert('Error al cargar datos');
+  }
+}
+
+cargarAlumnos();
+</script>
+
 </body>
 </html>
