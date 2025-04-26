@@ -123,7 +123,7 @@
     function getInicioPorRol(role) {
       if (role === 'admin') return 'admin.html';
       if (role === 'alumno') return 'home-alumno.html';
-      return 'home.html'; // por defecto docente
+      return 'home.html'; 
     }
 
     async function cargarPerfil() {
@@ -180,7 +180,7 @@
       const role = getRoleFromToken();
       localStorage.removeItem('accessToken');
       const destino = getInicioPorRol(role);
-      window.location.href = 'index.html'; // o login.html si tienes una
+      window.location.href = 'index.html'; 
     }
 
     // Redirigir "Volver al inicio" dinámicamente

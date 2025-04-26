@@ -7,6 +7,7 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', sans-serif; background-color: #f4f9ff; color: #333; }
+
     nav {
       background-color: #4A90E2;
       display: flex;
@@ -56,10 +57,21 @@
     tr:hover { background-color: #f1f1f1; }
     button.action { padding: 8px 12px; background-color: #4A90E2; color: white; border: none; border-radius: 6px; cursor: pointer; margin-right: 6px; font-size: 14px; }
     button.action:hover { background-color: #357ABD; }
+
+    /* Alerta flotante */
+    #alertaContainer {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
   </style>
 </head>
 
 <body>
+
+<div id="alertaContainer"></div> <!-- 🔥 Contenedor para alertas -->
+
 <nav>
   <div class="logo">Panel</div>
   <ul>
@@ -75,8 +87,8 @@
     <input type="text" id="nombreDocente" placeholder="Nombre completo" required>
     <input type="text" id="nombreUsuarioDocente" placeholder="Nombre de usuario" required>
     <input type="email" id="emailDocente" placeholder="Correo electrónico" required>
-    <input type="password" id="passwordDocente" placeholder="Contraseña" required>
-    <input type="password" id="confirmarPasswordDocente" placeholder="Confirmar contraseña" required>
+    <input type="password" id="passwordDocente" placeholder="Contraseña">
+    <input type="password" id="confirmarPasswordDocente" placeholder="Confirmar contraseña">
     <input type="text" id="telefonoDocente" placeholder="Teléfono" required>
     <div class="botones-form">
       <button type="submit" id="btnGuardar">Guardar Docente</button>
@@ -92,6 +104,34 @@
 const API_USERS = 'http://localhost:3000/users';
 let todosLosDocentes = [];
 let editandoId = null;
+
+function mostrarAlerta(mensaje, tipo = 'success') {
+  const alertaContainer = document.getElementById('alertaContainer');
+
+  const alerta = document.createElement('div');
+  alerta.textContent = mensaje;
+  alerta.style.backgroundColor = tipo === 'success' ? '#4CAF50' : '#f44336';
+  alerta.style.color = 'white';
+  alerta.style.padding = '12px 20px';
+  alerta.style.marginBottom = '10px';
+  alerta.style.borderRadius = '8px';
+  alerta.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+  alerta.style.fontSize = '16px';
+  alerta.style.minWidth = '250px';
+  alerta.style.textAlign = 'center';
+  alerta.style.opacity = '0';
+  alerta.style.transition = 'opacity 0.5s';
+
+  alertaContainer.appendChild(alerta);
+
+  setTimeout(() => {
+    alerta.style.opacity = '1';
+    setTimeout(() => {
+      alerta.style.opacity = '0';
+      setTimeout(() => alerta.remove(), 500);
+    }, 3000);
+  }, 100);
+}
 
 function getAuthHeaders() {
   const token = localStorage.getItem('accessToken');
@@ -134,7 +174,12 @@ function verMateriasDocente(id, nombre) {
 async function eliminarDocente(id) {
   if (!confirm('¿Seguro que quieres eliminar este docente?')) return;
   const res = await fetch(`${API_USERS}/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
-  if (res.ok) fetchDocentes();
+  if (res.ok) {
+    mostrarAlerta('Docente eliminado correctamente ✅');
+    fetchDocentes();
+  } else {
+    mostrarAlerta('Error al eliminar docente ❌', 'error');
+  }
 }
 
 async function editarDocente(id) {
@@ -172,24 +217,37 @@ document.getElementById('btnCancelar').onclick = () => ocultarFormulario();
 
 document.getElementById('formDocente').onsubmit = async (e) => {
   e.preventDefault();
+
   const password = document.getElementById('passwordDocente').value;
   const confirmar = document.getElementById('confirmarPasswordDocente').value;
-  if (password !== confirmar) return alert('Las contraseñas no coinciden.');
+
+  if (!editandoId && password !== confirmar) {
+    mostrarAlerta('Las contraseñas no coinciden ❌', 'error');
+    return;
+  }
+
   const nuevoDocente = {
     name: document.getElementById('nombreDocente').value,
     nombreUsuario: document.getElementById('nombreUsuarioDocente').value,
     email: document.getElementById('emailDocente').value,
-    password,
     telefono: document.getElementById('telefonoDocente').value,
     role: 'docente'
   };
+
+  if (!editandoId || (editandoId && password)) {
+    nuevoDocente.password = password;
+  }
+
   const url = editandoId ? `${API_USERS}/${editandoId}` : API_USERS;
   const method = editandoId ? 'PUT' : 'POST';
   const res = await fetch(url, { method, headers: getAuthHeaders(), body: JSON.stringify(nuevoDocente) });
+
   if (res.ok) {
-    alert(editandoId ? 'Docente actualizado correctamente' : 'Docente registrado exitosamente');
+    mostrarAlerta(editandoId ? 'Docente actualizado correctamente ✅' : 'Docente registrado exitosamente ✅');
     ocultarFormulario();
     fetchDocentes();
+  } else {
+    mostrarAlerta('Error al guardar docente ❌', 'error');
   }
 };
 

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -6,7 +7,6 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', sans-serif; background-color: #f4f9ff; color: #333; }
-
     nav {
       background-color: #4A90E2;
       display: flex;
@@ -15,31 +15,23 @@
       padding: 12px 24px;
       flex-wrap: wrap;
     }
-
     nav .logo { color: white; font-size: 22px; font-weight: bold; }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-    }
-
-    nav ul li a {
-      color: white;
-      text-decoration: none;
-      font-size: 16px;
-      padding: 6px 10px;
-      transition: background 0.3s;
-    }
-
-    nav ul li a:hover {
-      background-color: #357ABD;
-      border-radius: 5px;
-    }
-
+    nav ul { list-style: none; display: flex; gap: 20px; }
+    nav ul li a { color: white; text-decoration: none; font-size: 16px; padding: 6px 10px; transition: background 0.3s; }
+    nav ul li a:hover { background-color: #357ABD; border-radius: 5px; }
     main { padding: 30px; }
     h2 { color: #4A90E2; margin-bottom: 20px; }
-
+    #btnMostrarForm {
+      background-color: #4A90E2;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    #btnMostrarForm:hover { background-color: #357ABD; }
     form {
       background: white;
       padding: 24px;
@@ -47,25 +39,22 @@
       box-shadow: 0 6px 16px rgba(0,0,0,0.08);
       max-width: 500px;
       margin: 0 auto 40px auto;
-      display: flex;
+      display: none;
       flex-direction: column;
       gap: 15px;
     }
-
-    form input, form select {
+    form input {
       width: 100%;
       padding: 10px;
       border-radius: 6px;
       border: 1px solid #ccc;
     }
-
     .form-buttons {
       display: flex;
       gap: 10px;
       justify-content: center;
       flex-wrap: wrap;
     }
-
     form button {
       padding: 10px 16px;
       background-color: #4A90E2;
@@ -75,11 +64,7 @@
       font-weight: bold;
       cursor: pointer;
     }
-
-    form button:hover {
-      background-color: #357ABD;
-    }
-
+    form button:hover { background-color: #357ABD; }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -88,86 +73,74 @@
       border-radius: 12px;
       overflow: hidden;
     }
-
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid #ddd;
-      text-align: center;
+    th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: center; }
+    th { background-color: #4A90E2; color: white; }
+    tr:hover { background-color: #f1f1f1; }
+    .table-container { max-width: 1000px; margin: 0 auto; }
+    #alertaContainer {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
     }
-
-    th {
-      background-color: #4A90E2;
-      color: white;
-    }
-
-    tr:hover {
-      background-color: #f1f1f1;
-    }
-
-    .table-container {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
     @media (max-width: 768px) {
-      form, .table-container {
-        width: 90%;
-        margin: auto;
-      }
+      form, .table-container { width: 90%; margin: auto; }
     }
   </style>
 </head>
 
-
 <body>
 
-  <nav>
-    <div class="logo">Panel</div>
-    <ul>
-      <li><a id="volverBtn" href="#">← Volver</a></li>
-    </ul>
-  </nav>
+<div id="alertaContainer"></div>
 
-  <main>
-    <h2 id="tituloFormulario">Registrar Alumno</h2>
+<nav>
+  <div class="logo">Panel</div>
+  <ul>
+    <li><a id="volverBtn" href="#">← Volver</a></li>
+  </ul>
+</nav>
 
-    <form id="alumnoForm">
-      <input type="text" id="name" placeholder="Nombre completo" required />
-      <input type="text" id="nombreUsuario" placeholder="Nombre de usuario" required />
-      <input type="email" id="email" placeholder="Correo electrónico" required />
-      <input type="password" id="password" placeholder="Contraseña" required />
-      <input type="text" id="telefono" placeholder="Teléfono" />
-      <input type="text" id="telefonorepresentante" placeholder="Teléfono del representante" />
+<main>
+  <h2 id="tituloFormulario">Alumnos</h2>
 
-      <div id="estiloCheckboxes">
-        <label><input type="checkbox" name="estilo" value="activo" /> Activo</label><br/>
-        <label><input type="checkbox" name="estilo" value="reflexivo" /> Reflexivo</label><br/>
-        <label><input type="checkbox" name="estilo" value="teorico" /> Teórico</label><br/>
-        <label><input type="checkbox" name="estilo" value="pragmatico" /> Pragmático</label>
-      </div>
+  <button id="btnMostrarForm">➕ Agregar Alumno</button>
 
-      <input type="hidden" id="createbysubject" />
-      <div style="display: flex; gap: 10px;">
-        <button type="submit" id="submitBtn">Registrar Alumno</button>
-        <button type="button" id="cancelarBtn">Cancelar</button>
-      </div>
-    </form>
-
-    <div class="table-container">
-      <h2>Alumnos Registrados</h2>
-      <table id="tablaAlumnos">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Representante</th>
-            <th>Estilo</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+  <form id="alumnoForm">
+    <input type="text" id="name" placeholder="Nombre completo" required />
+    <input type="text" id="nombreUsuario" placeholder="Nombre de usuario" required />
+    <input type="email" id="email" placeholder="Correo electrónico" required />
+    <input type="password" id="password" placeholder="Contraseña" required />
+    <input type="password" id="confirmPassword" placeholder="Confirmar Contraseña" required />
+    <input type="text" id="telefono" placeholder="Teléfono" />
+    <input type="text" id="telefonorepresentante" placeholder="Teléfono del representante" />
+    <div id="estiloCheckboxes">
+      <label><input type="checkbox" name="estilo" value="activo" /> Activo</label><br/>
+      <label><input type="checkbox" name="estilo" value="reflexivo" /> Reflexivo</label><br/>
+      <label><input type="checkbox" name="estilo" value="teorico" /> Teórico</label><br/>
+      <label><input type="checkbox" name="estilo" value="pragmatico" /> Pragmático</label>
     </div>
-  </main>
+    <input type="hidden" id="createbysubject" />
+    <div class="form-buttons">
+      <button type="submit" id="submitBtn">Registrar Alumno</button>
+      <button type="button" id="cancelarBtn" style="background-color:gray;">Cancelar</button>
+    </div>
+  </form>
+  <input type="text" id="buscadorAlumno" placeholder="Buscar alumno por nombre..." style="width:100%; padding:10px; margin-bottom:20px; border:1px solid #ccc; border-radius:6px;" />
+  <div class="table-container">
+    <h2>Alumnos Registrados</h2>
+    <table id="tablaAlumnos">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Representante</th>
+          <th>Estilo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</main>
 
 <script>
 const API = 'http://localhost:3000/users';
@@ -176,8 +149,33 @@ const submitBtn = document.getElementById('submitBtn');
 const cancelarBtn = document.getElementById('cancelarBtn');
 const tablaAlumnosBody = document.querySelector('#tablaAlumnos tbody');
 const tituloFormulario = document.getElementById('tituloFormulario');
-
+const btnMostrarForm = document.getElementById('btnMostrarForm');
 let editandoAlumnoId = null;
+
+function mostrarAlerta(mensaje, tipo = 'success') {
+  const alertaContainer = document.getElementById('alertaContainer');
+  const alerta = document.createElement('div');
+  alerta.textContent = mensaje;
+  alerta.style.backgroundColor = tipo === 'success' ? '#4CAF50' : '#f44336';
+  alerta.style.color = 'white';
+  alerta.style.padding = '12px 20px';
+  alerta.style.marginBottom = '10px';
+  alerta.style.borderRadius = '8px';
+  alerta.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+  alerta.style.fontSize = '16px';
+  alerta.style.minWidth = '250px';
+  alerta.style.textAlign = 'center';
+  alerta.style.opacity = '0';
+  alerta.style.transition = 'opacity 0.5s';
+  alertaContainer.appendChild(alerta);
+  setTimeout(() => {
+    alerta.style.opacity = '1';
+    setTimeout(() => {
+      alerta.style.opacity = '0';
+      setTimeout(() => alerta.remove(), 500);
+    }, 3000);
+  }, 100);
+}
 
 const params = new URLSearchParams(window.location.search);
 const materiaId = params.get('materiaId');
@@ -193,7 +191,7 @@ if (docenteId && nombreDocente) {
 if (materiaId) {
   document.getElementById('createbysubject').value = materiaId;
 } else {
-  alert('No se encontró la materia.');
+  mostrarAlerta('No se encontró la materia.', 'error');
 }
 
 function getAuthHeaders() {
@@ -201,16 +199,35 @@ function getAuthHeaders() {
   return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
 }
 
+btnMostrarForm.onclick = () => {
+  form.style.display = 'flex';
+  btnMostrarForm.style.display = 'none';
+  cancelarBtn.style.display = 'inline-block';
+};
+
+cancelarBtn.addEventListener('click', resetFormulario);
+
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const estilosSeleccionados = Array.from(document.querySelectorAll('input[name="estilo"]:checked'))
-    .map(checkbox => checkbox.value);
+
+  const password = document.getElementById('password').value.trim();
+  const confirmPassword = document.getElementById('confirmPassword').value.trim();
+  const estilosSeleccionados = Array.from(document.querySelectorAll('input[name="estilo"]:checked')).map(cb => cb.value);
+
+  if (!editandoAlumnoId && (password === '' || confirmPassword === '')) {
+    mostrarAlerta('Debes ingresar y confirmar la contraseña ❌', 'error');
+    return;
+  }
+
+  if ((password !== '' || confirmPassword !== '') && password !== confirmPassword) {
+    mostrarAlerta('Las contraseñas no coinciden ❌', 'error');
+    return;
+  }
 
   const alumno = {
     name: document.getElementById('name').value,
     nombreUsuario: document.getElementById('nombreUsuario').value,
     email: document.getElementById('email').value,
-    password: document.getElementById('password').value,
     telefono: document.getElementById('telefono').value,
     telefonorepresentante: document.getElementById('telefonorepresentante').value,
     estilo: estilosSeleccionados,
@@ -218,8 +235,10 @@ form.addEventListener('submit', async (e) => {
     role: 'alumno'
   };
 
+  if (password !== '') alumno.password = password;
+
   try {
-    const url = PUT ? `${API}/${editandoAlumnoId}` : API;
+    const url = editandoAlumnoId ? `${API}/${editandoAlumnoId}` : API;
     const method = editandoAlumnoId ? 'PUT' : 'POST';
 
     const res = await fetch(url, {
@@ -229,28 +248,29 @@ form.addEventListener('submit', async (e) => {
     });
 
     if (res.ok) {
-      alert(editandoAlumnoId ? 'Alumno actualizado correctamente' : 'Alumno registrado exitosamente');
+      mostrarAlerta(editandoAlumnoId ? 'Alumno actualizado correctamente ✅' : 'Alumno registrado exitosamente ✅');
       resetFormulario();
       cargarAlumnos();
     } else {
       const error = await res.json();
-      alert(error.message || 'Error en operación');
+      mostrarAlerta(error.message || 'Error en operación', 'error');
     }
   } catch (error) {
     console.error(error);
-    alert('Error de conexión');
+    mostrarAlerta('Error de conexión', 'error');
   }
 });
-
-cancelarBtn.addEventListener('click', resetFormulario);
 
 function resetFormulario() {
   form.reset();
   document.getElementById('createbysubject').value = materiaId;
+  document.getElementById('password').setAttribute('required', 'required');
+  document.getElementById('confirmPassword').setAttribute('required', 'required');
+  form.style.display = 'none';
+  btnMostrarForm.style.display = 'inline-block';
   editandoAlumnoId = null;
-  submitBtn.textContent = 'Registrar Alumno';
-  cancelarBtn.style.display = 'none';
   tituloFormulario.textContent = 'Registrar Alumno';
+  submitBtn.textContent = 'Registrar Alumno';
 }
 
 async function cargarAlumnos() {
@@ -260,7 +280,6 @@ async function cargarAlumnos() {
       headers: getAuthHeaders()
     });
     const alumnos = await res.json();
-
     tablaAlumnosBody.innerHTML = '';
 
     if (alumnos.length === 0) {
@@ -275,44 +294,64 @@ async function cargarAlumnos() {
         <td>${alumno.telefonorepresentante || '-'}</td>
         <td>${Array.isArray(alumno.estilo) ? alumno.estilo.join(', ') : alumno.estilo || '-'}</td>
         <td>
-          <button onclick="editarAlumno('${alumno._id}')" style="background-color:#4A90E2; color:white; border:none; padding:6px 12px; border-radius:6px; margin-right:6px;">✏️ Editar</button>
+          <button onclick="editarAlumno('${alumno._id}')" style="background-color:#4A90E2; color:white; border:none; padding:6px 12px; border-radius:6px;">✏️ Editar</button>
           <button onclick="eliminarAlumno('${alumno._id}')" style="background-color:#E94E77; color:white; border:none; padding:6px 12px; border-radius:6px;">🗑️ Eliminar</button>
-        </td>
-      `;
+        </td>`;
       tablaAlumnosBody.appendChild(row);
     });
+  } catch (error) {
+    console.error('Error al cargar alumnos:', error);
+  }
+}
+const buscadorAlumno = document.getElementById('buscadorAlumno');
+let alumnosCargados = []; // 🔥 Aquí guardaremos todos los alumnos para buscar en ellos
 
+async function cargarAlumnos() {
+  try {
+    const res = await fetch(`${API}/materia/${materiaId}`, {
+      method: 'GET',
+      headers: getAuthHeaders()
+    });
+    const alumnos = await res.json();
+    alumnosCargados = alumnos; // 🔥 Guardamos la lista completa
+    renderTablaAlumnos(alumnosCargados);
   } catch (error) {
     console.error('Error al cargar alumnos:', error);
   }
 }
 
-async function eliminarAlumno(id) {
-  if (!confirm('¿Seguro que deseas eliminar este alumno?')) return;
-  try {
-    const res = await fetch(`${API}/${id}`, {
-      method: 'DELETE',
-      headers: getAuthHeaders()
-    });
-    if (res.ok) {
-      alert('Alumno eliminado correctamente');
-      cargarAlumnos();
-    } else {
-      const error = await res.json();
-      alert(error.message || 'Error al eliminar alumno');
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    alert('Error de conexión');
+function renderTablaAlumnos(alumnos) {
+  tablaAlumnosBody.innerHTML = '';
+
+  if (alumnos.length === 0) {
+    tablaAlumnosBody.innerHTML = '<tr><td colspan="4">No hay alumnos registrados.</td></tr>';
+    return;
   }
+
+  alumnos.forEach(alumno => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${alumno.name}</td>
+      <td>${alumno.telefonorepresentante || '-'}</td>
+      <td>${Array.isArray(alumno.estilo) ? alumno.estilo.join(', ') : alumno.estilo || '-'}</td>
+      <td>
+        <button onclick="editarAlumno('${alumno._id}')" style="background-color:#4A90E2; color:white; border:none; padding:6px 12px; border-radius:6px; margin-right:6px;">✏️ Editar</button>
+        <button onclick="eliminarAlumno('${alumno._id}')" style="background-color:#E94E77; color:white; border:none; padding:6px 12px; border-radius:6px;">🗑️ Eliminar</button>
+      </td>`;
+    tablaAlumnosBody.appendChild(row);
+  });
 }
+
+
+buscadorAlumno.addEventListener('input', () => {
+  const termino = buscadorAlumno.value.toLowerCase();
+  const filtrados = alumnosCargados.filter(a => a.name.toLowerCase().includes(termino));
+  renderTablaAlumnos(filtrados);
+});
 
 async function editarAlumno(id) {
   try {
-    const res = await fetch(`${API}/${id}`, {
-      method: 'GET',
-      headers: getAuthHeaders()
-    });
+    const res = await fetch(`${API}/${id}`, { method: 'GET', headers: getAuthHeaders() });
     if (res.ok) {
       const alumno = await res.json();
       document.getElementById('name').value = alumno.name;
@@ -324,14 +363,21 @@ async function editarAlumno(id) {
       const checkboxes = document.querySelectorAll('input[name="estilo"]');
       checkboxes.forEach(cb => cb.checked = Array.isArray(alumno.estilo) && alumno.estilo.includes(cb.value));
 
+      document.getElementById('password').removeAttribute('required');
+      document.getElementById('confirmPassword').removeAttribute('required');
+      document.getElementById('password').placeholder = '(Opcional para cambiar)';
+      document.getElementById('confirmPassword').placeholder = '(Opcional para confirmar)';
+
       editandoAlumnoId = alumno._id;
       submitBtn.textContent = 'Actualizar Alumno';
+      form.style.display = 'flex';
       cancelarBtn.style.display = 'inline-block';
+      btnMostrarForm.style.display = 'none';
       tituloFormulario.textContent = 'Editar Alumno';
     }
   } catch (error) {
     console.error('Error al cargar alumno:', error);
-    alert('Error al cargar datos');
+    mostrarAlerta('Error al cargar datos', 'error');
   }
 }
 

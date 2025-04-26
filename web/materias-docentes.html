@@ -18,13 +18,7 @@
     }
 
     nav .logo { color: white; font-size: 22px; font-weight: bold; }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-    }
-
+    nav ul { list-style: none; display: flex; gap: 20px; }
     nav ul li a {
       color: white;
       text-decoration: none;
@@ -32,7 +26,6 @@
       padding: 6px 10px;
       transition: background 0.3s;
     }
-
     nav ul li a:hover {
       background-color: #357ABD;
       border-radius: 5px;
@@ -41,7 +34,31 @@
     main { padding: 30px; }
     h2 { color: #4A90E2; margin-bottom: 10px; }
 
-    form input {
+    #btnMostrarFormMateria {
+      background-color: #4A90E2;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    #btnMostrarFormMateria:hover { background-color: #357ABD; }
+
+    #materiaForm {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin-bottom: 30px;
+    }
+
+    #materiaForm input {
       width: 100%;
       padding: 10px;
       margin-bottom: 10px;
@@ -49,15 +66,22 @@
       border: 1px solid #ccc;
     }
 
-    form button {
+    .botones-form {
+      display: flex;
+      gap: 10px;
+    }
+
+    #materiaForm button {
       padding: 10px 16px;
-      background-color: #4A90E2;
-      color: white;
       border: none;
       border-radius: 6px;
       font-weight: bold;
       cursor: pointer;
+      font-size: 14px;
     }
+    #btnGuardarMateria { background-color: #4A90E2; color: white; }
+    #btnGuardarMateria:hover { background-color: #357ABD; }
+    #btnCancelarMateria { background-color: gray; color: white; }
 
     .cards-container {
       display: flex;
@@ -72,9 +96,9 @@
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
       width: 260px;
       overflow: hidden;
-      transition: transform 0.2s, box-shadow 0.2s;
       display: flex;
       flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
 
     .card:hover {
@@ -98,11 +122,7 @@
       gap: 12px;
     }
 
-    .card-content p {
-      color: #444;
-      font-size: 15px;
-      margin: 0;
-    }
+    .card-content p { margin: 0; color: #444; font-size: 15px; }
 
     .card-buttons {
       display: flex;
@@ -116,10 +136,7 @@
       gap: 8px;
       justify-content: space-between;
     }
-
-    .card-row.single {
-      justify-content: center;
-    }
+    .card-row.single { justify-content: center; }
 
     .card-buttons button {
       flex: 1;
@@ -137,13 +154,20 @@
       justify-content: center;
       gap: 6px;
     }
+    .card-buttons button:hover { background-color: #357ABD; }
 
-    .card-buttons button:hover {
-      background-color: #357ABD;
+    #alertaContainer {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
     }
   </style>
 </head>
+
 <body>
+
+  <div id="alertaContainer"></div> <!-- 🔥 Contenedor de alertas -->
 
   <nav>
     <div class="logo">Panel</div>
@@ -155,11 +179,15 @@
   <main>
     <h2 id="tituloDocente">Materias del Docente</h2>
 
-    <h3>Registrar / Editar Materia</h3>
-    <form id="materiaForm" style="max-width: 400px; margin-bottom: 30px;">
+    <button id="btnMostrarFormMateria">➕ Agregar Materia</button>
+
+    <form id="materiaForm">
       <input type="text" id="nombreMateria" placeholder="Nombre de la materia" required />
       <input type="text" id="cursoMateria" placeholder="Curso" required />
-      <button type="submit">Guardar Materia</button>
+      <div class="botones-form">
+        <button type="submit" id="btnGuardarMateria">Guardar Materia</button>
+        <button type="button" id="btnCancelarMateria">Cancelar</button>
+      </div>
     </form>
 
     <div class="cards-container" id="materiasContainer"></div>
@@ -168,6 +196,51 @@
   <script>
     const container = document.getElementById('materiasContainer');
     const API = 'http://localhost:3000/Subjects';
+
+    const btnMostrarFormMateria = document.getElementById('btnMostrarFormMateria');
+    const btnCancelarMateria = document.getElementById('btnCancelarMateria');
+    const formMateria = document.getElementById('materiaForm');
+    const nombreInput = document.getElementById('nombreMateria');
+    const cursoInput = document.getElementById('cursoMateria');
+    let editandoId = null;
+
+    btnMostrarFormMateria.onclick = () => {
+      formMateria.style.display = 'flex';
+      btnMostrarFormMateria.style.display = 'none';
+    };
+
+    btnCancelarMateria.onclick = () => {
+      formMateria.reset();
+      formMateria.style.display = 'none';
+      btnMostrarFormMateria.style.display = 'inline-block';
+      editandoId = null;
+      document.getElementById('btnGuardarMateria').textContent = 'Guardar Materia';
+    };
+
+    function mostrarAlerta(mensaje, tipo = 'success') {
+      const alertaContainer = document.getElementById('alertaContainer');
+
+      const alerta = document.createElement('div');
+      alerta.textContent = mensaje;
+      alerta.style.backgroundColor = tipo === 'success' ? '#4CAF50' : '#f44336';
+      alerta.style.color = 'white';
+      alerta.style.padding = '12px 20px';
+      alerta.style.marginBottom = '10px';
+      alerta.style.borderRadius = '8px';
+      alerta.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+      alerta.style.fontSize = '16px';
+      alerta.style.minWidth = '250px';
+      alerta.style.textAlign = 'center';
+      alerta.style.opacity = '0.95';
+      alerta.style.transition = 'opacity 0.5s';
+
+      alertaContainer.appendChild(alerta);
+
+      setTimeout(() => {
+        alerta.style.opacity = '0';
+        setTimeout(() => alerta.remove(), 500);
+      }, 3000);
+    }
 
     function getAuthHeaders() {
       const token = localStorage.getItem('accessToken');
@@ -194,7 +267,7 @@
     async function fetchMateriasByDocente() {
       const docenteId = getDocenteIdFromURL();
       if (!docenteId) {
-        alert('Docente no identificado.');
+        mostrarAlerta('Docente no identificado.', 'error');
         return;
       }
 
@@ -245,16 +318,9 @@
       });
     }
 
-    const form = document.getElementById('materiaForm');
-    const nombreInput = document.getElementById('nombreMateria');
-    const cursoInput = document.getElementById('cursoMateria');
-    let editandoId = null;
-
-    form.onsubmit = async (e) => {
+    formMateria.onsubmit = async (e) => {
       e.preventDefault();
       const docenteId = getDocenteIdFromURL();
-      console.log('Docente ID:', docenteId);
-
       const materia = {
         name: nombreInput.value,
         curso: cursoInput.value,
@@ -278,17 +344,18 @@
         }
 
         if (res.ok) {
-          alert(editandoId ? 'Materia actualizada correctamente' : 'Materia registrada correctamente');
-          form.reset();
+          mostrarAlerta(editandoId ? 'Materia actualizada correctamente ✅' : 'Materia registrada correctamente ✅');
+          formMateria.reset();
+          formMateria.style.display = 'none';
+          btnMostrarFormMateria.style.display = 'inline-block';
           editandoId = null;
-          form.querySelector('button').textContent = 'Guardar Materia';
           fetchMateriasByDocente();
         } else {
           const error = await res.json();
-          alert(error.message || 'Error al procesar materia');
+          mostrarAlerta(error.message || 'Error al procesar materia', 'error');
         }
       } catch (error) {
-        alert('Error de conexión');
+        mostrarAlerta('Error de conexión 😢', 'error');
         console.error(error);
       }
     };
@@ -297,7 +364,9 @@
       nombreInput.value = nombre;
       cursoInput.value = curso;
       editandoId = id;
-      form.querySelector('button').textContent = 'Actualizar Materia';
+      formMateria.style.display = 'flex';
+      btnMostrarFormMateria.style.display = 'none';
+      document.getElementById('btnGuardarMateria').textContent = 'Actualizar Materia';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -307,9 +376,9 @@
         method: 'DELETE',
         headers: getAuthHeaders()
       })
-        .then(res => res.ok ? fetchMateriasByDocente() : alert('No se pudo eliminar'))
+        .then(res => res.ok ? fetchMateriasByDocente() : mostrarAlerta('No se pudo eliminar', 'error'))
         .catch(err => {
-          alert('Error de conexión');
+          mostrarAlerta('Error de conexión', 'error');
           console.error(err);
         });
     }
@@ -323,17 +392,15 @@
     }
 
     function verEstudiantes(materiaId) {
-  const params = new URLSearchParams(window.location.search);
-  const docenteId = params.get('docenteId');
-  const nombre = params.get('nombre');
-
-  if (docenteId && nombre) {
-    window.location.href = `ver-estudiantes.html?materiaId=${materiaId}&docenteId=${docenteId}&nombre=${encodeURIComponent(nombre)}`;
-  } else {
-    window.location.href = `ver-estudiantes.html?materiaId=${materiaId}`;
-  }
-}
-
+      const params = new URLSearchParams(window.location.search);
+      const docenteId = params.get('docenteId');
+      const nombre = params.get('nombre');
+      if (docenteId && nombre) {
+        window.location.href = `ver-estudiantes.html?materiaId=${materiaId}&docenteId=${docenteId}&nombre=${encodeURIComponent(nombre)}`;
+      } else {
+        window.location.href = `ver-estudiantes.html?materiaId=${materiaId}`;
+      }
+    }
 
     mostrarNombreDocente();
     fetchMateriasByDocente();
