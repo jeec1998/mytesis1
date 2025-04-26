@@ -16,20 +16,9 @@
       padding: 12px 24px;
       flex-wrap: wrap;
     }
-
     nav .logo { color: white; font-size: 22px; font-weight: bold; }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-    }
-
-    nav ul li {
-      display: flex;
-      align-items: center;
-    }
-
+    nav ul { list-style: none; display: flex; gap: 20px; }
+    nav ul li { display: flex; align-items: center; }
     nav ul li a, nav ul li button {
       color: white;
       background: none;
@@ -40,11 +29,7 @@
       padding: 6px 10px;
       transition: background 0.3s;
     }
-
-    nav ul li a:hover, nav ul li button:hover {
-      background-color: #357ABD;
-      border-radius: 5px;
-    }
+    nav ul li a:hover, nav ul li button:hover { background-color: #357ABD; border-radius: 5px; }
 
     main { padding: 30px; }
     h2 { color: #4A90E2; margin-bottom: 20px; }
@@ -52,37 +37,44 @@
     form {
       max-width: 600px;
       margin-bottom: 30px;
+      display: none; /* 🔥 Oculto inicialmente */
+      flex-direction: column;
+      gap: 15px;
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
     }
-
     input {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
       border: 1px solid #ccc;
-      border-radius: 4px;
+      border-radius: 6px;
     }
-
+    .form-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
     button {
       padding: 10px 16px;
       background-color: #4A90E2;
       border: none;
       color: white;
       font-weight: bold;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
       margin-bottom: 6px;
     }
-
-    button:hover {
-      background-color: #357ABD;
-    }
+    button:hover { background-color: #357ABD; }
 
     .cards-container {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
     }
-
     .card {
       background: #ffffff;
       border-radius: 16px;
@@ -93,12 +85,10 @@
       display: flex;
       flex-direction: column;
     }
-
     .card:hover {
       transform: translateY(-6px);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
     }
-
     .card-header {
       background: linear-gradient(135deg, #4A90E2, #3b7dc4);
       color: white;
@@ -107,37 +97,11 @@
       font-size: 18px;
       text-align: center;
     }
-
-    .card-content {
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .card-content p {
-      color: #444;
-      font-size: 15px;
-      margin: 0;
-    }
-
-    .card-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .card-row {
-      display: flex;
-      gap: 8px;
-      justify-content: space-between;
-    }
-
-    .card-row.single {
-      justify-content: center;
-    }
-
+    .card-content { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .card-content p { color: #444; font-size: 15px; margin: 0; }
+    .card-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+    .card-row { display: flex; gap: 8px; justify-content: space-between; }
+    .card-row.single { justify-content: center; }
     .card-buttons button {
       flex: 1;
       background-color: #4A90E2;
@@ -154,217 +118,230 @@
       justify-content: center;
       gap: 6px;
     }
-
-    .card-buttons button:hover {
-      background-color: #357ABD;
-    }
-
-    .drag-ghost {
-      opacity: 0.3;
-      background-color: #e0e0e0;
-    }
+    .card-buttons button:hover { background-color: #357ABD; }
+    .drag-ghost { opacity: 0.3; background-color: #e0e0e0; }
   </style>
 </head>
+
 <body>
 
   <nav>
     <div class="logo">Panel</div>
     <ul>
+      <li><a href="notas-estudiantes.html">Notas</a></li>
       <li><a href="perfil.html">Perfil</a></li>
-      
     </ul>
   </nav>
+  
 
   <main>
     <h2>Registro de Materias</h2>
+
+  
+    <button id="btnMostrarForm" style="padding:8px 14px; background-color:#4A90E2; color:white; border:none; border-radius:6px; cursor:pointer; margin-bottom:20px;">➕ Agregar Materia</button>
+
+    
     <form id="materiaForm">
       <input type="text" id="nombre" placeholder="Nombre de la materia" required />
       <input type="text" id="curso" placeholder="Curso" required />
-      <button type="submit" id="submitBtn">Guardar Materia</button>
+      <div class="form-buttons">
+        <button type="submit" id="submitBtn">Guardar Materia</button>
+        <button type="button" id="cancelarBtn" style="background-color:gray;">Cancelar</button>
+      </div>
     </form>
-  
+
     <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
       <button id="toggleOrden" style="padding: 8px 14px; background-color: #4A90E2; color: white; border: none; border-radius: 6px; cursor: pointer;">Editar orden</button>
     </div>
-  
+
     <div class="cards-container" id="materiasContainer"></div>
   </main>
-  
 
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-  <script>
-    const form = document.getElementById('materiaForm');
-    const nombreInput = document.getElementById('nombre');
-    const cursoInput = document.getElementById('curso');
-    const submitBtn = document.getElementById('submitBtn');
-    const container = document.getElementById('materiasContainer');
-    const toggleOrdenBtn = document.getElementById('toggleOrden');
-    const API = 'http://localhost:3000/Subjects';
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+  const form = document.getElementById('materiaForm');
+  const nombreInput = document.getElementById('nombre');
+  const cursoInput = document.getElementById('curso');
+  const submitBtn = document.getElementById('submitBtn');
+  const cancelarBtn = document.getElementById('cancelarBtn');
+  const btnMostrarForm = document.getElementById('btnMostrarForm');
+  const container = document.getElementById('materiasContainer');
+  const toggleOrdenBtn = document.getElementById('toggleOrden');
+  const API = 'http://localhost:3000/Subjects';
 
-    let editandoId = null;
-    let sortableInstance = null;
+  let editandoId = null;
+  let sortableInstance = null;
 
-    function getAuthHeaders() {
-      const token = localStorage.getItem('accessToken');
-      return {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      };
+  function getAuthHeaders() {
+    const token = localStorage.getItem('accessToken');
+    return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
+  }
+
+  function getUserIdFromToken() {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload._id;
+    } catch (e) {
+      console.error('Token inválido:', e);
+      return null;
+    }
+  }
+
+  async function fetchMaterias() {
+    const userId = getUserIdFromToken();
+    if (!userId) {
+      alert('No se pudo identificar al usuario. Inicia sesión nuevamente.');
+      return;
     }
 
-    function getUserIdFromToken() {
-      const token = localStorage.getItem('accessToken');
-      if (!token) return null;
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        return payload._id;
-      } catch (e) {
-        console.error('Token inválido:', e);
-        return null;
-      }
+    try {
+      const res = await fetch(`${API}/usuario/${userId}`, {
+        method: 'GET',
+        headers: getAuthHeaders()
+      });
+      const data = await res.json();
+      renderMaterias(data);
+    } catch (error) {
+      console.error('Error al obtener materias:', error);
     }
+  }
 
-    async function fetchMaterias() {
-      const userId = getUserIdFromToken();
-      if (!userId) {
-        alert('No se pudo identificar al usuario. Inicia sesión nuevamente.');
-        return;
-      }
-
-      try {
-        const res = await fetch(`${API}/usuario/${userId}`, {
-          method: 'GET',
-          headers: getAuthHeaders()
-        });
-        const data = await res.json();
-        renderMaterias(data);
-      } catch (error) {
-        console.error('Error al obtener materias:', error);
-      }
-    }
-
-    function renderMaterias(materias) {
-      container.innerHTML = '';
-      materias.forEach(m => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <div class="card-header">${m.name}</div>
-          <div class="card-content">
-            <p><strong>📘 Curso:</strong> ${m.curso || 'Sin curso'}</p>
-            <div class="card-buttons">
-              <div class="card-row">
-                <button onclick="editarMateria('${m._id}', '${m.name}', '${m.curso || ''}')">✏️ Editar</button>
-                <button onclick="eliminarMateria('${m._id}')">🗑️ Eliminar</button>
-              </div>
-              <div class="card-row">
-                <button onclick="agregarTemas('${m._id}')">📚 Temas</button>
-                <button onclick="agregarRecursos('${m._id}')">🔗 Recursos</button>
-              </div>
-              <div class="card-row single">
-                <button onclick="verEstudiantes('${m._id}')">👥 Estudiantes</button>
-              </div>
+  function renderMaterias(materias) {
+    container.innerHTML = '';
+    materias.forEach(m => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-header">${m.name}</div>
+        <div class="card-content">
+          <p><strong>📘 Curso:</strong> ${m.curso || 'Sin curso'}</p>
+          <div class="card-buttons">
+            <div class="card-row">
+              <button onclick="editarMateria('${m._id}', '${m.name}', '${m.curso || ''}')">✏️ Editar</button>
+              <button onclick="eliminarMateria('${m._id}')">🗑️ Eliminar</button>
+            </div>
+            <div class="card-row">
+              <button onclick="agregarTemas('${m._id}')">📚 Temas</button>
+              <button onclick="agregarRecursos('${m._id}')">🔗 Recursos</button>
+            </div>
+            <div class="card-row single">
+              <button onclick="verEstudiantes('${m._id}')">👥 Estudiantes</button>
             </div>
           </div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    toggleOrdenBtn.addEventListener('click', () => {
-      if (sortableInstance) {
-        sortableInstance.destroy();
-        sortableInstance = null;
-        toggleOrdenBtn.textContent = 'Editar orden';
-      } else {
-        sortableInstance = Sortable.create(container, {
-          animation: 150,
-          ghostClass: 'drag-ghost'
-        });
-        toggleOrdenBtn.textContent = 'Finalizar edición';
-      }
+        </div>`;
+      container.appendChild(card);
     });
+  }
 
-    form.onsubmit = async function (e) {
-      e.preventDefault();
-      const materia = {
-        name: nombreInput.value,
-        curso: cursoInput.value
-      };
+  toggleOrdenBtn.addEventListener('click', () => {
+    if (sortableInstance) {
+      sortableInstance.destroy();
+      sortableInstance = null;
+      toggleOrdenBtn.textContent = 'Editar orden';
+    } else {
+      sortableInstance = Sortable.create(container, { animation: 150, ghostClass: 'drag-ghost' });
+      toggleOrdenBtn.textContent = 'Finalizar edición';
+    }
+  });
 
-      try {
-        let res;
-        if (editandoId) {
-          res = await fetch(`${API}/${editandoId}`, {
-            method: 'PUT',
-            headers: getAuthHeaders(),
-            body: JSON.stringify(materia)
-          });
-        } else {
-          res = await fetch(API, {
-            method: 'POST',
-            headers: getAuthHeaders(),
-            body: JSON.stringify(materia)
-          });
-        }
+  btnMostrarForm.onclick = () => {
+    form.style.display = 'flex';
+    btnMostrarForm.style.display = 'none';
+    form.reset();
+    editandoId = null;
+    submitBtn.textContent = 'Guardar Materia';
+  };
 
-        if (res.ok) {
-          form.reset();
-          editandoId = null;
-          submitBtn.textContent = 'Guardar Materia';
-          fetchMaterias();
-        } else {
-          const error = await res.json();
-          alert(error.message || 'Error al guardar materia');
-        }
-      } catch (error) {
-        alert('Error de conexión al guardar materia');
-        console.error(error);
-      }
+  cancelarBtn.onclick = () => {
+    form.style.display = 'none';
+    btnMostrarForm.style.display = 'inline-block';
+    form.reset();
+    editandoId = null;
+    submitBtn.textContent = 'Guardar Materia';
+  };
+
+  form.onsubmit = async function (e) {
+    e.preventDefault();
+    const materia = {
+      name: nombreInput.value,
+      curso: cursoInput.value
     };
 
-    function editarMateria(id, nombre, curso) {
-      nombreInput.value = nombre;
-      cursoInput.value = curso;
-      editandoId = id;
-      submitBtn.textContent = 'Actualizar Materia';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    async function eliminarMateria(id) {
-      if (!confirm('¿Estás seguro de eliminar esta materia?')) return;
-
-      try {
-        const res = await fetch(`${API}/${id}`, {
-          method: 'DELETE',
-          headers: getAuthHeaders()
+    try {
+      let res;
+      if (editandoId) {
+        res = await fetch(`${API}/${editandoId}`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(materia)
         });
-
-        if (res.ok) {
-          fetchMaterias();
-        } else {
-          const error = await res.json();
-          alert(error.message || 'No se pudo eliminar la materia');
-        }
-      } catch (error) {
-        alert('Error de conexión al eliminar materia');
-        console.error(error);
+      } else {
+        res = await fetch(API, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(materia)
+        });
       }
-    }
 
-    function verEstudiantes(materiaId) {
-      window.location.href = `ver-estudiantes.html?materiaId=${materiaId}`;
+      if (res.ok) {
+        form.style.display = 'none';
+        btnMostrarForm.style.display = 'inline-block';
+        form.reset();
+        editandoId = null;
+        submitBtn.textContent = 'Guardar Materia';
+        fetchMaterias();
+      } else {
+        const error = await res.json();
+        alert(error.message || 'Error al guardar materia');
+      }
+    } catch (error) {
+      alert('Error de conexión al guardar materia');
+      console.error(error);
     }
+  };
 
-    function agregarRecursos(materiaId) {
-      window.location.href = `agregar-recursos.html?materiaId=${materiaId}`;
+  function editarMateria(id, nombre, curso) {
+    nombreInput.value = nombre;
+    cursoInput.value = curso;
+    editandoId = id;
+    form.style.display = 'flex';
+    btnMostrarForm.style.display = 'none';
+    submitBtn.textContent = 'Actualizar Materia';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function eliminarMateria(id) {
+    if (!confirm('¿Estás seguro de eliminar esta materia?')) return;
+    try {
+      const res = await fetch(`${API}/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+      if (res.ok) {
+        fetchMaterias();
+      } else {
+        const error = await res.json();
+        alert(error.message || 'No se pudo eliminar la materia');
+      }
+    } catch (error) {
+      alert('Error de conexión al eliminar materia');
+      console.error(error);
     }
+  }
 
-    function agregarTemas(materiaId) {
-      window.location.href = `agregar-temas.html?materiaId=${materiaId}`;
-    }
+  function verEstudiantes(materiaId) {
+    window.location.href = `ver-estudiantes.html?materiaId=${materiaId}`;
+  }
 
-    fetchMaterias();
-  </script>
+  function agregarRecursos(materiaId) {
+    window.location.href = `agregar-recursos.html?materiaId=${materiaId}`;
+  }
+
+  function agregarTemas(materiaId) {
+    window.location.href = `agregar-temas.html?materiaId=${materiaId}`;
+  }
+
+  fetchMaterias();
+</script>
+
 </body>
 </html>

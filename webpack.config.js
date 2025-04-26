@@ -76,6 +76,14 @@ module.exports = {
           from: path.resolve(__dirname, 'web/materias-docentes.html'),
           to: 'materias-docentes.html', 
         },
+        {
+          from: path.resolve(__dirname, 'web/agregar-temas.html'),
+          to: 'agregar-temas.html', 
+        },
+        {
+          from: path.resolve(__dirname, 'web/notas-estudiantes.html'),
+          to: 'notas-estudiantes.html', 
+        },
       ],
     }),
   ],
