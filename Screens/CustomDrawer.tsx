@@ -45,7 +45,7 @@ const CustomDrawer: React.FC<Props> = ({ visible, onClose, navigation }) => {
           <View>
             {currentRouteName !== 'Home' && (
               <TouchableOpacity onPress={() => goToScreen('Home')}>
-                <Text style={styles.drawerItem}>🏠 Inicio</Text>
+                <Text style={styles.drawerItem}>🏠 Materias</Text>
               </TouchableOpacity>
             )}
             {currentRouteName !== 'Perfil' && (

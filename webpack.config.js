@@ -84,6 +84,10 @@ module.exports = {
           from: path.resolve(__dirname, 'web/notas-estudiantes.html'),
           to: 'notas-estudiantes.html', 
         },
+        {
+          from: path.resolve(__dirname, 'web/actividades.html'),
+          to: 'actividades.html',
+        },
       ],
     }),
   ],

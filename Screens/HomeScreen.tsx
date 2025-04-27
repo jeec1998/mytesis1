@@ -6,63 +6,36 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StyleSheet,
-  Platform,
   KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from './App';
 
 interface Refuerzo {
   id: string;
   Materia: string;
-  tema: string;
-  nota: number;
-  subtemasMal: string[];
+  descripcion: string;
 }
 
-const HomeScreen: React.FC = () => {
-  const [refuerzos, setRefuerzos] = useState<Refuerzo[]>([
-    {
-      id: '1',
-      Materia: 'Álgebra Lineal',
-      tema: 'Matrices y Determinantes',
-      nota: 2.5,
-      subtemasMal: ['Matrices', 'Determinantes'],
-    },
-    {
-      id: '2',
-      Materia: 'Matemáticas',
-      tema: 'Trigonometría',
-      nota: 5.8,
-      subtemasMal: ['Ángulos Notables'],
-    },
-    {
-      id: '3',
-      Materia: 'Matemáticas',
-      tema: 'Cálculo Diferencial',
-      nota: 8.2,
-      subtemasMal: ['Límites', 'Derivadas'],
-    },
+interface Props {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'HomeScreen'>;
+}
+
+const HomeScreen: React.FC<Props> = ({ navigation }) => {
+  const [refuerzos] = useState<Refuerzo[]>([
+    { id: '1', Materia: 'Álgebra Lineal', descripcion: 'Matrices y Determinantes' },
+    { id: '2', Materia: 'Trigonometría', descripcion: 'Ángulos Notables' },
+    { id: '3', Materia: 'Cálculo Diferencial', descripcion: 'Límites y Derivadas' },
   ]);
 
-  const verRefuerzo = (tema: string) => {
-    alert(`🔍 Ver detalles de: ${tema}`);
-  };
-
-  const marcarHecho = (tema: string) => {
-    alert(`✅ Refuerzo "${tema}" marcado como hecho`);
-  };
-
-  const getHeaderColor = (nota: number) => {
-    if (nota < 3) return styles.headerRojo;
-    if (nota < 7) return styles.headerAmarillo;
-    return styles.headerVerde;
+  const abrirActividades = (refuerzo: Refuerzo) => {
+    navigation.navigate('Actividades', { refuerzo });
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        style={styles.innerContainer}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
+      <KeyboardAvoidingView style={styles.innerContainer} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <FlatList
           data={refuerzos}
           keyExtractor={(item) => item.id}
@@ -70,23 +43,14 @@ const HomeScreen: React.FC = () => {
           columnWrapperStyle={styles.row}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
-            <View style={styles.card}>
-              <View style={[styles.cardHeader, getHeaderColor(item.nota)]}>
-                <Text style={styles.headerText}>{item.tema}</Text>
+            <TouchableOpacity style={styles.card} onPress={() => abrirActividades(item)}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.headerText}>{item.Materia}</Text>
               </View>
               <View style={styles.cardContent}>
-                <Text style={styles.infoText}><Text style={styles.bold}>Nota:</Text> {item.nota}</Text>
-                <Text style={styles.infoText}><Text style={styles.bold}>Subtemas:</Text> {item.subtemasMal.join(', ')}</Text>
+                <Text style={styles.descriptionText}>{item.descripcion}</Text>
               </View>
-              <View style={styles.cardButtons}>
-                <TouchableOpacity style={styles.button} onPress={() => verRefuerzo(item.tema)}>
-                  <Text style={styles.buttonText}>Ver</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => marcarHecho(item.tema)}>
-                  <Text style={styles.buttonText}>Hecho</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+            </TouchableOpacity>
           )}
         />
       </KeyboardAvoidingView>
@@ -97,93 +61,29 @@ const HomeScreen: React.FC = () => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#D6E6F2',
-  },
-  innerContainer: {
-    flex: 1,
-  },
-  listContent: {
-    padding: 20,
-    gap: 20,
-    justifyContent: 'center',
-  },
-  row: {
-    justifyContent: 'space-evenly',
-    marginBottom: 20,
-  },
+  container: { flex: 1, backgroundColor: '#D6E6F2' },
+  innerContainer: { flex: 1 },
+  listContent: { padding: 20, gap: 20, justifyContent: 'center' },
+  row: { justifyContent: 'space-evenly', marginBottom: 20 },
   card: {
     backgroundColor: 'white',
     width: 160,
-    height: 260,
+    height: 230,
     borderRadius: 14,
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    display: 'flex',
-    flexDirection: 'column',
     alignItems: 'center',
   },
   cardHeader: {
     width: '100%',
     padding: 12,
+    backgroundColor: '#2F80ED',
     alignItems: 'center',
   },
-  headerText: {
-    fontWeight: 'bold',
-    color: 'white',
-    fontSize: 15,
-    textAlign: 'center',
-  },
-  
-  cardContent: {
-    flex: 1,
-    padding: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  infoText: {
-    fontSize: 13,
-    color: '#444',
-    textAlign: 'center',
-    marginBottom: 6,
-  },
-  bold: {
-    fontWeight: 'bold',
-  },
-  cardButtons: {
-    flexDirection: 'row',
-    padding: 8,
-    gap: 6,
-    backgroundColor: '#f0f4ff',
-    width: '100%',
-    justifyContent: 'center',
-    borderTopColor: '#ccc',
-    borderTopWidth: 1,
-  },
-  button: {
-    backgroundColor: '#4A90E2',
-    borderRadius: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    flex: 1,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 13,
-    fontWeight: 'bold',
-  },
-  headerRojo: {
-    backgroundColor: '#e53935',
-  },
-  headerAmarillo: {
-    backgroundColor: '#fbc02d',
-  },
-  headerVerde: {
-    backgroundColor: '#43a047',
-  },
+  headerText: { fontWeight: 'bold', color: 'white', fontSize: 15, textAlign: 'center' },
+  cardContent: { flex: 1, padding: 10, justifyContent: 'center', alignItems: 'center' },
+  descriptionText: { fontSize: 13, color: '#444', textAlign: 'center' },
 });

@@ -113,6 +113,10 @@
     .header-verde {
       background: linear-gradient(135deg, #4caf50, #43a047);
     }
+    .header-azul {
+  background: linear-gradient(135deg, #4A90E2, #357ABD);
+  color: white;
+}
 
     .card-content {
       flex: 1;
@@ -256,7 +260,7 @@
   <header>
     <div class="left-section">
       <button id="menu-btn" class="menu-icon">☰</button>
-      <span class="header-title">Refuerzos Académicos</span>
+      <span class="header-title">Mataerias</span>
     </div>
     <div class="user-section">
       <span>👤</span> <span id="nombre-usuario"></span>
@@ -268,7 +272,7 @@
   <div id="drawer-overlay"></div>
   <div id="drawer">
     <div>
-      <div class="drawer-item" onclick="navigateTo('home-alumno.html')">🏠 Inicio</div>
+      <div class="drawer-item" onclick="navigateTo('home-alumno.html')">🏠 Materias</div>
       <div class="drawer-item" onclick="navigateTo('perfil.html')">👤 Perfil</div>
 
     </div>
@@ -284,51 +288,39 @@
   </div>
 
   <script>
-    const refuerzos = [
-      { tema: 'Álgebra Lineal', nota: 2.5, subtemasMal: ['Matrices', 'Determinantes'] },
-      { tema: 'Trigonometría', nota: 5.8, subtemasMal: ['Ángulos Notables'] },
-      { tema: 'Cálculo Diferencial', nota: 8.2, subtemasMal: ['Límites', 'Derivadas'] }
-    ];
+const refuerzos = [
+  { materia: 'Álgebra Lineal', descripcion: 'Refuerza conceptos de matrices y determinantes.' },
+  { materia: 'Trigonometría', descripcion: 'Mejora en el manejo de ángulos notables y razones trigonométricas.' },
+  { materia: 'Cálculo Diferencial', descripcion: 'Fortalece tus habilidades en límites y derivadas.' }
+];
 
-    function cargarRefuerzos() {
-      const container = document.getElementById('refuerzos-container');
-      container.innerHTML = '';
+function cargarRefuerzos() {
+  const container = document.getElementById('refuerzos-container');
+  container.innerHTML = '';
 
-      refuerzos.forEach(refuerzo => {
-        const card = document.createElement('div');
-        card.className = 'card';
+  refuerzos.forEach(refuerzo => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.onclick = () => abrirActividades(refuerzo.materia);
 
-        const header = document.createElement('div');
-        header.className = 'card-header';
-        header.textContent = refuerzo.tema;
+    const header = document.createElement('div');
+    header.className = 'card-header header-azul';
+    header.textContent = refuerzo.materia;
 
-        if (refuerzo.nota < 3) header.classList.add('header-rojo');
-        else if (refuerzo.nota < 7) header.classList.add('header-amarillo');
-        else header.classList.add('header-verde');
+    const content = document.createElement('div');
+    content.className = 'card-content';
+    content.innerHTML = `<p>${refuerzo.descripcion}</p>`;
 
-        const content = document.createElement('div');
-        content.className = 'card-content';
-        content.innerHTML = `
-      <p><strong>Nota:</strong> ${refuerzo.nota}</p>
-      <p><strong>Subtemas:</strong> ${refuerzo.subtemasMal.join(', ')}</p>
-    `;
+    card.appendChild(header);
+    card.appendChild(content);
+    container.appendChild(card);
+  });
+}
 
-        const buttons = document.createElement('div');
-        buttons.className = 'card-buttons';
-        buttons.innerHTML = `
-      <button onclick="verRefuerzo('${refuerzo.tema}')">Ver</button>
-      <button onclick="marcarHecho('${refuerzo.tema}')">Hecho</button>
-    `;
-
-        card.appendChild(header);
-        card.appendChild(content);
-        card.appendChild(buttons);
-        container.appendChild(card);
-      });
-    }
-
-    function verRefuerzo(tema) { alert(`🔍 Ver detalles de: ${tema}`); }
-    function marcarHecho(tema) { alert(`✅ Refuerzo "${tema}" marcado como hecho`); }
+function abrirActividades(materia) {
+  // Puedes enviar el nombre de la materia como parámetro si quieres
+  window.location.href = `actividades.html?materia=${encodeURIComponent(materia)}`;
+}
 
     const drawer = document.getElementById('drawer');
     const overlay = document.getElementById('drawer-overlay');

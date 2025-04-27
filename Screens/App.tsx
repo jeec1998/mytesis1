@@ -14,12 +14,14 @@ import ProfileScreen from './ProfileScreen';
 import NotificacionesScreen from './NotificacionesScreen';
 import CustomDrawer from './CustomDrawer';
 import LoginScreen from './LoginScreen';
+import ActividadesScreen from './ActividadesScreen'; 
 
 export type RootStackParamList = {
   Login: undefined;
   HomeScreen: undefined; 
   Perfil: undefined;
   Notificaciones: undefined;
+  Actividades: { refuerzo: { id: string; Materia: string; descripcion: string } };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -39,24 +41,24 @@ const App: React.FC = () => {
           </Stack.Screen>
         ) : (
           <>
-            <Stack.Screen name="HomeScreen" options={{
-              title: 'Inicio',
-              headerStyle: {
-                backgroundColor: '#2F80ED', 
-              },
-              headerTintColor: 'white', 
-              headerTitleStyle: {
-               
-              },
-              headerLeft: () => (
-                <TouchableOpacity
-                  onPress={() => setMenuVisible(true)}
-                  style={{ paddingLeft: 15 }}
-                >
-                  <Text style={{ fontSize: 30 }}>☰</Text>
-                </TouchableOpacity>
-              ),
-            }}>
+            <Stack.Screen 
+              name="HomeScreen" 
+              options={{
+                title: 'Inicio',
+                headerStyle: {
+                  backgroundColor: '#2F80ED', 
+                },
+                headerTintColor: 'white', 
+                headerLeft: () => (
+                  <TouchableOpacity
+                    onPress={() => setMenuVisible(true)}
+                    style={{ paddingLeft: 15 }}
+                  >
+                    <Text style={{ fontSize: 30, color: 'white' }}>☰</Text>
+                  </TouchableOpacity>
+                ),
+              }}
+            >
               {(props) => (
                 <>
                   <CustomDrawer
@@ -75,7 +77,20 @@ const App: React.FC = () => {
               )}
             </Stack.Screen>
 
+            <Stack.Screen
+              name="Actividades"
+              component={ActividadesScreen}
+              options={{
+                title: 'Refuerzo',
+                headerStyle: {
+                  backgroundColor: '#2F80ED',
+                },
+                headerTintColor: 'white',
+              }}
+            />
+
             <Stack.Screen name="Notificaciones" component={NotificacionesScreen} />
+
           </>
         )}
       </Stack.Navigator>
