@@ -23,6 +23,7 @@
       text-decoration: none;
       font-weight: bold;
       font-size: 18px;
+      cursor: pointer;
     }
 
     main {
@@ -76,10 +77,11 @@
     }
   </style>
 </head>
+
 <body>
 
   <nav>
-    <a href="home.html">← Volver al inicio</a>
+    <a href="javascript:history.back()">← Volver</a> <!-- 🔥 Modificado aquí -->
   </nav>
 
   <main>
@@ -104,17 +106,19 @@
   </main>
 
   <script>
-    const API_UPLOAD = 'http://localhost:3000/recursos'; // Ajusta esto a tu endpoint real
+    const API_UPLOAD = 'http://localhost:3000/recursos'; // Cambia esto a tu API real
+
     const params = new URLSearchParams(window.location.search);
     const materiaId = params.get('materiaId');
 
     if (!materiaId) {
-      alert("No se proporcionó un ID de materia");
+      alert("Falta el ID de materia.");
       window.location.href = "home.html";
     }
 
     document.getElementById('materiaId').value = materiaId;
 
+    // Subir recurso
     document.getElementById('recursoForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -142,6 +146,9 @@
         console.error(err);
       }
     });
+
+    // 🔥 Ya no necesitas script para el botón de volver, ahora es directo con history.back()
   </script>
+
 </body>
 </html>

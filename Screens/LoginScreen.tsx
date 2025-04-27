@@ -25,7 +25,7 @@ const LoginScreen: React.FC<Props> = ({ onLogin }) => {
 
   const handleLogin = async () => {
     try {
-      const res = await fetch(`${API}/users/login`, {
+      const res = await fetch(`https://77ca-2800-bf0-240f-1059-94b6-7a6-2a7e-4100.ngrok-free.app/users/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombreUsuario, password }),
@@ -38,7 +38,7 @@ const LoginScreen: React.FC<Props> = ({ onLogin }) => {
         if (Platform.OS === 'web') {
           window.location.href = '/home.html';
         } else {
-          onLogin(); // ✅ esto permite cambiar el estado en App.tsx
+          onLogin(); 
         }
       } else {
         const data = await res.json();

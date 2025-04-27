@@ -17,7 +17,7 @@ import LoginScreen from './LoginScreen';
 
 export type RootStackParamList = {
   Login: undefined;
-  HomeScreen: undefined; // ✅ debe llamarse exactamente igual
+  HomeScreen: undefined; 
   Perfil: undefined;
   Notificaciones: undefined;
 };
@@ -41,6 +41,13 @@ const App: React.FC = () => {
           <>
             <Stack.Screen name="HomeScreen" options={{
               title: 'Inicio',
+              headerStyle: {
+                backgroundColor: '#2F80ED', 
+              },
+              headerTintColor: 'white', 
+              headerTitleStyle: {
+               
+              },
               headerLeft: () => (
                 <TouchableOpacity
                   onPress={() => setMenuVisible(true)}

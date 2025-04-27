@@ -42,7 +42,7 @@ const ProfileScreen: React.FC<Props> = ({ navigation, onLogout }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      
+
 
       const data = await res.json();
       setUser({

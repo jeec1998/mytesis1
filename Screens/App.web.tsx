@@ -45,19 +45,19 @@ const App = () => {
         const data = await res.json();
         localStorage.setItem('accessToken', data.accessToken);
 
-        // Decodifica el token y extrae los datos
+
         const payload = decodeToken(data.accessToken);
         if (!payload) {
           setError('Token inválido');
           return;
         }
 
-        // Guarda datos útiles
+
         localStorage.setItem('userId', payload._id);
         localStorage.setItem('userEmail', payload.email);
         localStorage.setItem('userRole', payload.role);
 
-        // Redirige según el rol
+
         if (payload.role === 'admin') {
           window.location.href = '/admin.html';
         } else if (payload.role === 'docente') {

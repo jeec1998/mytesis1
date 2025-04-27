@@ -1,264 +1,370 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Chat IA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Refuerzos Académicos</title>
   <style>
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0; padding: 0; height: 100%;
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
       font-family: 'Segoe UI', sans-serif;
       background-color: #D6E6F2;
-      display: flex; flex-direction: column;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     header {
       background-color: #2F80ED;
-      color: white; padding: 12px 20px;
+      color: white;
+      padding: 12px 20px;
       font-size: 18px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    header .left-section { display: flex; align-items: center; gap: 10px; }
-    header .user-section { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 16px; }
-    #nombre-usuario { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
-    #menu-btn { font-size: 22px; background: none; border: none; color: white; cursor: pointer; }
-
-    #chat-container {
-      flex: 1;
-      display: flex; flex-direction: column;
+      display: flex;
+      align-items: center;
       justify-content: space-between;
-      padding: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
-    #messages {
-      flex: 1; overflow-y: auto;
-      display: flex; flex-direction: column;
-      gap: 10px; padding-right: 8px;
-    }
-    .message {
-      max-width: 75%; padding: 12px 16px;
-      border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-      font-size: 15px; line-height: 1.4; word-wrap: break-word;
-    }
-    .user { align-self: flex-end; background-color: #A7C7E7; }
-    .bot { align-self: flex-start; background-color: #EDF4FB; }
-    #input-area {
-      display: flex; gap: 10px;
-      padding: 12px; border-top: 1px solid #ccc;
-      background-color: #E5F0FF;
-    }
-    #input {
-      flex: 1; padding: 10px 15px;
-      border-radius: 20px; border: none;
-      background-color: #D0E4FF; font-size: 16px;
-    }
-    #send {
-      background-color: #2F80ED; color: white;
-      font-weight: bold; padding: 10px 20px;
-      border-radius: 20px; border: none; cursor: pointer;
-    }
-    #send:hover { background-color: #1f68c4; }
 
-    /* 🔥 Drawer */
+    .left-section {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .menu-icon {
+      font-size: 26px;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: background-color 0.2s;
+    }
+
+    .menu-icon:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .header-title {
+      font-weight: bold;
+      font-size: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .user-section {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    main {
+      flex: 1;
+      padding: 30px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      overflow-y: auto;
+    }
+
+    .card {
+      width: 200px;
+      height: 280px;
+      border-radius: 14px;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card-header {
+      padding: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      color: white;
+    }
+
+    .header-rojo {
+      background: linear-gradient(135deg, #f44336, #e53935);
+    }
+
+    .header-amarillo {
+      background: linear-gradient(135deg, #ffeb3b, #fbc02d);
+      color: #333;
+    }
+
+    .header-verde {
+      background: linear-gradient(135deg, #4caf50, #43a047);
+    }
+
+    .card-content {
+      flex: 1;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      font-size: 13px;
+      color: #444;
+    }
+
+    .card-content p {
+      margin: 6px 0;
+    }
+
+    .card-buttons {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      padding: 8px;
+      background-color: #f0f4ff;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .card-buttons button {
+      flex: 1 1 80px;
+      background-color: #4A90E2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .card-buttons button:hover {
+      background-color: #357ABD;
+    }
+
+    /* Drawer y Modal mismo que tenías */
     #drawer {
-      position: fixed; top: 0; left: -260px;
-      width: 260px; height: 100%;
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 260px;
+      height: 100%;
       background-color: #D6E6F2;
       padding: 50px 20px 30px;
-      box-shadow: 4px 0 6px rgba(0,0,0,0.1);
+      box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
       transition: left 0.3s ease;
       z-index: 1001;
-      display: flex; flex-direction: column;
+      display: flex;
+      flex-direction: column;
       justify-content: space-between;
     }
+
     .drawer-item {
       font-size: 18px;
       padding: 15px 0;
       border-bottom: 1px solid #A7C7E7;
       color: #2F4F6E;
-      cursor: pointer; font-weight: 500;
+      cursor: pointer;
+      font-weight: 500;
     }
-    .logout { color: #C62828; border-bottom-color: #C62828; }
+
+    .logout {
+      color: #C62828;
+      border-bottom-color: #C62828;
+    }
 
     #drawer-overlay {
-      position: fixed; top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.3);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.3);
       display: none;
       z-index: 1000;
     }
-    #drawer-overlay.show { display: block; }
-    #drawer.show { left: 0; }
 
-    /* 🔥 Modal Confirmación */
+    #drawer-overlay.show {
+      display: block;
+    }
+
+    #drawer.show {
+      left: 0;
+    }
+
     #modal-confirm {
-      position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: none; align-items: center; justify-content: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
       z-index: 2000;
     }
+
     #modal-confirm-content {
-      background: white; padding: 30px;
-      border-radius: 10px; text-align: center;
-      font-size: 18px; color: #333;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 18px;
+      color: #333;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       max-width: 300px;
     }
-    #modal-confirm-content button {
-      margin-top: 15px; margin-right: 10px;
-      padding: 8px 16px; border: none;
-      border-radius: 6px; font-weight: bold;
-      cursor: pointer; font-size: 14px;
-    }
-    #confirm-yes { background-color: #4CAF50; color: white; }
-    #confirm-no { background-color: #F44336; color: white; }
 
-    @media (max-width: 600px) {
-      header { font-size: 16px; padding: 10px 15px; }
-      #input-area { flex-direction: column; }
-      #send { width: 100%; }
-      .message { max-width: 90%; font-size: 14px; }
+    #modal-confirm-content button {
+      margin-top: 15px;
+      margin-right: 10px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #confirm-yes {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    #confirm-no {
+      background-color: #F44336;
+      color: white;
     }
   </style>
 </head>
+
 <body>
+  <header>
+    <div class="left-section">
+      <button id="menu-btn" class="menu-icon">☰</button>
+      <span class="header-title">Refuerzos Académicos</span>
+    </div>
+    <div class="user-section">
+      <span>👤</span> <span id="nombre-usuario"></span>
+    </div>
+  </header>
 
-<header>
-  <div class="left-section">
-    <button id="menu-btn">☰</button>
-    Chat IA
+  <main id="refuerzos-container"></main>
+
+  <div id="drawer-overlay"></div>
+  <div id="drawer">
+    <div>
+      <div class="drawer-item" onclick="navigateTo('home-alumno.html')">🏠 Inicio</div>
+      <div class="drawer-item" onclick="navigateTo('perfil.html')">👤 Perfil</div>
+
+    </div>
+    <div class="drawer-item logout" onclick="logout()">📤 Cerrar sesión</div>
   </div>
-  <div class="user-section">
-    <span>👤</span>
-    <span id="nombre-usuario"></span>
+
+  <div id="modal-confirm">
+    <div id="modal-confirm-content">
+      ¿Deseas cerrar sesión?<br>
+      <button id="confirm-yes">Sí</button>
+      <button id="confirm-no">No</button>
+    </div>
   </div>
-</header>
 
-<div id="chat-container">
-  <div id="messages">
-    <div id="mensaje-bienvenida" class="message bot"></div>
-  </div>
-  <div id="input-area">
-    <input type="text" id="input" placeholder="Escribe tu mensaje..." />
-    <button id="send">Enviar</button>
-  </div>
-</div>
+  <script>
+    const refuerzos = [
+      { tema: 'Álgebra Lineal', nota: 2.5, subtemasMal: ['Matrices', 'Determinantes'] },
+      { tema: 'Trigonometría', nota: 5.8, subtemasMal: ['Ángulos Notables'] },
+      { tema: 'Cálculo Diferencial', nota: 8.2, subtemasMal: ['Límites', 'Derivadas'] }
+    ];
 
-<div id="drawer-overlay"></div>
-<div id="drawer">
-  <div>
-    <div class="drawer-item" onclick="navigateTo('home-alumno.html')">🏠 Inicio</div>
-    <div class="drawer-item" onclick="navigateTo('perfil.html')">👤 Perfil</div>
-    <div class="drawer-item" onclick="navigateTo('notificaciones.html')">🔔 Notificaciones</div>
-  </div>
-  <div class="drawer-item logout" onclick="logout()">📤 Cerrar sesión</div>
-</div>
+    function cargarRefuerzos() {
+      const container = document.getElementById('refuerzos-container');
+      container.innerHTML = '';
 
-<
-<div id="modal-confirm">
-  <div id="modal-confirm-content">
-    ¿Deseas cerrar sesión?
-    <br>
-    <button id="confirm-yes">Sí</button>
-    <button id="confirm-no">No</button>
-  </div>
-</div>
+      refuerzos.forEach(refuerzo => {
+        const card = document.createElement('div');
+        card.className = 'card';
 
-<script>
-const input = document.getElementById('input');
-const sendBtn = document.getElementById('send');
-const messagesContainer = document.getElementById('messages');
-const drawer = document.getElementById('drawer');
-const overlay = document.getElementById('drawer-overlay');
-const menuBtn = document.getElementById('menu-btn');
-const modalConfirm = document.getElementById('modal-confirm');
-const confirmYes = document.getElementById('confirm-yes');
-const confirmNo = document.getElementById('confirm-no');
+        const header = document.createElement('div');
+        header.className = 'card-header';
+        header.textContent = refuerzo.tema;
 
-sendBtn.addEventListener('click', () => {
-  const text = input.value.trim();
-  if (!text) return;
-  appendMessage(text, 'user');
-  input.value = '';
-  setTimeout(() => {
-    appendMessage('Estoy procesando tu mensaje... 🤔', 'bot');
-  }, 500);
-});
+        if (refuerzo.nota < 3) header.classList.add('header-rojo');
+        else if (refuerzo.nota < 7) header.classList.add('header-amarillo');
+        else header.classList.add('header-verde');
 
-input.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') sendBtn.click();
-});
+        const content = document.createElement('div');
+        content.className = 'card-content';
+        content.innerHTML = `
+      <p><strong>Nota:</strong> ${refuerzo.nota}</p>
+      <p><strong>Subtemas:</strong> ${refuerzo.subtemasMal.join(', ')}</p>
+    `;
 
-function appendMessage(text, from) {
-  const div = document.createElement('div');
-  div.className = `message ${from}`;
-  div.innerText = text;
-  messagesContainer.appendChild(div);
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
+        const buttons = document.createElement('div');
+        buttons.className = 'card-buttons';
+        buttons.innerHTML = `
+      <button onclick="verRefuerzo('${refuerzo.tema}')">Ver</button>
+      <button onclick="marcarHecho('${refuerzo.tema}')">Hecho</button>
+    `;
 
-menuBtn.onclick = () => {
-  drawer.classList.add('show');
-  overlay.classList.add('show');
-};
-overlay.onclick = () => {
-  drawer.classList.remove('show');
-  overlay.classList.remove('show');
-};
+        card.appendChild(header);
+        card.appendChild(content);
+        card.appendChild(buttons);
+        container.appendChild(card);
+      });
+    }
 
-function navigateTo(path) {
-  window.location.href = path;
-}
+    function verRefuerzo(tema) { alert(`🔍 Ver detalles de: ${tema}`); }
+    function marcarHecho(tema) { alert(`✅ Refuerzo "${tema}" marcado como hecho`); }
 
-function logout() {
-  localStorage.clear();
-  window.location.href = 'index.html';
-}
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('drawer-overlay');
+    const menuBtn = document.getElementById('menu-btn');
+    menuBtn.onclick = () => { drawer.classList.add('show'); overlay.classList.add('show'); };
+    overlay.onclick = () => { drawer.classList.remove('show'); overlay.classList.remove('show'); };
+    function navigateTo(path) { drawer.classList.remove('show'); overlay.classList.remove('show'); setTimeout(() => { window.location.href = path; }, 300); }
+    function logout() { localStorage.clear(); window.location.href = 'index.html'; }
 
-async function cargarPerfil() {
-  const token = localStorage.getItem('accessToken');
-  if (!token) {
-    window.location.href = 'index.html';
-    return;
-  }
-  try {
-    const res = await fetch('http://localhost:3000/users/perfil', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+    const modalConfirm = document.getElementById('modal-confirm');
+    const confirmYes = document.getElementById('confirm-yes');
+    const confirmNo = document.getElementById('confirm-no');
+    window.addEventListener('popstate', () => { modalConfirm.style.display = 'flex'; });
+    confirmYes.onclick = () => { localStorage.clear(); window.location.href = 'index.html'; };
+    confirmNo.onclick = () => { modalConfirm.style.display = 'none'; history.pushState(null, '', location.href); };
+    history.pushState(null, '', location.href);
+
+    async function cargarPerfil() {
+      const token = localStorage.getItem('accessToken');
+      if (!token) { window.location.href = 'index.html'; return; }
+      try {
+        const res = await fetch('http://localhost:3000/users/perfil', {
+          method: 'GET',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const { usuario } = await res.json();
+        document.getElementById('nombre-usuario').textContent = usuario.nombreUsuario || 'Usuario';
+      } catch (error) {
+        console.error(error);
+        window.location.href = 'index.html';
       }
-    });
-    if (!res.ok) throw new Error('Error al obtener el perfil');
-    const { usuario } = await res.json();
-    const nombre = usuario.nombreUsuario || usuario.nombre || 'Usuario';
-    document.getElementById('nombre-usuario').textContent = nombre;
-    document.getElementById('mensaje-bienvenida').innerText = `Hola ${nombre}, soy tu IA 🤖 ¿En qué te puedo ayudar?`;
-  } catch (error) {
-    console.error(error);
-    window.location.href = 'index.html';
-  }
-}
-cargarPerfil();
-
-
-window.addEventListener('popstate', function (event) {
-  mostrarModalConfirmacion();
-});
-function mostrarModalConfirmacion() {
-  modalConfirm.style.display = 'flex';
-}
-confirmYes.onclick = function() {
-  localStorage.clear();
-  window.location.href = 'index.html';
-};
-confirmNo.onclick = function() {
-  modalConfirm.style.display = 'none';
-  history.pushState(null, '', location.href);
-};
-history.pushState(null, '', location.href);
-</script>
+    }
+    cargarPerfil();
+    cargarRefuerzos();
+  </script>
 
 </body>
+
 </html>

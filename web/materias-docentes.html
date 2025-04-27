@@ -251,9 +251,16 @@
     }
 
     function getDocenteIdFromURL() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('docenteId');
-    }
+  const params = new URLSearchParams(window.location.search);
+  let docenteId = params.get('docenteId');
+
+  if (!docenteId) {
+    docenteId = localStorage.getItem('userId');
+  }
+
+  return docenteId;
+}
+
 
     function mostrarNombreDocente() {
       const params = new URLSearchParams(window.location.search);
@@ -388,8 +395,25 @@
     }
 
     function agregarRecursos(materiaId) {
-      window.location.href = `agregar-recursos.html?materiaId=${materiaId}`;
-    }
+  const params = new URLSearchParams(window.location.search);
+  let docenteId = params.get('docenteId');
+  let nombre = params.get('nombre');
+
+  if (!docenteId || !nombre) {
+    // 🔥 Si no existen en URL, usamos el LocalStorage
+    docenteId = localStorage.getItem('userId');
+    nombre = localStorage.getItem('userEmail'); // o 'userNombre' si guardas nombre real
+  }
+
+  if (docenteId && nombre) {
+    window.location.href = `agregar-recursos.html?materiaId=${materiaId}&docenteId=${docenteId}&nombre=${encodeURIComponent(nombre)}`;
+  } else {
+    alert('No se encontró información del docente.');
+    window.location.href = 'home.html'; // 🔥 Mejor regresar al home del docente
+  }
+}
+
+
 
     function verEstudiantes(materiaId) {
       const params = new URLSearchParams(window.location.search);

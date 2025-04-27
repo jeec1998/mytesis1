@@ -2,50 +2,59 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   FlatList,
   TouchableOpacity,
-  StyleSheet,
   SafeAreaView,
-  KeyboardAvoidingView,
+  StyleSheet,
   Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
 
-interface Message {
+interface Refuerzo {
   id: string;
-  text: string;
-  from: 'user' | 'bot';
+  Materia: string;
+  tema: string;
+  nota: number;
+  subtemasMal: string[];
 }
 
 const HomeScreen: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([
+  const [refuerzos, setRefuerzos] = useState<Refuerzo[]>([
     {
       id: '1',
-      text: 'Hola, soy tu IA 🤖 ¿En qué te puedo ayudar?',
-      from: 'bot',
+      Materia: 'Álgebra Lineal',
+      tema: 'Matrices y Determinantes',
+      nota: 2.5,
+      subtemasMal: ['Matrices', 'Determinantes'],
+    },
+    {
+      id: '2',
+      Materia: 'Matemáticas',
+      tema: 'Trigonometría',
+      nota: 5.8,
+      subtemasMal: ['Ángulos Notables'],
+    },
+    {
+      id: '3',
+      Materia: 'Matemáticas',
+      tema: 'Cálculo Diferencial',
+      nota: 8.2,
+      subtemasMal: ['Límites', 'Derivadas'],
     },
   ]);
-  const [input, setInput] = useState('');
 
-  const sendMessage = () => {
-    if (input.trim()) {
-      const userMsg: Message = {
-        id: Date.now().toString(),
-        text: input,
-        from: 'user',
-      };
-      setMessages((prev) => [...prev, userMsg]);
-      setInput('');
+  const verRefuerzo = (tema: string) => {
+    alert(`🔍 Ver detalles de: ${tema}`);
+  };
 
-      setTimeout(() => {
-        const botReply: Message = {
-          id: (Date.now() + 1).toString(),
-          text: 'Estoy procesando tu mensaje... 🤔',
-          from: 'bot',
-        };
-        setMessages((prev) => [...prev, botReply]);
-      }, 500);
-    }
+  const marcarHecho = (tema: string) => {
+    alert(`✅ Refuerzo "${tema}" marcado como hecho`);
+  };
+
+  const getHeaderColor = (nota: number) => {
+    if (nota < 3) return styles.headerRojo;
+    if (nota < 7) return styles.headerAmarillo;
+    return styles.headerVerde;
   };
 
   return (
@@ -55,32 +64,31 @@ const HomeScreen: React.FC = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <FlatList
-          data={messages}
+          data={refuerzos}
           keyExtractor={(item) => item.id}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
-            <View
-              style={[
-                styles.messageBubble,
-                item.from === 'user' ? styles.userBubble : styles.botBubble,
-              ]}
-            >
-              <Text style={styles.messageText}>{item.text}</Text>
+            <View style={styles.card}>
+              <View style={[styles.cardHeader, getHeaderColor(item.nota)]}>
+                <Text style={styles.headerText}>{item.tema}</Text>
+              </View>
+              <View style={styles.cardContent}>
+                <Text style={styles.infoText}><Text style={styles.bold}>Nota:</Text> {item.nota}</Text>
+                <Text style={styles.infoText}><Text style={styles.bold}>Subtemas:</Text> {item.subtemasMal.join(', ')}</Text>
+              </View>
+              <View style={styles.cardButtons}>
+                <TouchableOpacity style={styles.button} onPress={() => verRefuerzo(item.tema)}>
+                  <Text style={styles.buttonText}>Ver</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={() => marcarHecho(item.tema)}>
+                  <Text style={styles.buttonText}>Hecho</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           )}
-          contentContainerStyle={styles.messageList}
         />
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.textInput}
-            placeholder="Escribe tu mensaje..."
-            value={input}
-            onChangeText={setInput}
-            placeholderTextColor="#555"
-          />
-          <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
-            <Text style={styles.sendText}>Enviar</Text>
-          </TouchableOpacity>
-        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -91,61 +99,91 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#D6E6F2', // azul predominante
+    backgroundColor: '#D6E6F2',
   },
   innerContainer: {
     flex: 1,
   },
-  messageList: {
-    padding: 12,
-  },
-  messageBubble: {
-    padding: 12,
-    borderRadius: 16,
-    marginBottom: 10,
-    maxWidth: '80%',
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
-  },
-  userBubble: {
-    alignSelf: 'flex-end',
-    backgroundColor: '#A7C7E7', // azul usuario
-  },
-  botBubble: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#EDF4FB', // azul claro IA
-  },
-  messageText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    padding: 12,
-    borderTopColor: '#bbb',
-    borderTopWidth: 1,
-    backgroundColor: '#E5F0FF',
-  },
-  textInput: {
-    flex: 1,
-    backgroundColor: '#D0E4FF', // input más azul
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    marginRight: 10,
-    fontSize: 16,
-  },
-  sendButton: {
-    backgroundColor: '#2F80ED', // azul profundo botón
-    borderRadius: 20,
-    paddingHorizontal: 20,
+  listContent: {
+    padding: 20,
+    gap: 20,
     justifyContent: 'center',
   },
-  sendText: {
-    color: '#fff',
+  row: {
+    justifyContent: 'space-evenly',
+    marginBottom: 20,
+  },
+  card: {
+    backgroundColor: 'white',
+    width: 160,
+    height: 260,
+    borderRadius: 14,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  cardHeader: {
+    width: '100%',
+    padding: 12,
+    alignItems: 'center',
+  },
+  headerText: {
     fontWeight: 'bold',
-    fontSize: 16,
+    color: 'white',
+    fontSize: 15,
+    textAlign: 'center',
+  },
+  
+  cardContent: {
+    flex: 1,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  infoText: {
+    fontSize: 13,
+    color: '#444',
+    textAlign: 'center',
+    marginBottom: 6,
+  },
+  bold: {
+    fontWeight: 'bold',
+  },
+  cardButtons: {
+    flexDirection: 'row',
+    padding: 8,
+    gap: 6,
+    backgroundColor: '#f0f4ff',
+    width: '100%',
+    justifyContent: 'center',
+    borderTopColor: '#ccc',
+    borderTopWidth: 1,
+  },
+  button: {
+    backgroundColor: '#4A90E2',
+    borderRadius: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    flex: 1,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 13,
+    fontWeight: 'bold',
+  },
+  headerRojo: {
+    backgroundColor: '#e53935',
+  },
+  headerAmarillo: {
+    backgroundColor: '#fbc02d',
+  },
+  headerVerde: {
+    backgroundColor: '#43a047',
   },
 });
