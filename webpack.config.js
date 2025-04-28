@@ -81,8 +81,8 @@ module.exports = {
           to: 'agregar-temas.html', 
         },
         {
-          from: path.resolve(__dirname, 'web/notas-estudiantes.html'),
-          to: 'notas-estudiantes.html', 
+          from: path.resolve(__dirname, 'web/refuerzo-estudiantes.html'),
+          to: 'refuerzo-estudiantes.html', 
         },
         {
           from: path.resolve(__dirname, 'web/actividades.html'),
