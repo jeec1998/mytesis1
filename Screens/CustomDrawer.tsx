@@ -53,7 +53,7 @@ const CustomDrawer: React.FC<Props> = ({ visible, onClose, navigation }) => {
                 <Text style={styles.drawerItem}>👤 Perfil</Text>
               </TouchableOpacity>
             )}
-          
+
           </View>
           <TouchableOpacity>
             <Text style={[styles.drawerItem, styles.logout]}>📤 Cerrar sesión</Text>

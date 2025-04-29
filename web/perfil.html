@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Perfil</title>
   <style>
     body {
@@ -31,7 +32,7 @@
       background: #fff;
       padding: 24px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     h2 {
@@ -69,6 +70,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <nav>
@@ -90,7 +92,7 @@
 
       <label>Rol</label>
       <input type="text" id="role" readonly required>
-      
+
 
       <button type="submit">Actualizar Perfil</button>
       <button type="button" onclick="cerrarSesion()">Cerrar sesión</button>
@@ -124,7 +126,7 @@
     function getInicioPorRol(role) {
       if (role === 'admin') return 'admin.html';
       if (role === 'alumno') return 'home-alumno.html';
-      return 'home.html'; 
+      return 'home.html';
     }
 
     async function cargarPerfil() {
@@ -181,7 +183,7 @@
       const role = getRoleFromToken();
       localStorage.removeItem('accessToken');
       const destino = getInicioPorRol(role);
-      window.location.href = 'index.html'; 
+      window.location.href = 'index.html';
     }
 
     // Redirigir "Volver al inicio" dinámicamente
@@ -192,4 +194,5 @@
     cargarPerfil();
   </script>
 </body>
+
 </html>

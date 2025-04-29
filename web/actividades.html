@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Actividades de Refuerzo</title>
   <style>
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0; padding: 0;
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
       font-family: 'Segoe UI', sans-serif;
       background-color: #D6E6F2;
       height: 100%;
@@ -42,8 +48,9 @@
       color: white;
       transition: background-color 0.2s;
     }
+
     .menu-icon:hover {
-      background-color: rgba(255,255,255,0.2);
+      background-color: rgba(255, 255, 255, 0.2);
     }
 
     .header-title {
@@ -66,10 +73,10 @@
 
     .card {
       width: 220px;
-        height: 280px;
+      height: 280px;
       background: white;
       border-radius: 14px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -91,10 +98,12 @@
     .header-rojo {
       background: linear-gradient(135deg, #f44336, #e53935);
     }
+
     .header-amarillo {
       background: linear-gradient(135deg, #ffeb3b, #fbc02d);
       color: #333;
     }
+
     .header-verde {
       background: linear-gradient(135deg, #4caf50, #43a047);
     }
@@ -132,6 +141,7 @@
       font-size: 14px;
       transition: background-color 0.2s;
     }
+
     .card-buttons button:hover {
       background-color: #357ABD;
     }
@@ -144,7 +154,7 @@
       height: 100%;
       background-color: #D6E6F2;
       padding: 50px 20px 30px;
-      box-shadow: 4px 0 6px rgba(0,0,0,0.1);
+      box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
       transition: left 0.3s ease;
       z-index: 1001;
       display: flex;
@@ -160,6 +170,7 @@
       cursor: pointer;
       font-weight: 500;
     }
+
     .logout {
       color: #C62828;
       border-bottom-color: #C62828;
@@ -171,110 +182,116 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0,0,0,0.3);
+      background: rgba(0, 0, 0, 0.3);
       display: none;
       z-index: 1000;
     }
 
-    #drawer-overlay.show { display: block; }
-    #drawer.show { left: 0; }
+    #drawer-overlay.show {
+      display: block;
+    }
+
+    #drawer.show {
+      left: 0;
+    }
   </style>
 </head>
 
 <body>
 
-<header>
-  <div class="left-section">
-    <button id="menu-btn" class="menu-icon">☰</button>
-    <span class="header-title">Actividades de Refuerzo</span>
+  <header>
+    <div class="left-section">
+      <button id="menu-btn" class="menu-icon">☰</button>
+      <span class="header-title">Actividades de Refuerzo</span>
+    </div>
+  </header>
+
+  <main id="actividades-container">
+    <!-- Tarjetas aquí -->
+  </main>
+
+  <div id="drawer-overlay"></div>
+  <div id="drawer">
+    <div>
+      <div class="drawer-item" onclick="navigateTo('home-alumno.html')">🏠 Materias</div>
+      <div class="drawer-item" onclick="navigateTo('perfil.html')">👤 Perfil</div>
+    </div>
+    <div class="drawer-item logout" onclick="logout()">📤 Cerrar sesión</div>
   </div>
-</header>
 
-<main id="actividades-container">
-  <!-- Tarjetas aquí -->
-</main>
+  <script>
+    const actividades = [
+      { tema: 'Matrices', subtemas: ['Suma', 'Multiplicación'], nota: 2.5 },
+      { tema: 'Determinantes', subtemas: ['Propiedades de determinantes'], nota: 5.8 },
+      { tema: 'Vectores', subtemas: ['Magnitud', 'Dirección'], nota: 8.3 }
+    ];
 
-<div id="drawer-overlay"></div>
-<div id="drawer">
-  <div>
-    <div class="drawer-item" onclick="navigateTo('home-alumno.html')">🏠 Materias</div>
-    <div class="drawer-item" onclick="navigateTo('perfil.html')">👤 Perfil</div>
-  </div>
-  <div class="drawer-item logout" onclick="logout()">📤 Cerrar sesión</div>
-</div>
+    function cargarActividades() {
+      const container = document.getElementById('actividades-container');
+      actividades.forEach(act => {
+        const card = document.createElement('div');
+        card.className = 'card';
 
-<script>
-const actividades = [
-  { tema: 'Matrices', subtemas: ['Suma', 'Multiplicación'], nota: 2.5 },
-  { tema: 'Determinantes', subtemas: ['Propiedades de determinantes'], nota: 5.8 },
-  { tema: 'Vectores', subtemas: ['Magnitud', 'Dirección'], nota: 8.3 }
-];
+        const header = document.createElement('div');
+        header.className = 'card-header';
+        header.textContent = act.tema;
 
-function cargarActividades() {
-  const container = document.getElementById('actividades-container');
-  actividades.forEach(act => {
-    const card = document.createElement('div');
-    card.className = 'card';
+        if (act.nota < 3) header.classList.add('header-rojo');
+        else if (act.nota < 7) header.classList.add('header-amarillo');
+        else if (act.nota < 9) header.classList.add('header-verde');
 
-    const header = document.createElement('div');
-    header.className = 'card-header';
-    header.textContent = act.tema;
-
-    if (act.nota < 3) header.classList.add('header-rojo');
-    else if (act.nota < 7) header.classList.add('header-amarillo');
-    else if (act.nota < 9) header.classList.add('header-verde');
-
-    const content = document.createElement('div');
-    content.className = 'card-content';
-    content.innerHTML = `
+        const content = document.createElement('div');
+        content.className = 'card-content';
+        content.innerHTML = `
       <p><strong>Nota:</strong> ${act.nota}</p>
       <p><strong>Subtemas:</strong> ${act.subtemas.join(', ')}</p>
     `;
 
-    const buttons = document.createElement('div');
-    buttons.className = 'card-buttons';
-    buttons.innerHTML = `
+        const buttons = document.createElement('div');
+        buttons.className = 'card-buttons';
+        buttons.innerHTML = `
       <button onclick="verActividad('${act.tema}')">Ver</button>
       <button onclick="marcarHecho('${act.tema}')">Hecho</button>
     `;
 
-    card.appendChild(header);
-    card.appendChild(content);
-    card.appendChild(buttons);
-    container.appendChild(card);
-  });
-}
+        card.appendChild(header);
+        card.appendChild(content);
+        card.appendChild(buttons);
+        container.appendChild(card);
+      });
+    }
 
-function verActividad(tema) {
-  alert(`🔍 Viendo actividad: ${tema}`);
-}
+    function verActividad(tema) {
+      alert(`🔍 Viendo actividad: ${tema}`);
+    }
 
-function marcarHecho(tema) {
-  alert(`✅ Actividad "${tema}" marcada como hecha`);
-}
+    function marcarHecho(tema) {
+      alert(`✅ Actividad "${tema}" marcada como hecha`);
+    }
 
-// Drawer funcionalidad
-const drawer = document.getElementById('drawer');
-const overlay = document.getElementById('drawer-overlay');
-const menuBtn = document.getElementById('menu-btn');
+    // Drawer funcionalidad
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('drawer-overlay');
+    const menuBtn = document.getElementById('menu-btn');
 
-menuBtn.onclick = () => { drawer.classList.add('show'); overlay.classList.add('show'); };
-overlay.onclick = () => { drawer.classList.remove('show'); overlay.classList.remove('show'); };
+    menuBtn.onclick = () => { drawer.classList.add('show'); overlay.classList.add('show'); };
+    overlay.onclick = () => { drawer.classList.remove('show'); overlay.classList.remove('show'); };
 
-function navigateTo(path) {
-  drawer.classList.remove('show');
-  overlay.classList.remove('show');
-  setTimeout(() => { window.location.href = path; }, 300);
-}
+    function navigateTo(path) {
+      drawer.classList.remove('show');
+      overlay.classList.remove('show');
+      setTimeout(() => { window.location.href = path; }, 300);
+    }
 
-function logout() {
-  localStorage.clear();
-  window.location.href = 'index.html';
-}
+    function logout() {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    }
 
-// Cargar actividades al iniciar
-cargarActividades();
-</script>
+
+    cargarActividades();
+  </script>
 
 </body>
+
 </html>

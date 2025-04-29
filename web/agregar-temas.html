@@ -1,12 +1,23 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Agregar Temas</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', sans-serif; background-color: #f4f9ff; color: #333; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f9ff;
+      color: #333;
+    }
+
     nav {
       background-color: #4A90E2;
       display: flex;
@@ -15,8 +26,19 @@
       padding: 12px 24px;
       flex-wrap: wrap;
     }
-    nav .logo { color: white; font-size: 22px; font-weight: bold; }
-    nav ul { list-style: none; display: flex; gap: 20px; }
+
+    nav .logo {
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
     nav ul li a {
       color: white;
       text-decoration: none;
@@ -24,13 +46,20 @@
       padding: 6px 10px;
       transition: background 0.3s;
     }
+
     nav ul li a:hover {
       background-color: #357ABD;
       border-radius: 5px;
     }
 
-    main { padding: 30px; }
-    h2 { color: #4A90E2; margin-bottom: 20px; }
+    main {
+      padding: 30px;
+    }
+
+    h2 {
+      color: #4A90E2;
+      margin-bottom: 20px;
+    }
 
     #btnMostrarFormTema {
       background-color: #4A90E2;
@@ -42,7 +71,10 @@
       cursor: pointer;
       margin-bottom: 20px;
     }
-    #btnMostrarFormTema:hover { background-color: #357ABD; }
+
+    #btnMostrarFormTema:hover {
+      background-color: #357ABD;
+    }
 
     #temaForm {
       display: none;
@@ -51,7 +83,7 @@
       background: white;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       max-width: 500px;
       margin-bottom: 30px;
     }
@@ -77,44 +109,56 @@
       cursor: pointer;
       font-size: 14px;
     }
-    #btnGuardarTema { background-color: #4A90E2; color: white; }
-    #btnGuardarTema:hover { background-color: #357ABD; }
-    #btnCancelarTema { background-color: gray; color: white; }
+
+    #btnGuardarTema {
+      background-color: #4A90E2;
+      color: white;
+    }
+
+    #btnGuardarTema:hover {
+      background-color: #357ABD;
+    }
+
+    #btnCancelarTema {
+      background-color: gray;
+      color: white;
+    }
 
     #subtemasList {
-  margin-top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
-.subtema-item {
-  background: #f0f4ff;
-  padding: 10px 16px;
-  border-radius: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-  font-size: 15px;
-  color: #333;
-  font-weight: 500;
-}
+    .subtema-item {
+      background: #f0f4ff;
+      padding: 10px 16px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+      font-size: 15px;
+      color: #333;
+      font-weight: 500;
+    }
 
-.subtema-item button {
-  background: #ff5f5f;
-  border: none;
-  color: white;
-  font-size: 16px;
-  padding: 4px 10px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.2s;
-}
-.subtema-item button:hover {
-  background: #e04545;
-}
+    .subtema-item button {
+      background: #ff5f5f;
+      border: none;
+      color: white;
+      font-size: 16px;
+      padding: 4px 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    .subtema-item button:hover {
+      background: #e04545;
+    }
 
 
     #alertaContainer {
@@ -129,15 +173,19 @@
       border-collapse: collapse;
       margin-top: 30px;
     }
-    th, td {
+
+    th,
+    td {
       border: 1px solid #ccc;
       padding: 10px;
       text-align: left;
     }
+
     th {
       background-color: #4A90E2;
       color: white;
     }
+
     tr:nth-child(even) {
       background-color: #f2f2f2;
     }
@@ -146,6 +194,7 @@
       display: flex;
       gap: 10px;
     }
+
     .boton-accion {
       background-color: #4A90E2;
       color: white;
@@ -157,170 +206,172 @@
       font-size: 14px;
       transition: background-color 0.2s;
     }
+
     .boton-accion:hover {
       background-color: #357ABD;
     }
   </style>
 </head>
+
 <body>
 
-<div id="alertaContainer"></div>
+  <div id="alertaContainer"></div>
 
-<nav>
-  <div class="logo">Panel</div>
-  <ul>
-    <li><a href="javascript:history.back()">← Volver</a></li>
-  </ul>
-</nav>
+  <nav>
+    <div class="logo">Panel</div>
+    <ul>
+      <li><a href="javascript:history.back()">← Volver</a></li>
+    </ul>
+  </nav>
 
-<main>
-  <h2>Temas de la Materia</h2>
+  <main>
+    <h2>Temas de la Materia</h2>
 
-  <button id="btnMostrarFormTema">➕ Agregar Tema</button>
+    <button id="btnMostrarFormTema">➕ Agregar Tema</button>
 
-  <form id="temaForm">
-    <input type="text" id="nombreTema" placeholder="Nombre del tema" required />
-    <div style="display: flex; gap: 10px; align-items: center;">
-      <input type="text" id="nuevoSubtema" placeholder="Nombre del subtema" style="flex: 2;" />
-      <input type="number" id="valorSubtema" placeholder="Valor" style="flex: 1;" min="0" />
-    </div>
-    
-     
-    <button type="button" id="btnAgregarSubtema" style="background-color: #4A90E2;">➕ Agregar Subtema</button>
-    <div id="subtemasList"></div>
-    <div class="botones-form">
-      <button type="submit" id="btnGuardarTema">Guardar Tema</button>
-      <button type="button" id="btnCancelarTema">Cancelar</button>
-    </div>
-  </form>
+    <form id="temaForm">
+      <input type="text" id="nombreTema" placeholder="Nombre del tema" required />
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <input type="text" id="nuevoSubtema" placeholder="Nombre del subtema" style="flex: 2;" />
+        <input type="number" id="valorSubtema" placeholder="Valor" style="flex: 1;" min="0" />
+      </div>
 
-  <table id="tablaTemas">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Nombre del Tema</th>
-        <th>Subtemas</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</main>
 
-<script>
-  const API = 'http://localhost:3000/topics';
-  const btnMostrarFormTema = document.getElementById('btnMostrarFormTema');
-  const btnCancelarTema = document.getElementById('btnCancelarTema');
-  const formTema = document.getElementById('temaForm');
-  const nombreInput = document.getElementById('nombreTema');
-  const nuevoSubtemaInput = document.getElementById('nuevoSubtema');
-  const subtemasList = document.getElementById('subtemasList');
-  const btnAgregarSubtema = document.getElementById('btnAgregarSubtema');
-  const tablaTemasBody = document.querySelector('#tablaTemas tbody');
-  const valorSubtemaInput = document.getElementById('valorSubtema');
-  let subtemas = [];
-  let temas = [];
-  let editandoId = null;
+      <button type="button" id="btnAgregarSubtema" style="background-color: #4A90E2;">➕ Agregar Subtema</button>
+      <div id="subtemasList"></div>
+      <div class="botones-form">
+        <button type="submit" id="btnGuardarTema">Guardar Tema</button>
+        <button type="button" id="btnCancelarTema">Cancelar</button>
+      </div>
+    </form>
 
-  function getMateriaIdFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('materiaId');
-  }
+    <table id="tablaTemas">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre del Tema</th>
+          <th>Subtemas</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
 
-  function getAuthHeaders() {
-    const token = localStorage.getItem('accessToken');
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+  <script>
+    const API = 'http://localhost:3000/topics';
+    const btnMostrarFormTema = document.getElementById('btnMostrarFormTema');
+    const btnCancelarTema = document.getElementById('btnCancelarTema');
+    const formTema = document.getElementById('temaForm');
+    const nombreInput = document.getElementById('nombreTema');
+    const nuevoSubtemaInput = document.getElementById('nuevoSubtema');
+    const subtemasList = document.getElementById('subtemasList');
+    const btnAgregarSubtema = document.getElementById('btnAgregarSubtema');
+    const tablaTemasBody = document.querySelector('#tablaTemas tbody');
+    const valorSubtemaInput = document.getElementById('valorSubtema');
+    let subtemas = [];
+    let temas = [];
+    let editandoId = null;
+
+    function getMateriaIdFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('materiaId');
+    }
+
+    function getAuthHeaders() {
+      const token = localStorage.getItem('accessToken');
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      };
+    }
+
+    function mostrarAlerta(mensaje, tipo = 'success') {
+      const alertaContainer = document.getElementById('alertaContainer');
+      const alerta = document.createElement('div');
+      alerta.textContent = mensaje;
+      alerta.style.backgroundColor = tipo === 'success' ? '#4CAF50' : '#f44336';
+      alerta.style.color = 'white';
+      alerta.style.padding = '12px 20px';
+      alerta.style.marginBottom = '10px';
+      alerta.style.borderRadius = '8px';
+      alerta.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+      alerta.style.fontSize = '16px';
+      alerta.style.minWidth = '250px';
+      alerta.style.textAlign = 'center';
+      alerta.style.opacity = '0.95';
+      alertaContainer.appendChild(alerta);
+      setTimeout(() => { alerta.style.opacity = '0'; setTimeout(() => alerta.remove(), 500); }, 3000);
+    }
+
+    btnMostrarFormTema.onclick = () => {
+      formTema.style.display = 'flex';
+      btnMostrarFormTema.style.display = 'none';
     };
-  }
 
-  function mostrarAlerta(mensaje, tipo = 'success') {
-    const alertaContainer = document.getElementById('alertaContainer');
-    const alerta = document.createElement('div');
-    alerta.textContent = mensaje;
-    alerta.style.backgroundColor = tipo === 'success' ? '#4CAF50' : '#f44336';
-    alerta.style.color = 'white';
-    alerta.style.padding = '12px 20px';
-    alerta.style.marginBottom = '10px';
-    alerta.style.borderRadius = '8px';
-    alerta.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-    alerta.style.fontSize = '16px';
-    alerta.style.minWidth = '250px';
-    alerta.style.textAlign = 'center';
-    alerta.style.opacity = '0.95';
-    alertaContainer.appendChild(alerta);
-    setTimeout(() => { alerta.style.opacity = '0'; setTimeout(() => alerta.remove(), 500); }, 3000);
-  }
+    btnCancelarTema.onclick = () => {
+      resetFormulario();
+    };
 
-  btnMostrarFormTema.onclick = () => {
-    formTema.style.display = 'flex';
-    btnMostrarFormTema.style.display = 'none';
-  };
+    btnAgregarSubtema.onclick = () => {
+      const nombreSubtema = nuevoSubtemaInput.value.trim();
+      const valorSubtema = Number(valorSubtemaInput.value.trim());
 
-  btnCancelarTema.onclick = () => {
-    resetFormulario();
-  };
+      if (nombreSubtema && !isNaN(valorSubtema)) {
+        const sumaActual = subtemas.reduce((acc, sub) => acc + sub.maxScore, 0);
 
-  btnAgregarSubtema.onclick = () => {
-  const nombreSubtema = nuevoSubtemaInput.value.trim();
-  const valorSubtema = Number(valorSubtemaInput.value.trim());
+        if (sumaActual === 10) {
+          mostrarAlerta('Ya alcanzaste el total de 10. No puedes agregar más subtemas.', 'error');
+          return;
+        }
 
-  if (nombreSubtema && !isNaN(valorSubtema)) {
-    const sumaActual = subtemas.reduce((acc, sub) => acc + sub.maxScore, 0);
+        if (valorSubtema <= 0) {
+          mostrarAlerta('El valor del subtema debe ser mayor que 0.', 'error');
+          return;
+        }
 
-    if (sumaActual === 10) {
-      mostrarAlerta('Ya alcanzaste el total de 10. No puedes agregar más subtemas.', 'error');
-      return;
+        if (sumaActual + valorSubtema > 10) {
+          mostrarAlerta(`No puedes agregar este subtema. Solo puedes usar ${10 - sumaActual} más.`, 'error');
+          return;
+        }
+
+        subtemas.push({ name: nombreSubtema, maxScore: valorSubtema });
+        nuevoSubtemaInput.value = '';
+        valorSubtemaInput.value = '';
+        renderSubtemas();
+      } else {
+        mostrarAlerta('Debe ingresar el nombre y un valor numérico válido para el subtema.', 'error');
+      }
+    };
+
+
+
+
+    function eliminarSubtema(index) {
+      subtemas.splice(index, 1);
+      renderSubtemas();
     }
 
-    if (valorSubtema <= 0) {
-      mostrarAlerta('El valor del subtema debe ser mayor que 0.', 'error');
-      return;
-    }
-
-    if (sumaActual + valorSubtema > 10) {
-      mostrarAlerta(`No puedes agregar este subtema. Solo puedes usar ${10 - sumaActual} más.`, 'error');
-      return;
-    }
-
-    subtemas.push({ name: nombreSubtema, maxScore: valorSubtema });
-    nuevoSubtemaInput.value = '';
-    valorSubtemaInput.value = '';
-    renderSubtemas();
-  } else {
-    mostrarAlerta('Debe ingresar el nombre y un valor numérico válido para el subtema.', 'error');
-  }
-};
-
-
-
-
-  function eliminarSubtema(index) {
-    subtemas.splice(index, 1);
-    renderSubtemas();
-  }
-
-  function renderSubtemas() {
-  subtemasList.innerHTML = '';
-  subtemas.forEach((sub, idx) => {
-    const div = document.createElement('div');
-    div.className = 'subtema-item';
-    div.innerHTML = `
+    function renderSubtemas() {
+      subtemasList.innerHTML = '';
+      subtemas.forEach((sub, idx) => {
+        const div = document.createElement('div');
+        div.className = 'subtema-item';
+        div.innerHTML = `
       <span>${idx + 1}. ${sub.name} (Valor: ${sub.maxScore})</span>
       <button onclick="eliminarSubtema(${idx})">×</button>
     `;
-    subtemasList.appendChild(div);
-  });
-}
+        subtemasList.appendChild(div);
+      });
+    }
 
 
-  function renderTemas(lista) {
-    temas = lista;
-    tablaTemasBody.innerHTML = '';
-    temas.forEach((tema, idx) => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
+    function renderTemas(lista) {
+      temas = lista;
+      tablaTemasBody.innerHTML = '';
+      temas.forEach((tema, idx) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
         <td>${idx + 1}</td>
         <td>${tema.name}</td>
        <td>${tema.subtopics.length ? tema.subtopics.map(st => `${st.name} (${st.maxScore})`).join(', ') : '-'}</td>
@@ -331,119 +382,120 @@
           </div>
         </td>
       `;
-      tablaTemasBody.appendChild(row);
-    });
-  }
-
-  function resetFormulario() {
-    formTema.reset();
-    formTema.style.display = 'none';
-    btnMostrarFormTema.style.display = 'inline-block';
-    subtemas = [];
-    editandoId = null;
-    document.getElementById('btnGuardarTema').textContent = 'Guardar Tema';
-    renderSubtemas();
-  }
-
-  async function fetchTemas() {
-    const materiaId = getMateriaIdFromURL();
-    if (!materiaId) {
-      mostrarAlerta('Materia no identificada.', 'error');
-      return;
-    }
-
-    try {
-      const res = await fetch(`${API}/materia/${materiaId}`, {
-        method: 'GET',
-        headers: getAuthHeaders()
+        tablaTemasBody.appendChild(row);
       });
-      if (res.ok) {
-        const data = await res.json();
-        renderTemas(data);
-      } else {
-        mostrarAlerta('Error al cargar los temas', 'error');
+    }
+
+    function resetFormulario() {
+      formTema.reset();
+      formTema.style.display = 'none';
+      btnMostrarFormTema.style.display = 'inline-block';
+      subtemas = [];
+      editandoId = null;
+      document.getElementById('btnGuardarTema').textContent = 'Guardar Tema';
+      renderSubtemas();
+    }
+
+    async function fetchTemas() {
+      const materiaId = getMateriaIdFromURL();
+      if (!materiaId) {
+        mostrarAlerta('Materia no identificada.', 'error');
+        return;
       }
-    } catch (error) {
-      console.error(error);
-      mostrarAlerta('Error de conexión', 'error');
-    }
-  }
 
-  formTema.onsubmit = async (e) => {
-    e.preventDefault();
-    const sumaTotal = subtemas.reduce((acc, sub) => acc + sub.maxScore, 0);
-  if (sumaTotal !== 10) {
-    mostrarAlerta(`La suma total de los subtemas debe ser exactamente 10. Actualmente tienes ${sumaTotal}.`, 'error');
-    return;
-  }
-
-
-    const materiaId = getMateriaIdFromURL();
-    if (!materiaId) {
-      mostrarAlerta('Materia no identificada.', 'error');
-      return;
+      try {
+        const res = await fetch(`${API}/materia/${materiaId}`, {
+          method: 'GET',
+          headers: getAuthHeaders()
+        });
+        if (res.ok) {
+          const data = await res.json();
+          renderTemas(data);
+        } else {
+          mostrarAlerta('Error al cargar los temas', 'error');
+        }
+      } catch (error) {
+        console.error(error);
+        mostrarAlerta('Error de conexión', 'error');
+      }
     }
 
-    const tema = {
-      name: nombreInput.value,
-      subject: materiaId,
-      subtopics: subtemas
+    formTema.onsubmit = async (e) => {
+      e.preventDefault();
+      const sumaTotal = subtemas.reduce((acc, sub) => acc + sub.maxScore, 0);
+      if (sumaTotal !== 10) {
+        mostrarAlerta(`La suma total de los subtemas debe ser exactamente 10. Actualmente tienes ${sumaTotal}.`, 'error');
+        return;
+      }
+
+
+      const materiaId = getMateriaIdFromURL();
+      if (!materiaId) {
+        mostrarAlerta('Materia no identificada.', 'error');
+        return;
+      }
+
+      const tema = {
+        name: nombreInput.value,
+        subject: materiaId,
+        subtopics: subtemas
+      };
+
+      try {
+        const res = await fetch(`${API}${editandoId ? `/${editandoId}` : ''}`, {
+          method: editandoId ? 'PUT' : 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(tema)
+        });
+
+        if (res.ok) {
+          mostrarAlerta(editandoId ? 'Tema actualizado ✅' : 'Tema guardado ✅');
+          await fetchTemas();
+          resetFormulario();
+        } else {
+          const error = await res.json();
+          mostrarAlerta(error.message || 'Error al guardar tema', 'error');
+        }
+      } catch (error) {
+        console.error(error);
+        mostrarAlerta('Error de conexión', 'error');
+      }
     };
 
-    try {
-      const res = await fetch(`${API}${editandoId ? `/${editandoId}` : ''}`, {
-        method: editandoId ? 'PUT' : 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(tema)
-      });
-
-      if (res.ok) {
-        mostrarAlerta(editandoId ? 'Tema actualizado ✅' : 'Tema guardado ✅');
-        await fetchTemas();
-        resetFormulario();
-      } else {
-        const error = await res.json();
-        mostrarAlerta(error.message || 'Error al guardar tema', 'error');
+    async function eliminarTema(id) {
+      if (!confirm('¿Eliminar este tema?')) return;
+      try {
+        const res = await fetch(`${API}/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (res.ok) {
+          mostrarAlerta('Tema eliminado ✅');
+          await fetchTemas();
+        } else {
+          mostrarAlerta('Error al eliminar', 'error');
+        }
+      } catch (error) {
+        console.error(error);
+        mostrarAlerta('Error de conexión', 'error');
       }
-    } catch (error) {
-      console.error(error);
-      mostrarAlerta('Error de conexión', 'error');
     }
-  };
 
-  async function eliminarTema(id) {
-    if (!confirm('¿Eliminar este tema?')) return;
-    try {
-      const res = await fetch(`${API}/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders()
-      });
-      if (res.ok) {
-        mostrarAlerta('Tema eliminado ✅');
-        await fetchTemas();
-      } else {
-        mostrarAlerta('Error al eliminar', 'error');
-      }
-    } catch (error) {
-      console.error(error);
-      mostrarAlerta('Error de conexión', 'error');
+    function editarTema(id) {
+      const tema = temas.find(t => t._id === id);
+      if (!tema) return;
+      nombreInput.value = tema.name;
+      subtemas = [...tema.subtopics];
+      renderSubtemas();
+      editandoId = id;
+      formTema.style.display = 'flex';
+      btnMostrarFormTema.style.display = 'none';
+      document.getElementById('btnGuardarTema').textContent = 'Actualizar Tema';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }
 
-  function editarTema(id) {
-    const tema = temas.find(t => t._id === id);
-    if (!tema) return;
-    nombreInput.value = tema.name;
-    subtemas = [...tema.subtopics];
-    renderSubtemas();
-    editandoId = id;
-    formTema.style.display = 'flex';
-    btnMostrarFormTema.style.display = 'none';
-    document.getElementById('btnGuardarTema').textContent = 'Actualizar Tema';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  window.onload = fetchTemas;
-</script>
+    window.onload = fetchTemas;
+  </script>
 </body>
+
 </html>

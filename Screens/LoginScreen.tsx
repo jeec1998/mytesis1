@@ -10,7 +10,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from './App';
-const { API } = process.env; 
+const { API } = process.env;
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'> & {
   onLogin: () => void;
@@ -21,7 +21,7 @@ const LoginScreen: React.FC<Props> = ({ onLogin }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  
+
 
   const handleLogin = async () => {
     try {
@@ -38,7 +38,7 @@ const LoginScreen: React.FC<Props> = ({ onLogin }) => {
         if (Platform.OS === 'web') {
           window.location.href = '/home.html';
         } else {
-          onLogin(); 
+          onLogin();
         }
       } else {
         const data = await res.json();

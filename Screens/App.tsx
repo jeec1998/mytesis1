@@ -14,11 +14,11 @@ import ProfileScreen from './ProfileScreen';
 import NotificacionesScreen from './NotificacionesScreen';
 import CustomDrawer from './CustomDrawer';
 import LoginScreen from './LoginScreen';
-import ActividadesScreen from './ActividadesScreen'; 
+import ActividadesScreen from './ActividadesScreen';
 
 export type RootStackParamList = {
   Login: undefined;
-  HomeScreen: undefined; 
+  HomeScreen: undefined;
   Perfil: undefined;
   Notificaciones: undefined;
   Actividades: { refuerzo: { id: string; Materia: string; descripcion: string } };
@@ -41,14 +41,14 @@ const App: React.FC = () => {
           </Stack.Screen>
         ) : (
           <>
-            <Stack.Screen 
-              name="HomeScreen" 
+            <Stack.Screen
+              name="HomeScreen"
               options={{
                 title: 'Inicio',
                 headerStyle: {
-                  backgroundColor: '#2F80ED', 
+                  backgroundColor: '#2F80ED',
                 },
-                headerTintColor: 'white', 
+                headerTintColor: 'white',
                 headerLeft: () => (
                   <TouchableOpacity
                     onPress={() => setMenuVisible(true)}

@@ -1,12 +1,22 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Materias del Docente</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', sans-serif; background-color: #f4f9ff; color: #333; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f9ff;
+      color: #333;
+    }
 
     nav {
       background-color: #4A90E2;
@@ -17,8 +27,18 @@
       flex-wrap: wrap;
     }
 
-    nav .logo { color: white; font-size: 22px; font-weight: bold; }
-    nav ul { list-style: none; display: flex; gap: 20px; }
+    nav .logo {
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
     nav ul li a {
       color: white;
       text-decoration: none;
@@ -26,13 +46,20 @@
       padding: 6px 10px;
       transition: background 0.3s;
     }
+
     nav ul li a:hover {
       background-color: #357ABD;
       border-radius: 5px;
     }
 
-    main { padding: 30px; }
-    h2 { color: #4A90E2; margin-bottom: 10px; }
+    main {
+      padding: 30px;
+    }
+
+    h2 {
+      color: #4A90E2;
+      margin-bottom: 10px;
+    }
 
     #btnMostrarFormMateria {
       background-color: #4A90E2;
@@ -44,7 +71,10 @@
       cursor: pointer;
       margin-bottom: 20px;
     }
-    #btnMostrarFormMateria:hover { background-color: #357ABD; }
+
+    #btnMostrarFormMateria:hover {
+      background-color: #357ABD;
+    }
 
     #materiaForm {
       display: none;
@@ -53,7 +83,7 @@
       background: white;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       max-width: 400px;
       margin-bottom: 30px;
     }
@@ -79,9 +109,20 @@
       cursor: pointer;
       font-size: 14px;
     }
-    #btnGuardarMateria { background-color: #4A90E2; color: white; }
-    #btnGuardarMateria:hover { background-color: #357ABD; }
-    #btnCancelarMateria { background-color: gray; color: white; }
+
+    #btnGuardarMateria {
+      background-color: #4A90E2;
+      color: white;
+    }
+
+    #btnGuardarMateria:hover {
+      background-color: #357ABD;
+    }
+
+    #btnCancelarMateria {
+      background-color: gray;
+      color: white;
+    }
 
     .cards-container {
       display: flex;
@@ -122,7 +163,11 @@
       gap: 12px;
     }
 
-    .card-content p { margin: 0; color: #444; font-size: 15px; }
+    .card-content p {
+      margin: 0;
+      color: #444;
+      font-size: 15px;
+    }
 
     .card-buttons {
       display: flex;
@@ -136,7 +181,10 @@
       gap: 8px;
       justify-content: space-between;
     }
-    .card-row.single { justify-content: center; }
+
+    .card-row.single {
+      justify-content: center;
+    }
 
     .card-buttons button {
       flex: 1;
@@ -154,7 +202,10 @@
       justify-content: center;
       gap: 6px;
     }
-    .card-buttons button:hover { background-color: #357ABD; }
+
+    .card-buttons button:hover {
+      background-color: #357ABD;
+    }
 
     #alertaContainer {
       position: fixed;
@@ -251,15 +302,15 @@
     }
 
     function getDocenteIdFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  let docenteId = params.get('docenteId');
+      const params = new URLSearchParams(window.location.search);
+      let docenteId = params.get('docenteId');
 
-  if (!docenteId) {
-    docenteId = localStorage.getItem('userId');
-  }
+      if (!docenteId) {
+        docenteId = localStorage.getItem('userId');
+      }
 
-  return docenteId;
-}
+      return docenteId;
+    }
 
 
     function mostrarNombreDocente() {
@@ -395,23 +446,23 @@
     }
 
     function agregarRecursos(materiaId) {
-  const params = new URLSearchParams(window.location.search);
-  let docenteId = params.get('docenteId');
-  let nombre = params.get('nombre');
+      const params = new URLSearchParams(window.location.search);
+      let docenteId = params.get('docenteId');
+      let nombre = params.get('nombre');
 
-  if (!docenteId || !nombre) {
-    // 🔥 Si no existen en URL, usamos el LocalStorage
-    docenteId = localStorage.getItem('userId');
-    nombre = localStorage.getItem('userEmail'); // o 'userNombre' si guardas nombre real
-  }
+      if (!docenteId || !nombre) {
+        // 🔥 Si no existen en URL, usamos el LocalStorage
+        docenteId = localStorage.getItem('userId');
+        nombre = localStorage.getItem('userEmail'); // o 'userNombre' si guardas nombre real
+      }
 
-  if (docenteId && nombre) {
-    window.location.href = `agregar-recursos.html?materiaId=${materiaId}&docenteId=${docenteId}&nombre=${encodeURIComponent(nombre)}`;
-  } else {
-    alert('No se encontró información del docente.');
-    window.location.href = 'home.html'; // 🔥 Mejor regresar al home del docente
-  }
-}
+      if (docenteId && nombre) {
+        window.location.href = `agregar-recursos.html?materiaId=${materiaId}&docenteId=${docenteId}&nombre=${encodeURIComponent(nombre)}`;
+      } else {
+        alert('No se encontró información del docente.');
+        window.location.href = 'home.html'; // 🔥 Mejor regresar al home del docente
+      }
+    }
 
 
 
@@ -430,4 +481,5 @@
     fetchMateriasByDocente();
   </script>
 </body>
+
 </html>
