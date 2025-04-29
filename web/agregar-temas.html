@@ -180,7 +180,11 @@
 
   <form id="temaForm">
     <input type="text" id="nombreTema" placeholder="Nombre del tema" required />
-    <input type="text" id="nuevoSubtema" placeholder="Nuevo subtema" />
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <input type="text" id="nuevoSubtema" placeholder="Nombre del subtema" style="flex: 2;" />
+      <input type="number" id="valorSubtema" placeholder="Valor" style="flex: 1;" min="0" />
+    </div>
+    
      
     <button type="button" id="btnAgregarSubtema" style="background-color: #4A90E2;">➕ Agregar Subtema</button>
     <div id="subtemasList"></div>
@@ -213,6 +217,7 @@
   const subtemasList = document.getElementById('subtemasList');
   const btnAgregarSubtema = document.getElementById('btnAgregarSubtema');
   const tablaTemasBody = document.querySelector('#tablaTemas tbody');
+  const valorSubtemaInput = document.getElementById('valorSubtema');
   let subtemas = [];
   let temas = [];
   let editandoId = null;
@@ -258,13 +263,38 @@
   };
 
   btnAgregarSubtema.onclick = () => {
-    const nuevoSubtema = nuevoSubtemaInput.value.trim();
-    if (nuevoSubtema) {
-      subtemas.push(nuevoSubtema);
-      nuevoSubtemaInput.value = '';
-      renderSubtemas();
+  const nombreSubtema = nuevoSubtemaInput.value.trim();
+  const valorSubtema = Number(valorSubtemaInput.value.trim());
+
+  if (nombreSubtema && !isNaN(valorSubtema)) {
+    const sumaActual = subtemas.reduce((acc, sub) => acc + sub.maxScore, 0);
+
+    if (sumaActual === 10) {
+      mostrarAlerta('Ya alcanzaste el total de 10. No puedes agregar más subtemas.', 'error');
+      return;
     }
-  };
+
+    if (valorSubtema <= 0) {
+      mostrarAlerta('El valor del subtema debe ser mayor que 0.', 'error');
+      return;
+    }
+
+    if (sumaActual + valorSubtema > 10) {
+      mostrarAlerta(`No puedes agregar este subtema. Solo puedes usar ${10 - sumaActual} más.`, 'error');
+      return;
+    }
+
+    subtemas.push({ name: nombreSubtema, maxScore: valorSubtema });
+    nuevoSubtemaInput.value = '';
+    valorSubtemaInput.value = '';
+    renderSubtemas();
+  } else {
+    mostrarAlerta('Debe ingresar el nombre y un valor numérico válido para el subtema.', 'error');
+  }
+};
+
+
+
 
   function eliminarSubtema(index) {
     subtemas.splice(index, 1);
@@ -277,7 +307,7 @@
     const div = document.createElement('div');
     div.className = 'subtema-item';
     div.innerHTML = `
-      <span>${idx + 1}. ${sub}</span>
+      <span>${idx + 1}. ${sub.name} (Valor: ${sub.maxScore})</span>
       <button onclick="eliminarSubtema(${idx})">×</button>
     `;
     subtemasList.appendChild(div);
@@ -293,7 +323,7 @@
       row.innerHTML = `
         <td>${idx + 1}</td>
         <td>${tema.name}</td>
-        <td>${tema.subtopics.length ? tema.subtopics.join(', ') : '-'}</td>
+       <td>${tema.subtopics.length ? tema.subtopics.map(st => `${st.name} (${st.maxScore})`).join(', ') : '-'}</td>
         <td>
           <div class="acciones">
             <button class="boton-accion" onclick="editarTema('${tema._id}')">✏️ Editar</button>
@@ -341,6 +371,13 @@
 
   formTema.onsubmit = async (e) => {
     e.preventDefault();
+    const sumaTotal = subtemas.reduce((acc, sub) => acc + sub.maxScore, 0);
+  if (sumaTotal !== 10) {
+    mostrarAlerta(`La suma total de los subtemas debe ser exactamente 10. Actualmente tienes ${sumaTotal}.`, 'error');
+    return;
+  }
+
+
     const materiaId = getMateriaIdFromURL();
     if (!materiaId) {
       mostrarAlerta('Materia no identificada.', 'error');
