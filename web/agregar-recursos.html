@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Agregar Recursos</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f9ff;
-      color: #333;
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f9ff;
+      color: #333;
+    }
+
     nav {
       background-color: #4A90E2;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
       padding: 12px 24px;
     }
 
@@ -23,25 +31,29 @@
       text-decoration: none;
       font-weight: bold;
       font-size: 18px;
-      cursor: pointer;
     }
 
     main {
       padding: 30px;
-      max-width: 700px;
+      max-width: 1000px;
       margin: auto;
     }
 
     h2 {
       color: #4A90E2;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      color: #333;
+      margin-bottom: 30px;
     }
 
     form {
       background: white;
       padding: 24px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
       margin-bottom: 40px;
     }
 
@@ -51,9 +63,9 @@
       font-weight: bold;
     }
 
-    input[type="text"],
+    input,
     textarea,
-    input[type="file"] {
+    select {
       width: 100%;
       padding: 10px;
       margin-top: 5px;
@@ -75,80 +87,301 @@
     button:hover {
       background-color: #357ABD;
     }
+
+    #btnVolverDocente {
+      display: none;
+      margin-top: 20px;
+      background-color: gray;
+    }
+
+    #btnVolverDocente:hover {
+      background-color: #5a5a5a;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      background: white;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #4A90E2;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .acciones {
+      display: flex;
+      gap: 10px;
+    }
+
+    .boton-accion {
+      background-color: #4A90E2;
+      color: white;
+      font-weight: bold;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s;
+    }
+
+    .boton-accion:hover {
+      background-color: #357ABD;
+    }
   </style>
 </head>
 
 <body>
 
   <nav>
-    <a href="javascript:history.back()">← Volver</a> <!-- 🔥 Modificado aquí -->
+    <a href="javascript:history.back()">← Volver</a>
   </nav>
 
   <main>
     <h2>Agregar Recursos a la Materia</h2>
+    <h3 id="nombreMateriaDocente"></h3>
 
-    <form id="recursoForm" enctype="multipart/form-data">
-      <input type="hidden" id="materiaId" name="materiaId">
+    <button id="btnMostrarFormulario" style="margin-bottom: 20px;">➕ Agregar Recurso</button>
+
+    <form id="recursoForm" enctype="multipart/form-data" style="display: none;">
+      <label for="topicSelect">Tema</label>
+      <select id="topicSelect" required>
+        <option value="">Seleccionar Tema...</option>
+      </select>
+
+      <label for="subtopicSelect">Subtema</label>
+      <select id="subtopicSelect" required>
+        <option value="">Seleccionar Subtema...</option>
+      </select>
 
       <label for="titulo">Título del recurso</label>
-      <input type="text" id="titulo" name="titulo" required>
+      <input type="text" id="titulo" required>
 
       <label for="descripcion">Descripción</label>
-      <textarea id="descripcion" name="descripcion" rows="4" required></textarea>
+      <textarea id="descripcion" rows="4" required></textarea>
 
-      <label for="archivo">Seleccionar archivo (PDF, audio, video, imagen, etc.)</label>
-      <input type="file" id="archivo" name="archivo" required>
+      <label for="archivo">Seleccionar archivo</label>
+      <input type="file" id="archivo" required>
 
       <button type="submit">Subir Recurso</button>
     </form>
 
     <div id="mensaje"></div>
+    <button id="btnVolverDocente">Volver al Panel del Docente</button>
+
+    <h2 style="margin-top:40px;">Recursos de la Materia</h2>
+    <table id="tablaRecursos">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Título</th>
+          <th>Tema</th>
+          <th>Subtema</th>
+          <th>Tipo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </main>
 
   <script>
-    const API_UPLOAD = 'http://localhost:3000/recursos'; // Cambia esto a tu API real
-
+    const API_UPLOAD = 'http://localhost:3000/dropbox/upload';
+    const API_TOPICS = 'http://localhost:3000/topics';
+    const API_UPLOADS = 'http://localhost:3000/dropbox/uploads';
+    const API_SUBJECTS = 'http://localhost:3000/subjects';
+    
     const params = new URLSearchParams(window.location.search);
     const materiaId = params.get('materiaId');
-
+    
+    let listaTopics = [];
+    
     if (!materiaId) {
       alert("Falta el ID de materia.");
       window.location.href = "home.html";
     }
-
-    document.getElementById('materiaId').value = materiaId;
-
-    // Subir recurso
-    document.getElementById('recursoForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const formData = new FormData();
-      formData.append('materiaId', document.getElementById('materiaId').value);
-      formData.append('titulo', document.getElementById('titulo').value);
-      formData.append('descripcion', document.getElementById('descripcion').value);
-      formData.append('archivo', document.getElementById('archivo').files[0]);
-
+    
+    async function cargarMateria() {
       try {
-        const res = await fetch(API_UPLOAD, {
-          method: 'POST',
-          body: formData,
+        const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` };
+        const res = await fetch(`${API_SUBJECTS}/${materiaId}`, { headers });
+        const materia = await res.json();
+        document.getElementById('nombreMateriaDocente').innerHTML = `<p><strong>Materia:</strong> ${materia.name}</p>`;
+      } catch (error) {
+        console.error('Error cargando materia:', error);
+      }
+    }
+    
+    async function cargarTemas() {
+      try {
+        const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` };
+        const res = await fetch(`${API_TOPICS}/materia/${materiaId}`, { headers });
+        listaTopics = await res.json();
+        const topicSelect = document.getElementById('topicSelect');
+    
+        listaTopics.forEach(topic => {
+          const option = document.createElement('option');
+          option.value = topic._id;
+          option.textContent = topic.name;
+          option.dataset.subtopics = JSON.stringify(topic.subtopics);
+          topicSelect.appendChild(option);
         });
-
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.message || 'Error al subir recurso');
-        }
-
-        document.getElementById('mensaje').textContent = '✅ Recurso subido correctamente';
-        document.getElementById('recursoForm').reset();
-      } catch (err) {
-        document.getElementById('mensaje').textContent = `⛔ ${err.message}`;
-        console.error(err);
+      } catch (error) {
+        console.error('Error cargando temas:', error);
+      }
+    }
+    
+    document.getElementById('topicSelect').addEventListener('change', function() {
+      const subtopics = JSON.parse(this.selectedOptions[0].dataset.subtopics || '[]');
+      const subtopicSelect = document.getElementById('subtopicSelect');
+      subtopicSelect.innerHTML = '<option value="">Seleccionar Subtema...</option>';
+    
+      subtopics.forEach(sub => {
+        const option = document.createElement('option');
+        option.value = sub._id;
+        option.textContent = sub.name;
+        subtopicSelect.appendChild(option);
+      });
+    
+      if (subtopics.length > 0) {
+        subtopicSelect.selectedIndex = 1; // Auto-seleccionar primer subtema
       }
     });
-
-    // 🔥 Ya no necesitas script para el botón de volver, ahora es directo con history.back()
-  </script>
+    
+    document.getElementById('recursoForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const topicId = document.getElementById('topicSelect').value;
+      const subtopicId = document.getElementById('subtopicSelect').value;
+      const archivo = document.getElementById('archivo').files[0];
+    
+      if (!topicId || !subtopicId || subtopicId === "undefined") {
+        alert('Por favor selecciona un tema y subtema válido.');
+        return;
+      }
+    
+      const extension = archivo.name.split('.').pop().toLowerCase();
+      let fileType = 'other';
+      if (extension === 'pdf') fileType = 'pdf';
+      else if (['doc', 'docx'].includes(extension)) fileType = 'word';
+      else if (['mp4', 'mov', 'avi'].includes(extension)) fileType = 'video';
+      else if (['mp3', 'wav'].includes(extension)) fileType = 'audio';
+      else if (['jpg', 'jpeg', 'png'].includes(extension)) fileType = 'image';
+    
+      const formData = new FormData();
+      formData.append('topicId', topicId);
+    
+      // ✅ Corrección aquí:
+      if (subtopicId && subtopicId !== "undefined") {
+        formData.append('subtopicId', subtopicId);
+      }
+    
+      formData.append('title', document.getElementById('titulo').value);
+      formData.append('description', document.getElementById('descripcion').value);
+      formData.append('file', archivo);
+      formData.append('fileType', fileType);
+    
+      // 🔥 Verificar lo que se manda
+      console.log('✅ FormData a enviar:');
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+    
+      try {
+        const res = await fetch(API_UPLOAD, { method: 'POST', body: formData });
+        if (!res.ok) throw new Error('Error al subir recurso');
+    
+        document.getElementById('recursoForm').reset();
+        document.getElementById('mensaje').innerHTML = `<span style="color:green;">✅ Recurso subido exitosamente</span>`;
+    
+        cargarRecursos();
+      } catch (err) {
+        document.getElementById('mensaje').textContent = `⛔ ${err.message}`;
+      }
+    });
+    
+    async function cargarRecursos() {
+      try {
+        const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` };
+        const res = await fetch(API_UPLOADS, { headers });
+        const recursos = await res.json();
+    
+        const tablaRecursosBody = document.querySelector('#tablaRecursos tbody');
+        tablaRecursosBody.innerHTML = '';
+    
+        if (recursos.length === 0) {
+          tablaRecursosBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px;">No hay recursos.</td></tr>';
+          return;
+        }
+    
+        recursos.forEach((rec, idx) => {
+          const topicName = listaTopics.find(t => t._id === rec.topicId)?.name || '-';
+          const subtopicName = listaTopics.find(t => t._id === rec.topicId)?.subtopics.find(s => s._id === rec.subtopicId)?.name || '-';
+    
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${idx + 1}</td>
+            <td>${rec.title}</td>
+            <td>${topicName}</td>
+            <td>${subtopicName}</td>
+            <td>${rec.fileType}</td>
+            <td>
+              <div class="acciones">
+                <button class="boton-accion" onclick="editarRecurso('${rec._id}')">✏️ Editar</button>
+                <button class="boton-accion" onclick="eliminarRecurso('${rec._id}')">🗑️ Eliminar</button>
+              </div>
+            </td>
+          `;
+          tablaRecursosBody.appendChild(row);
+        });
+      } catch (error) {
+        console.error('Error cargando recursos:', error);
+      }
+    }
+    
+    function editarRecurso(id) {
+      alert('Función de editar en desarrollo. ID: ' + id);
+    }
+    
+    function eliminarRecurso(id) {
+      if (confirm('¿Eliminar este recurso?')) {
+        alert('Función de eliminar en desarrollo. ID: ' + id);
+      }
+    }
+    
+    document.getElementById('btnMostrarFormulario').addEventListener('click', () => {
+      const form = document.getElementById('recursoForm');
+      if (form.style.display === 'none') {
+        form.style.display = 'block';
+        document.getElementById('btnMostrarFormulario').innerText = '➖ Cancelar';
+      } else {
+        form.style.display = 'none';
+        document.getElementById('btnMostrarFormulario').innerText = '➕ Agregar Recurso';
+      }
+    });
+    
+    cargarMateria();
+    cargarTemas();
+    cargarRecursos();
+    </script>
+    
 
 </body>
+
 </html>
