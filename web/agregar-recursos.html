@@ -265,56 +265,57 @@
     });
     
     document.getElementById('recursoForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const topicId = document.getElementById('topicSelect').value;
-      const subtopicId = document.getElementById('subtopicSelect').value;
-      const archivo = document.getElementById('archivo').files[0];
-    
-      if (!topicId || !subtopicId || subtopicId === "undefined") {
-        alert('Por favor selecciona un tema y subtema válido.');
-        return;
-      }
-    
-      const extension = archivo.name.split('.').pop().toLowerCase();
-      let fileType = 'other';
-      if (extension === 'pdf') fileType = 'pdf';
-      else if (['doc', 'docx'].includes(extension)) fileType = 'word';
-      else if (['mp4', 'mov', 'avi'].includes(extension)) fileType = 'video';
-      else if (['mp3', 'wav'].includes(extension)) fileType = 'audio';
-      else if (['jpg', 'jpeg', 'png'].includes(extension)) fileType = 'image';
-    
-      const formData = new FormData();
-      formData.append('topicId', topicId);
-    
-      // ✅ Corrección aquí:
-      if (subtopicId && subtopicId !== "undefined") {
-        formData.append('subtopicId', subtopicId);
-      }
-    
-      formData.append('title', document.getElementById('titulo').value);
-      formData.append('description', document.getElementById('descripcion').value);
-      formData.append('file', archivo);
-      formData.append('fileType', fileType);
-    
-      // 🔥 Verificar lo que se manda
-      console.log('✅ FormData a enviar:');
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
-    
-      try {
-        const res = await fetch(API_UPLOAD, { method: 'POST', body: formData });
-        if (!res.ok) throw new Error('Error al subir recurso');
-    
-        document.getElementById('recursoForm').reset();
-        document.getElementById('mensaje').innerHTML = `<span style="color:green;">✅ Recurso subido exitosamente</span>`;
-    
-        cargarRecursos();
-      } catch (err) {
-        document.getElementById('mensaje').textContent = `⛔ ${err.message}`;
-      }
-    });
+  e.preventDefault();
+  
+  const topicId = document.getElementById('topicSelect').value;
+  const subtopicId = document.getElementById('subtopicSelect').value;
+  const archivo = document.getElementById('archivo').files[0];
+
+  if (!topicId || !subtopicId || subtopicId === "undefined") {
+    alert('Por favor selecciona un tema y subtema válido.');
+    return;
+  }
+
+  const extension = archivo.name.split('.').pop().toLowerCase();
+  let fileType = 'other';
+  if (extension === 'pdf') fileType = 'pdf';
+  else if (['doc', 'docx'].includes(extension)) fileType = 'word';
+  else if (['mp4', 'mov', 'avi'].includes(extension)) fileType = 'video';
+  else if (['mp3', 'wav'].includes(extension)) fileType = 'audio';
+  else if (['jpg', 'jpeg', 'png'].includes(extension)) fileType = 'image';
+
+  const formData = new FormData();
+  formData.append('topicId', topicId);
+
+  // 🔥 Agrega también el subjectId aquí:
+  formData.append('subjectId', materiaId);
+
+  if (subtopicId && subtopicId !== "undefined") {
+    formData.append('subtopicId', subtopicId);
+  }
+
+  formData.append('title', document.getElementById('titulo').value);
+  formData.append('description', document.getElementById('descripcion').value);
+  formData.append('file', archivo);
+  formData.append('fileType', fileType);
+
+/*   console.log('✅ FormData a enviar:');
+  for (let [key, value] of formData.entries()) {
+    console.log(`${key}: ${value}`);
+  } */
+
+  try {
+    const res = await fetch(API_UPLOAD, { method: 'POST', body: formData });
+    if (!res.ok) throw new Error('Error al subir recurso');
+
+    document.getElementById('recursoForm').reset();
+    document.getElementById('mensaje').innerHTML = `<span style="color:green;">✅ Recurso subido exitosamente</span>`;
+
+    cargarRecursos();
+  } catch (err) {
+    document.getElementById('mensaje').textContent = `⛔ ${err.message}`;
+  }
+});
     
     async function cargarRecursos() {
       try {
