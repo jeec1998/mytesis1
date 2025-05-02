@@ -25,7 +25,7 @@ const LoginScreen: React.FC<Props> = ({ onLogin }) => {
 
   const handleLogin = async () => {
     try {
-      const res = await fetch(`https://77ca-2800-bf0-240f-1059-94b6-7a6-2a7e-4100.ngrok-free.app/users/login`, {
+      const res = await fetch(`https://50bd-2800-bf0-240f-1059-2592-546e-3894-94dc.ngrok-free.app/users/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombreUsuario, password }),
@@ -61,7 +61,7 @@ const LoginScreen: React.FC<Props> = ({ onLogin }) => {
         autoCapitalize="none"
       />
       <TextInput
-        style={styles.input}
+        style={[styles.input, { color: 'black' }]}  
         placeholder="Contraseña"
         value={password}
         onChangeText={setPassword}

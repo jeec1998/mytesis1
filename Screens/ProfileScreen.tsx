@@ -35,7 +35,7 @@ const ProfileScreen: React.FC<Props> = ({ navigation, onLogout }) => {
       const token = await AsyncStorage.getItem('accessToken');
       if (!token) throw new Error('Token no disponible');
 
-      const res = await fetch(`${API}/users/perfil`, {
+      const res = await fetch(`https://50bd-2800-bf0-240f-1059-2592-546e-3894-94dc.ngrok-free.app/users/perfil`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

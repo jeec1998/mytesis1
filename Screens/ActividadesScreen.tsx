@@ -22,21 +22,21 @@ const HomeScreen: React.FC = () => {
   const [refuerzos, setRefuerzos] = useState<Refuerzo[]>([
     {
       id: '1',
-      Materia: 'Álgebra Lineal',
+      Materia: 'Matrices ',
       tema: 'Matrices y Determinantes',
       nota: 2.5,
       subtemasMal: ['Matrices', 'Determinantes'],
     },
     {
       id: '2',
-      Materia: 'Matemáticas',
+      Materia: 'Trigonometría',
       tema: 'Trigonometría',
       nota: 5.8,
       subtemasMal: ['Ángulos Notables'],
     },
     {
       id: '3',
-      Materia: 'Matemáticas',
+      Materia: 'Cálculo Diferencial',
       tema: 'Cálculo Diferencial',
       nota: 8.2,
       subtemasMal: ['Límites', 'Derivadas'],
