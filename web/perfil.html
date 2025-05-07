@@ -306,12 +306,12 @@
 
       // Verificar que las contraseñas coincidan
       if (newPassword !== confirmPassword) {
-        alert('Las contraseñas no coinciden. Por favor, ingresa nuevamente la nueva contraseña.');
+        mostrarAlerta('Contraseña actualizada correctamente', 'success');
         return;
       }
 
       if (!currentPassword || !newPassword) {
-        alert('Por favor, ingresa ambas contraseñas.');
+        mostrarAlerta('Por favor, completa todos los campos', 'error');
         return;
       }
 
@@ -331,7 +331,7 @@
           throw new Error("Error al cambiar la contraseña");
         }
 
-        alert('Contraseña cambiada correctamente');
+       mostrarAlerta('Contraseña actualizada correctamente', 'success');
         cerrarPopup();
       } catch (err) {
         console.error(err);
