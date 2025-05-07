@@ -25,7 +25,7 @@ const LoginScreen: React.FC<Props> = ({ onLogin }) => {
 
   const handleLogin = async () => {
     try {
-      const res = await fetch(`https://50bd-2800-bf0-240f-1059-2592-546e-3894-94dc.ngrok-free.app/users/login`, {
+      const res = await fetch(`https://7c77-2800-bf0-240f-1059-2592-546e-3894-94dc.ngrok-free.app/users/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombreUsuario, password }),
@@ -52,7 +52,7 @@ const LoginScreen: React.FC<Props> = ({ onLogin }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Iniciar Sesión</Text>
+      <Text style={[styles.title, {color: '#4A9EE9'}]}>Iniciar Sesión</Text>
       <TextInput
         style={styles.input}
         placeholder="Usuario"

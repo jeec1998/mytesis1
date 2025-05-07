@@ -5,10 +5,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  TextInput,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-const { API } = process.env; // Asegúrate de que la variable de entorno esté configurada correctamente
+
+const { API } = process.env;
 type Props = {
   navigation: NativeStackNavigationProp<any>;
   onLogout: () => void;
@@ -21,8 +23,46 @@ const ProfileScreen: React.FC<Props> = ({ navigation, onLogout }) => {
     telefono: '',
   });
 
-  const handleEdit = () => {
-    Alert.alert('Editar perfil', 'Funcionalidad aún no implementada.');
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleEdit = async () => {
+    const token = await AsyncStorage.getItem('accessToken');
+    if (!token) {
+      Alert.alert('Error', 'Token no disponible');
+      return;
+    }
+
+    const updatedUser = {
+      nombre: user.nombre,
+      correo: user.correo,
+      telefono: user.telefono,
+    };
+
+    try {
+      const res = await fetch(
+        `https://7c77-2800-bf0-240f-1059-2592-546e-3894-94dc.ngrok-free.app/users/actualizar`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(updatedUser),
+        }
+      );
+
+      const data = await res.json();
+      if (res.ok) {
+        Alert.alert('Éxito', 'Perfil actualizado correctamente');
+        getProfile(); 
+        setIsEditing(false); 
+      } else {
+        Alert.alert('Error', data.message || 'Error al actualizar el perfil');
+      }
+    } catch (error) {
+      console.error('❌ Error al actualizar perfil:', error);
+      Alert.alert('Error', 'No se pudo actualizar el perfil');
+    }
   };
 
   const handleLogout = async () => {
@@ -35,14 +75,16 @@ const ProfileScreen: React.FC<Props> = ({ navigation, onLogout }) => {
       const token = await AsyncStorage.getItem('accessToken');
       if (!token) throw new Error('Token no disponible');
 
-      const res = await fetch(`https://50bd-2800-bf0-240f-1059-2592-546e-3894-94dc.ngrok-free.app/users/perfil`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const res = await fetch(
+        `https://7c77-2800-bf0-240f-1059-2592-546e-3894-94dc.ngrok-free.app/users/perfil`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       const data = await res.json();
       setUser({
@@ -66,31 +108,65 @@ const ProfileScreen: React.FC<Props> = ({ navigation, onLogout }) => {
 
       <View style={styles.card}>
         <Text style={styles.label}>Nombre completo</Text>
-        <Text style={styles.value}>{user.nombre}</Text>
+        {isEditing ? (
+          <TextInput
+            style={styles.input}
+            value={user.nombre}
+            onChangeText={(text) => setUser({ ...user, nombre: text })}
+          />
+        ) : (
+          <Text style={styles.value}>{user.nombre}</Text>
+        )}
       </View>
 
       <View style={styles.card}>
         <Text style={styles.label}>Correo electrónico</Text>
-        <Text style={styles.value}>📧 {user.correo}</Text>
+        {isEditing ? (
+          <TextInput
+            style={styles.input}
+            value={user.correo}
+            onChangeText={(text) => setUser({ ...user, correo: text })}
+          />
+        ) : (
+          <Text style={styles.value}>📧 {user.correo}</Text>
+        )}
       </View>
 
       <View style={styles.card}>
         <Text style={styles.label}>Teléfono</Text>
-        <Text style={styles.value}>📱 {user.telefono}</Text>
+        {isEditing ? (
+          <TextInput
+            style={styles.input}
+            value={user.telefono}
+            onChangeText={(text) => setUser({ ...user, telefono: text })}
+          />
+        ) : (
+          <Text style={styles.value}>📱 {user.telefono}</Text>
+        )}
       </View>
 
-      <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-        <Text style={styles.editButtonText}>✏️ Editar Perfil</Text>
-      </TouchableOpacity>
+      {isEditing ? (
+        <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
+          <Text style={styles.editButtonText}>Guardar cambios</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => setIsEditing(true)}
+        >
+          <Text style={styles.editButtonText}>✏️ Editar Perfil</Text>
+        </TouchableOpacity>
+      )}
 
-      <TouchableOpacity style={[styles.editButton, { backgroundColor: '#E94E4E', marginTop: 15 }]} onPress={handleLogout}>
+      <TouchableOpacity
+        style={[styles.editButton, { backgroundColor: '#E94E4E', marginTop: 15 }]}
+        onPress={handleLogout}
+      >
         <Text style={styles.editButtonText}>🔒 Cerrar sesión</Text>
       </TouchableOpacity>
     </View>
   );
 };
-
-export default ProfileScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -126,6 +202,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
+  input: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingLeft: 10,
+    marginTop: 5,
+  },
   editButton: {
     backgroundColor: '#2F80ED',
     paddingVertical: 12,
@@ -139,3 +223,5 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+
+export default ProfileScreen;

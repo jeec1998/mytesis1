@@ -77,16 +77,17 @@
     }
 
     #temaForm {
-      display: none;
-      flex-direction: column;
-      gap: 12px;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      max-width: 500px;
-      margin-bottom: 30px;
-    }
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  max-width: 900px; /* <-- Antes era 500px */
+  margin: 0 auto 30px auto;
+}
+
 
     #temaForm input {
       width: 100%;
@@ -128,38 +129,72 @@
       margin-top: 12px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 14px;
+      align-items: center;
+      /* Centra las tarjetas para mejor simetría */
     }
 
     .subtema-item {
       background: #f0f4ff;
-      padding: 10px 16px;
-      border-radius: 10px;
+      padding: 12px;
+      border-radius: 12px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+      justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
       font-size: 15px;
       color: #333;
       font-weight: 500;
+      width: 100%;
+      max-width: 850px;
+      gap: 12px;
     }
 
+    .subtema-item input[type="text"],
+    .subtema-item input[type="number"] {
+  width: 100px;  /* Aumentado */
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px; 
+  height: 42px;
+  flex-grow: 0;
+}
+
+
+
+
+/* Ocultar flechas en todos los navegadores */
+.subtema-item input[type=number]::-webkit-inner-spin-button, 
+.subtema-item input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+
     .subtema-item button {
-      background: #ff5f5f;
+      background-color: #ff4d4d;
       border: none;
-      color: white;
-      font-size: 16px;
-      padding: 4px 10px;
-      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
       cursor: pointer;
-      font-weight: bold;
-      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s, transform 0.2s;
     }
 
     .subtema-item button:hover {
-      background: #e04545;
+      background-color: #d93636;
+      transform: scale(1.05);
     }
 
+    .subtema-item button svg {
+      width: 18px;
+      height: 18px;
+    }
 
     #alertaContainer {
       position: fixed;
@@ -233,7 +268,7 @@
       <input type="text" id="nombreTema" placeholder="Nombre del tema" required />
       <div style="display: flex; gap: 10px; align-items: center;">
         <input type="text" id="nuevoSubtema" placeholder="Nombre del subtema" style="flex: 2;" />
-        <input type="number" id="valorSubtema" placeholder="Valor" style="flex: 1;" min="0" />
+        <input type="number" id="valorSubtema" placeholder="Calificación" style="flex: 1;" min="0" />
       </div>
 
 
@@ -351,16 +386,40 @@
       subtemas.splice(index, 1);
       renderSubtemas();
     }
+    function actualizarSubtemaNombre(index, nuevoNombre) {
+      subtemas[index].name = nuevoNombre;
+    }
+
+    function actualizarSubtemaValor(index, nuevoValor) {
+      nuevoValor = Number(nuevoValor);
+
+      const sumaActual = subtemas.reduce((acc, sub, idx) => acc + (idx === index ? 0 : sub.maxScore), 0);
+
+      if (nuevoValor <= 0 || sumaActual + nuevoValor > 10) {
+        mostrarAlerta(`El valor debe ser mayor a 0 y la suma total no puede exceder 10. Disponible: ${10 - sumaActual}`, 'error');
+        renderSubtemas(); // Restaurar valor anterior si excede
+        return;
+      }
+
+      subtemas[index].maxScore = nuevoValor;
+    }
 
     function renderSubtemas() {
       subtemasList.innerHTML = '';
       subtemas.forEach((sub, idx) => {
         const div = document.createElement('div');
         div.className = 'subtema-item';
+
         div.innerHTML = `
-      <span>${idx + 1}. ${sub.name} (Valor: ${sub.maxScore})</span>
-      <button onclick="eliminarSubtema(${idx})">×</button>
+      <input type="text" value="${sub.name}" onchange="actualizarSubtemaNombre(${idx}, this.value)">
+      <input type="number" value="${sub.maxScore}" onchange="actualizarSubtemaValor(${idx}, this.value)">
+      <button onclick="eliminarSubtema(${idx})">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18M6 6l12 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     `;
+
         subtemasList.appendChild(div);
       });
     }
