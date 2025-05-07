@@ -68,13 +68,53 @@
     button:hover {
       background-color: #357ABD;
     }
+
+    /* Estilos del popup */
+    #popupCambioContrasena {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    #popupCambioContrasena .popup-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    #popupCambioContrasena input {
+      width: 80%;
+    }
+
+    #popupCambioContrasena button {
+      margin-top: 15px;
+    }
+
+    /* Alerta flotante */
+    #alertaContainer {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
   </style>
 </head>
 
 <body>
-
+  <div id="alertaContainer"></div>
   <nav>
-    <a href="#" id="volverInicio">← Volver al inicio</a>
+    <a href="javascript:history.back()" id="volverInicio">← Volver al inicio</a>
   </nav>
 
   <div class="profile-container">
@@ -88,20 +128,68 @@
       <input type="email" id="email" readonly>
 
       <label>Teléfono</label>
-      <input type="text" id="telefono" required>
+      <input type="text" id="telefono" placeholder="+593 968144760" required />
 
       <label>Rol</label>
       <input type="text" id="role" readonly required>
 
-
       <button type="submit">Actualizar Perfil</button>
       <button type="button" onclick="cerrarSesion()">Cerrar sesión</button>
+      <!-- Botón para cambiar la contraseña -->
+      <button type="button" id="btnCambiarContrasena">Cambiar Contraseña</button>
     </form>
   </div>
 
+  <!-- Popup para cambiar la contraseña -->
+  <div id="popupCambioContrasena">
+    <div class="popup-content">
+      <h3>Cambiar Contraseña</h3>
+      <label for="currentPassword">Contraseña Actual</label>
+      <input type="password" id="currentPassword" placeholder="Ingresa la contraseña actual" required>
+
+      <label for="newPassword">Nueva Contraseña</label>
+      <input type="password" id="newPassword" placeholder="Ingresa nueva contraseña" required>
+
+      <label for="confirmPassword">Confirmar Nueva Contraseña</label>
+      <input type="password" id="confirmPassword" placeholder="Confirma tu nueva contraseña" required>
+
+      <button onclick="cambiarContrasena()">Guardar Nueva Contraseña</button>
+      <button onclick="cerrarPopup()">Cancelar</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.6/inputmask.min.js"></script>
   <script>
     const API_GET = 'http://localhost:3000/users/perfil';
     const API_PUT = 'http://localhost:3000/users/actualizar';
+    const API_CaCo = 'http://localhost:3000/users/cambiar-contrasena';
+
+    function mostrarAlerta(mensaje, tipo = 'success') {
+      const alertaContainer = document.getElementById('alertaContainer');
+      const alerta = document.createElement('div');
+      alerta.textContent = mensaje;
+      alerta.style.backgroundColor = tipo === 'success' ? '#4CAF50' : '#f44336';
+      alerta.style.color = 'white';
+      alerta.style.padding = '12px 20px';
+      alerta.style.marginBottom = '10px';
+      alerta.style.borderRadius = '8px';
+      alerta.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+      alerta.style.fontSize = '16px';
+      alerta.style.minWidth = '250px';
+      alerta.style.textAlign = 'center';
+      alerta.style.opacity = '0';
+      alerta.style.transition = 'opacity 0.5s';
+
+      alertaContainer.appendChild(alerta);
+
+      setTimeout(() => {
+        alerta.style.opacity = '1';
+        setTimeout(() => {
+          alerta.style.opacity = '0';
+          setTimeout(() => alerta.remove(), 500);
+        }, 3000);
+      }, 100);
+    }
 
     function getAuthHeaders() {
       const token = localStorage.getItem('accessToken');
@@ -154,10 +242,18 @@
 
     document.getElementById('perfilForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const telefono = document.getElementById('telefono').value;
+
+      // Validación del formato del teléfono
+      const regexTelefono = /^\+5939\d{8}$/; // Debe ser +593 seguido de un 9 y 8 dígitos
+      if (!regexTelefono.test(telefono)) {
+        mostrarAlerta('El número de teléfono no es válido. Debe comenzar con +593 seguido de 9 dígitos.', 'error');
+        return;
+      }
 
       const datosActualizados = {
         name: document.getElementById('name').value,
-        telefono: document.getElementById('telefono').value,
+        telefono: telefono,
         role: document.getElementById('role').value,
       };
 
@@ -172,11 +268,12 @@
           throw new Error("Error al actualizar perfil");
         }
 
-        alert('Perfil actualizado correctamente');
-      } catch (err) {
-        console.error(err);
-        alert(err.message);
-      }
+        // Muestra la alerta de éxito utilizando la función mostrarAlerta
+      mostrarAlerta('Perfil actualizado correctamente', 'success');
+    } catch (err) {
+      console.error(err);
+      mostrarAlerta('Error al actualizar perfil', 'error');
+    }
     });
 
     function cerrarSesion() {
@@ -190,6 +287,66 @@
     const role = getRoleFromToken();
     const rutaInicio = getInicioPorRol(role);
     document.getElementById('volverInicio').href = rutaInicio;
+
+    // Función para abrir el popup de cambio de contraseña
+    document.getElementById('btnCambiarContrasena').addEventListener('click', () => {
+      document.getElementById('popupCambioContrasena').style.display = 'flex';
+    });
+
+    // Función para cerrar el popup
+    function cerrarPopup() {
+      document.getElementById('popupCambioContrasena').style.display = 'none';
+    }
+
+    // Función para cambiar la contraseña
+    async function cambiarContrasena() {
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      // Verificar que las contraseñas coincidan
+      if (newPassword !== confirmPassword) {
+        alert('Las contraseñas no coinciden. Por favor, ingresa nuevamente la nueva contraseña.');
+        return;
+      }
+
+      if (!currentPassword || !newPassword) {
+        alert('Por favor, ingresa ambas contraseñas.');
+        return;
+      }
+
+      const datos = {
+        currentPassword: currentPassword,
+        newPassword: newPassword
+      };
+
+      try {
+        const res = await fetch(API_CaCo, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(datos),
+        });
+
+        if (!res.ok) {
+          throw new Error("Error al cambiar la contraseña");
+        }
+
+        alert('Contraseña cambiada correctamente');
+        cerrarPopup();
+      } catch (err) {
+        console.error(err);
+        alert(err.message);
+      }
+    }
+
+    window.onload = function () {
+      const input = document.getElementById('telefono');
+      const im = new Inputmask({
+        "mask": "+593 9{8}",
+        "numericInput": true
+      });
+      im.mask(input);
+    };
 
     cargarPerfil();
   </script>

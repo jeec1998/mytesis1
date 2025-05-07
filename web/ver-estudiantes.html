@@ -19,39 +19,26 @@
       background-color: #f4f9ff;
       color: #333;
     }
-
     nav {
       background-color: #4A90E2;
       display: flex;
       justify-content: space-between;
+      /* Cambié esto para alinear a la izquierda */
       align-items: center;
       padding: 12px 24px;
-      flex-wrap: wrap;
     }
 
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 18px;
+    }
     nav .logo {
       color: white;
       font-size: 22px;
       font-weight: bold;
-    }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-    }
-
-    nav ul li a {
-      color: white;
-      text-decoration: none;
-      font-size: 16px;
-      padding: 6px 10px;
-      transition: background 0.3s;
-    }
-
-    nav ul li a:hover {
-      background-color: #357ABD;
-      border-radius: 5px;
+      justify-content: flex-start;
     }
 
     main {
@@ -208,11 +195,8 @@
 
   <nav>
     <div class="logo">Panel</div>
-    <ul>
-      <li><a href="javascript:history.back()">← Volver</a></li>
-    </ul>
+    <a href="javascript:history.back()">← Volver</a>
   </nav>
-
   <main>
     <h2 id="tituloFormulario">Alumnos</h2>
 
@@ -254,6 +238,8 @@
     </div>
 
   </main>
+
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.6/inputmask.min.js"></script>
   <script>
     const API = 'http://localhost:3000/users';
@@ -369,9 +355,7 @@ if (!regexTelefono.test(telefono)) {
           // Verificar si el campo 'link' está presente en la respuesta
           if (createdAlumno.link) {
             mostrarPopupWhatsapp(createdAlumno.link); // Abre el popup con el enlace de WhatsApp
-          } else {
-            mostrarAlerta('Usuario creado sin teléfono o enlace de WhatsApp', 'warning');
-          }
+          } 
         } else {
           const error = await res.json();
           mostrarAlerta(error.message || 'Error en operación', 'error');
@@ -563,6 +547,7 @@ if (!regexTelefono.test(telefono)) {
         mostrarAlerta('Error de conexión', 'error');
       }
     }
+   
 
     window.onload = function() {
       const input = document.getElementById('telefono');
@@ -573,6 +558,7 @@ if (!regexTelefono.test(telefono)) {
       });
       im.mask(input);
     };
+
 
     cargarAlumnos();
   </script>
