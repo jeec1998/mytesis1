@@ -286,6 +286,7 @@
           <th>#</th>
           <th>Nombre del Tema</th>
           <th>Subtemas</th>
+          <th>Calificaciones</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -426,24 +427,33 @@
 
 
     function renderTemas(lista) {
-      temas = lista;
-      tablaTemasBody.innerHTML = '';
-      temas.forEach((tema, idx) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-        <td>${idx + 1}</td>
-        <td>${tema.name}</td>
-       <td>${tema.subtopics.length ? tema.subtopics.map(st => `${st.name} (${st.maxScore})`).join(', ') : '-'}</td>
-        <td>
-          <div class="acciones">
-            <button class="boton-accion" onclick="editarTema('${tema._id}')">✏️ Editar</button>
-            <button class="boton-accion" onclick="eliminarTema('${tema._id}')">🗑️ Eliminar</button>
-          </div>
-        </td>
-      `;
-        tablaTemasBody.appendChild(row);
-      });
-    }
+  temas = lista;
+  tablaTemasBody.innerHTML = '';
+  temas.forEach((tema, idx) => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${idx + 1}</td>
+      <td>${tema.name}</td>
+      <td>
+        ${tema.subtopics.length 
+          ? `<ul style="list-style-type: none; padding-left: 0;">${tema.subtopics.map(st => `<li>${st.name}</li>`).join('')}</ul>` 
+          : '-'}
+      </td>
+      <td>
+        ${tema.subtopics.length 
+          ? `<ul style="list-style-type: none; padding-left: 0;">${tema.subtopics.map(st => `<li>${st.maxScore}</li>`).join('')}</ul>` 
+          : '-'}
+      </td>
+      <td>
+        <div class="acciones">
+          <button class="boton-accion" onclick="editarTema('${tema._id}')">✏️ Editar</button>
+          <button class="boton-accion" onclick="eliminarTema('${tema._id}')">🗑️ Eliminar</button>
+        </div>
+      </td>
+    `;
+    tablaTemasBody.appendChild(row);
+  });
+}
 
     function resetFormulario() {
       formTema.reset();
