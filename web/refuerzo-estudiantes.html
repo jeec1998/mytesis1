@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Materias del Docente</title>
+  <title>Refuerzo</title>
   <style>
     * {
       box-sizing: border-box;
@@ -16,53 +16,25 @@
       font-family: 'Segoe UI', sans-serif;
       background-color: #f4f9ff;
       color: #333;
-      padding: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 10vh;
+      flex-direction: column;
     }
 
-    /* Header styles */
-    header {
-      background-color: #4A90E2;
-      color: white;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 30px;
-      text-align: center;
-    }
-
-    header h1 {
-      font-size: 2rem;
-      margin: 0;
-    }
-
-    header p {
-      font-size: 1.1rem;
-      margin-top: 5px;
-    }
-
-    h2 {
-      color: #4A90E2;
-      margin-bottom: 20px;
-    }
-
-    select {
-      width: 100%;
-      padding: 12px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      margin-bottom: 20px;
-    }
-
-    /* Nav styles */
     nav {
       background-color: #4A90E2;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 12px 24px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-      border-radius: 10px;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     nav .logo {
@@ -77,79 +49,280 @@
       gap: 20px;
     }
 
-    nav ul li {
-      display: flex;
-      align-items: center;
-    }
-
-    nav ul li a,
-    nav ul li button {
+    nav ul li a {
       color: white;
-      background: none;
-      border: none;
+      text-decoration: none;
       font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
       padding: 6px 10px;
       transition: background 0.3s;
     }
 
-    nav ul li a:hover,
-    nav ul li button:hover {
+    nav ul li a:hover {
       background-color: #357ABD;
       border-radius: 5px;
+    }
+
+    main {
+      padding: 30px;
+      width: 100%;
+      margin-top: 80px;
+    }
+
+    h2 {
+      color: #4A90E2;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .selector-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    select,
+    button {
+      padding: 10px 26px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      outline: none;
+      cursor: pointer;
+      width: 400px;
+    }
+
+    select:focus,
+    button:focus {
+      box-shadow: 0 0 8px rgba(66, 133, 244, 0.8);
+    }
+
+    button {
+      background-color: #4A90E2;
+      color: white;
+      font-weight: bold;
+      border: none;
+      transition: background 0.3s;
+      width: 200px;
+    }
+
+    button:hover {
+      background-color: #9435bd;
+    }
+
+    #topicSelect {
+      max-width: 300px;
+    }
+
+    /* Estilo para la tabla */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 40px;
+    }
+
+    table th,
+    table td {
+      padding: 12px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+
+    /* Definir anchos para las columnas */
+    table th:nth-child(1),
+    table td:nth-child(1) {
+      width: 20%;
+    }
+
+    table th:nth-child(2),
+    table td:nth-child(2) {
+      width: 40%;
+    }
+
+    table th:nth-child(3),
+    table td:nth-child(3) {
+      width: 20%;
+    }
+
+    table th:nth-child(4),
+    table td:nth-child(4) {
+      width: 20%;
+    }
+
+    table th {
+      background-color: #4A90E2;
+      color: white;
+    }
+
+    table tbody tr:nth-child(even) {
+      background-color: #f4f9ff;
+    }
+
+    table tbody tr:hover {
+      background-color: #e2e6f1;
+    }
+
+    #alertaContainer {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+
+    /* Responsive: Ajustar los selectores en pantallas pequeñas */
+    @media screen and (max-width: 768px) {
+      .selector-container {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+      }
+
+      select,
+      button {
+        width: 90%;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Nav section -->
+  <div id="alertaContainer"></div>
+
   <nav>
-    <div class="logo">Panel</div>
+    <div class="logo">Refuerzo</div>
     <ul>
-      <li><a href="refuerzo-estudiantes.html">Refuerzo</a></li>
-      <li><a href="perfil.html">Perfil</a></li>
+      <li><a href="javascript:history.back()">← Volver</a></li>
     </ul>
   </nav>
 
-  <!-- Header section -->
-  <header>
-    <h1>Panel de Materias</h1>
-    <p>Seleccione la materia que desee</p>
-  </header>
+  <main>
+    <h2>Seleccione una Materia y un Tema</h2>
 
-  <h2>Seleccione una Materia</h2>
+    <!-- Contenedor de selectores de materia y tema -->
+    <div class="selector-container">
+      <div>
+        <label for="materiasContainer">Materia:</label>
+        <select id="materiasContainer">
+          <option value="">Seleccione una materia</option>
+        </select>
+      </div>
 
-  <!-- Select donde se mostrarán las materias -->
-  <select id="materiasContainer">
-    <option value="">Seleccione una materia</option>
-  </select>
+      <div>
+        <label for="topicSelect">Tema:</label>
+        <select id="topicSelect">
+          <option value="">Seleccione un tema</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Tabla de subtemas -->
+    <table id="tablaSubtemas">
+      <thead>
+        <tr>
+          <th>Nombre del Tema</th>
+          <th>Subtemas</th>
+          <th>Calificaciones</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
 
   <script>
-    const container = document.getElementById('materiasContainer');
     const API = 'http://localhost:3000/Subjects';
+    const API_TOPICS = 'http://localhost:3000/topics';
+    const tablaSubtemasBody = document.querySelector('#tablaSubtemas tbody');
+    let materiaId;
+    let temas = [];
 
-    function getAuthHeaders() {
-      const token = localStorage.getItem('accessToken');
-      return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
-    }
-
-    function getUserIdFromToken() {
-      const token = localStorage.getItem('accessToken');
-      if (!token) return null;
+    // Función para cargar los temas de la materia seleccionada
+    async function cargarTemas(materiaId) {
       try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        return payload._id;
-      } catch (e) {
-        console.error('Token inválido:', e);
-        return null;
+        const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` };
+        const res = await fetch(`${API_TOPICS}/materia/${materiaId}`, { headers });
+        const listaTopics = await res.json();
+        const topicSelect = document.getElementById('topicSelect');
+
+        // Limpiar select antes de agregar nuevos temas
+        topicSelect.innerHTML = '<option value="">Seleccione un tema</option>';
+
+        listaTopics.forEach(topic => {
+          const option = document.createElement('option');
+          option.value = topic._id;
+          option.textContent = topic.name;
+          topicSelect.appendChild(option);
+        });
+
+        // Guardamos los temas para poder acceder a sus subtemas más tarde
+        temas = listaTopics;
+      } catch (error) {
+        console.error('Error cargando temas:', error);
       }
     }
 
+    // Función para cargar los subtemas del tema seleccionado
+    function cargarSubtemas(topicId) {
+      // Buscar el tema seleccionado y sus subtemas
+      const temaSeleccionado = temas.find(topic => topic._id === topicId);
+
+      // Limpiar la tabla de subtemas
+      tablaSubtemasBody.innerHTML = '';
+
+      if (temaSeleccionado && temaSeleccionado.subtopics && temaSeleccionado.subtopics.length > 0) {
+
+        // Crear una sola fila con todos los subtemas, calificaciones y botones
+        const row = document.createElement('tr');
+        row.innerHTML = `
+         <td><strong>${temaSeleccionado.name}</strong></td>
+          <td>
+            <ul style="list-style-type: none; padding-left: 0;">
+              ${temaSeleccionado.subtopics.map(subtema => `<li>${subtema.name}</li>`).join('')}
+            </ul>
+          </td>
+          <td>
+            <ul style="list-style-type: none; padding-left: 0;">
+              ${temaSeleccionado.subtopics.map(subtema => 
+                `<li><input type="number" min="0" value="${subtema.calificacion || 0}" onchange="guardarCalificacion('${subtema._id}', this.value)"></li>`
+              ).join('')}
+            </ul>
+          </td>
+       <button>Generar Refuerzo</button>
+        `;
+        tablaSubtemasBody.appendChild(row);
+      } else {
+        // Si no hay subtemas, mostrar un mensaje informativo
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td colspan="4" style="text-align: center;">No hay subtemas disponibles para este tema.</td>
+        `;
+        tablaSubtemasBody.appendChild(row);
+      }
+    }
+
+    // Función para guardar la calificación
+    function guardarCalificacion(id, valor) {
+      console.log(`Guardando calificación para subtema ${id}: ${valor}`);
+      // Aquí puedes hacer el API call para actualizar la calificación en la base de datos
+    }
+
+    // Función para generar refuerzo (puedes añadir la lógica para ello)
+    function generarRefuerzo(subtemaId) {
+      console.log(`Generando refuerzo para el subtema ${subtemaId}`);
+      // Aquí puedes agregar la lógica para generar el refuerzo (por ejemplo, enviar una solicitud para crear o asignar el refuerzo)
+    }
+
+    // Cargar las materias cuando la página se cargue
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchMaterias();
+    });
+
     // Función para obtener las materias y mostrarlas en el select
     async function fetchMaterias() {
-      const userId = getUserIdFromToken();
+      const userId = localStorage.getItem('userId');
       if (!userId) {
         alert('No se pudo identificar al usuario. Inicia sesión nuevamente.');
         return;
@@ -158,7 +331,7 @@
       try {
         const res = await fetch(`${API}/usuario/${userId}`, {
           method: 'GET',
-          headers: getAuthHeaders()
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
         });
         const data = await res.json();
         renderMaterias(data);
@@ -169,18 +342,35 @@
 
     // Función para mostrar las materias en el select
     function renderMaterias(materias) {
-      container.innerHTML = '<option value="">Seleccione una materia</option>'; // Limpiar select y agregar la opción inicial
+      const materiasContainer = document.getElementById('materiasContainer');
+      materiasContainer.innerHTML = '<option value="">Seleccione una materia</option>'; // Limpiar select y agregar la opción inicial
 
       materias.forEach(m => {
         const option = document.createElement('option');
         option.value = m._id;
         option.textContent = `${m.name} (${m.curso || 'Sin curso'})`;
-        container.appendChild(option);
+        materiasContainer.appendChild(option);
       });
     }
 
-    // Cargar las materias cuando la página se cargue
-    document.addEventListener('DOMContentLoaded', fetchMaterias);
+    // Evento para cuando se selecciona una materia
+    document.getElementById('materiasContainer').addEventListener('change', (event) => {
+      materiaId = event.target.value;
+      if (materiaId) {
+        cargarTemas(materiaId); // Cargar los temas de la materia seleccionada
+        cargarSubtemas(''); // Limpiar los subtemas al seleccionar una nueva materia
+      } else {
+        document.getElementById('topicSelect').innerHTML = '<option value="">Seleccione un tema</option>'; // Limpiar el select de temas
+      }
+    });
+
+    // Evento para cuando se selecciona un tema
+    document.getElementById('topicSelect').addEventListener('change', (event) => {
+      const topicId = event.target.value;
+      if (topicId) {
+        cargarSubtemas(topicId); // Cargar los subtemas del tema seleccionado
+      }
+    });
   </script>
 
 </body>

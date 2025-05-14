@@ -217,13 +217,11 @@
 </head>
 
 <body>
-
-  <div id="alertaContainer"></div> <!-- 🔥 Contenedor de alertas -->
-
+  <div id="alertaContainer"></div>
   <nav>
-    <div class="logo">Panel</div>
+    <div class="logo">Materias</div>
     <ul>
-      <li><a href="admin.html">← Volver</a></li>
+      <li><a href="javascript:history.back()" id="volverInicio">Volver al inicio</a></li>
     </ul>
   </nav>
 
@@ -307,9 +305,11 @@
 
       if (!docenteId) {
         docenteId = localStorage.getItem('userId');
+      
       }
 
       return docenteId;
+
     }
 
 
@@ -481,5 +481,4 @@
     fetchMateriasByDocente();
   </script>
 </body>
-
 </html>
