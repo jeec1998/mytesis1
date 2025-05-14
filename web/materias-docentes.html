@@ -76,17 +76,37 @@
       background-color: #357ABD;
     }
 
-    #materiaForm {
-      display: none;
-      flex-direction: column;
-      gap: 12px;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      max-width: 400px;
-      margin-bottom: 30px;
-    }
+   #materiaForm {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 40%;
+  margin-bottom: 30px;
+  margin: 0 auto; /* Centra el formulario */
+}
+
+@media (max-width: 1200px) {
+  #materiaForm {
+    max-width: 60%; /* Ajusta el tamaño en pantallas más grandes */
+  }
+}
+
+@media (max-width: 768px) {
+  #materiaForm {
+    max-width: 80%; /* Aumenta el ancho en pantallas medianas */
+  }
+}
+
+@media (max-width: 480px) {
+  #materiaForm {
+    max-width: 90%; /* Ajusta el formulario a pantallas pequeñas */
+  }
+}
+
 
     #materiaForm input {
       width: 100%;
