@@ -130,7 +130,6 @@
       border: 1px solid #ddd;
     }
 
-    /* Definir anchos para las columnas */
     table th:nth-child(1),
     table td:nth-child(1) {
       width: 20%;
@@ -192,7 +191,7 @@
   <div id="alertaContainer"></div>
 
   <nav>
-    <div class="logo">Refuerzo</div>
+    <div class="logo">Calificaciones</div>
     <ul>
       <li><a href="javascript:history.back()">← Volver</a></li>
     </ul>
@@ -200,8 +199,6 @@
 
   <main>
     <h2>Seleccione una Materia y un Tema</h2>
-
-    <!-- Contenedor de selectores de materia y tema -->
     <div class="selector-container">
       <div>
         <label for="materiasContainer">Materia:</label>
@@ -216,163 +213,215 @@
           <option value="">Seleccione un tema</option>
         </select>
       </div>
+
+      <button id="buscarBtn">Buscar</button>
     </div>
 
-    <!-- Tabla de subtemas -->
-    <table id="tablaSubtemas">
+    <!-- Tabla de alumnos -->
+    <h2>Alumnos Registrados</h2>
+    <table id="tablaAlumnos">
       <thead>
         <tr>
-          <th>Nombre del Tema</th>
+          <th>Alumno</th>
           <th>Subtemas</th>
-          <th>Calificaciones</th>
-          <th>Acciones</th>
+          <th>Calificación máxima</th>
+          <th>Calificación Obtenida</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
   </main>
-
   <script>
     const API = 'http://localhost:3000/Subjects';
     const API_TOPICS = 'http://localhost:3000/topics';
-    const tablaSubtemasBody = document.querySelector('#tablaSubtemas tbody');
+    const API_ALUMNOS = 'http://localhost:3000/users';
+    const tablaAlumnosBody = document.querySelector('#tablaAlumnos tbody');
     let materiaId;
     let temas = [];
 
-    // Función para cargar los temas de la materia seleccionada
-    async function cargarTemas(materiaId) {
+    function getAuthHeaders() {
+      const token = localStorage.getItem('accessToken');
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      };
+    }
+
+    function getDocenteIdFromURL() {
+      const docenteId = localStorage.getItem('userId');
+      return docenteId;
+    }
+
+    // Función para cargar las materias del docente
+    async function cargarMaterias() {
+      const docenteId = localStorage.getItem('userId'); // Obtenemos el ID del docente desde localStorage
+
+      // Realizamos la solicitud correctamente al endpoint adecuado
       try {
-        const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` };
-        const res = await fetch(`${API_TOPICS}/materia/${materiaId}`, { headers });
-        const listaTopics = await res.json();
-        const topicSelect = document.getElementById('topicSelect');
-
-        // Limpiar select antes de agregar nuevos temas
-        topicSelect.innerHTML = '<option value="">Seleccione un tema</option>';
-
-        listaTopics.forEach(topic => {
-          const option = document.createElement('option');
-          option.value = topic._id;
-          option.textContent = topic.name;
-          topicSelect.appendChild(option);
-        });
-
-        // Guardamos los temas para poder acceder a sus subtemas más tarde
-        temas = listaTopics;
-      } catch (error) {
-        console.error('Error cargando temas:', error);
-      }
-    }
-
-    // Función para cargar los subtemas del tema seleccionado
-    function cargarSubtemas(topicId) {
-      // Buscar el tema seleccionado y sus subtemas
-      const temaSeleccionado = temas.find(topic => topic._id === topicId);
-
-      // Limpiar la tabla de subtemas
-      tablaSubtemasBody.innerHTML = '';
-
-      if (temaSeleccionado && temaSeleccionado.subtopics && temaSeleccionado.subtopics.length > 0) {
-
-        // Crear una sola fila con todos los subtemas, calificaciones y botones
-        const row = document.createElement('tr');
-        row.innerHTML = `
-         <td><strong>${temaSeleccionado.name}</strong></td>
-          <td>
-            <ul style="list-style-type: none; padding-left: 0;">
-              ${temaSeleccionado.subtopics.map(subtema => `<li>${subtema.name}</li>`).join('')}
-            </ul>
-          </td>
-          <td>
-            <ul style="list-style-type: none; padding-left: 0;">
-              ${temaSeleccionado.subtopics.map(subtema => 
-                `<li><input type="number" min="0" value="${subtema.calificacion || 0}" onchange="guardarCalificacion('${subtema._id}', this.value)"></li>`
-              ).join('')}
-            </ul>
-          </td>
-       <button>Generar Refuerzo</button>
-        `;
-        tablaSubtemasBody.appendChild(row);
-      } else {
-        // Si no hay subtemas, mostrar un mensaje informativo
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td colspan="4" style="text-align: center;">No hay subtemas disponibles para este tema.</td>
-        `;
-        tablaSubtemasBody.appendChild(row);
-      }
-    }
-
-    // Función para guardar la calificación
-    function guardarCalificacion(id, valor) {
-      console.log(`Guardando calificación para subtema ${id}: ${valor}`);
-      // Aquí puedes hacer el API call para actualizar la calificación en la base de datos
-    }
-
-    // Función para generar refuerzo (puedes añadir la lógica para ello)
-    function generarRefuerzo(subtemaId) {
-      console.log(`Generando refuerzo para el subtema ${subtemaId}`);
-      // Aquí puedes agregar la lógica para generar el refuerzo (por ejemplo, enviar una solicitud para crear o asignar el refuerzo)
-    }
-
-    // Cargar las materias cuando la página se cargue
-    document.addEventListener('DOMContentLoaded', () => {
-      fetchMaterias();
-    });
-
-    // Función para obtener las materias y mostrarlas en el select
-    async function fetchMaterias() {
-      const userId = localStorage.getItem('userId');
-      if (!userId) {
-        alert('No se pudo identificar al usuario. Inicia sesión nuevamente.');
-        return;
-      }
-
-      try {
-        const res = await fetch(`${API}/usuario/${userId}`, {
+        const res = await fetch(`http://localhost:3000/Subjects/usuario/${docenteId}`, {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
+          headers: getAuthHeaders() // Usamos los headers de autorización
         });
-        const data = await res.json();
-        renderMaterias(data);
+
+        if (res.ok) {
+          const materias = await res.json(); // Obtenemos las materias
+          renderMaterias(materias); // Aquí renderizamos las materias en el select
+        } else {
+          throw new Error('No se pudieron cargar las materias.');
+        }
       } catch (error) {
-        console.error('Error al obtener materias:', error);
+        console.error('Error al cargar materias:', error);
+        mostrarAlerta('Error al cargar materias.', 'error');
       }
     }
 
     // Función para mostrar las materias en el select
     function renderMaterias(materias) {
       const materiasContainer = document.getElementById('materiasContainer');
-      materiasContainer.innerHTML = '<option value="">Seleccione una materia</option>'; // Limpiar select y agregar la opción inicial
 
+      // Limpiar el select antes de agregar nuevas opciones
+      materiasContainer.innerHTML = '<option value="">Seleccione una materia</option>';
+
+      // Agregar las materias al select
       materias.forEach(m => {
         const option = document.createElement('option');
-        option.value = m._id;
-        option.textContent = `${m.name} (${m.curso || 'Sin curso'})`;
-        materiasContainer.appendChild(option);
+        option.value = m._id;  // Establecer el _id de la materia como valor
+        option.textContent = m.name;  // El nombre de la materia es el texto visible
+        materiasContainer.appendChild(option);  // Añadir la opción al select
       });
     }
-
-    // Evento para cuando se selecciona una materia
-    document.getElementById('materiasContainer').addEventListener('change', (event) => {
-      materiaId = event.target.value;
+    // Limpiar los temas previos si se selecciona otra materia
+    document.getElementById('materiasContainer').addEventListener('change', (e) => {
+      materiaId = e.target.value;
+      const topicSelect = document.getElementById('topicSelect');
+      topicSelect.innerHTML = '<option value="">Seleccione un tema</option>'; // Limpiar el select de temas
       if (materiaId) {
-        cargarTemas(materiaId); // Cargar los temas de la materia seleccionada
-        cargarSubtemas(''); // Limpiar los subtemas al seleccionar una nueva materia
+        cargarTemas(materiaId);
+      }
+    });
+    // Función para cargar los temas de una materia seleccionada
+    async function cargarTemas() {
+      try {
+        const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` };
+        const res = await fetch(`${API_TOPICS}/materia/${materiaId}`, { headers });
+        listaTopics = await res.json();
+        const topicSelect = document.getElementById('topicSelect');
+
+        topicSelect.innerHTML = '<option value="">Seleccione un tema</option>'; // Clear previous options
+        listaTopics.forEach(topic => {
+          const option = document.createElement('option');
+          option.value = topic._id;
+          option.textContent = topic.name;
+          option.dataset.subtopics = JSON.stringify(topic.subtopics);
+          topicSelect.appendChild(option);
+        });
+        
+      } catch (error) {
+        console.error('Error cargando temas:', error);
+      }
+    }
+
+   // Función para cargar los alumnos de la materia seleccionada
+
+async function cargarAlumnos(materiaId, topicId) {
+  try {
+    const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` };
+
+    // Obtener los alumnos
+    const resAlumnos = await fetch(`${API_ALUMNOS}/materia/${materiaId}`, { headers });
+    const alumnos = await resAlumnos.json();
+
+    // Obtener los temas y subtemas relacionados con el topicId
+    const resTemas = await fetch(`${API_TOPICS}/materia/${materiaId}`, { headers });
+    const temas = await resTemas.json();
+
+    // Filtrar los subtemas del tema que corresponde al topicId
+    const temaSeleccionado = temas.find(tema => tema._id === topicId);
+    const subtemas = temaSeleccionado ? temaSeleccionado.subtopics : [];
+
+    tablaAlumnosBody.innerHTML = ''; // Limpiar la tabla antes de agregar los nuevos datos
+
+    // Recorrer los alumnos y asociarles los subtemas
+    alumnos.forEach(alumno => {
+      const row = document.createElement('tr');
+      
+      // Filtrar los subtemas relacionados con el topicId
+      const subtemasHtml = subtemas.map(subtema => {
+        return `<li>${subtema.name || 'Sin nombre'} </li>`;
+      }).join('');
+
+      // Si no hay subtemas, mostrar un mensaje en la tabla
+      const subtemasDisplay = subtemasHtml.length > 0 ? subtemasHtml : '<li>No hay subtemas para este tema</li>';
+
+      // Mostrar solo el maxScore de los subtemas en la columna de calificación máxima
+      const calificacionesMaxHtml = subtemas.map(subtema => {
+        return `<li>${subtema.maxScore || 0}</li>`;
+      }).join('');
+
+      // Placeholder para la calificación observada
+      let calificacionOb = 'Por ingresar'; // Placeholder por ahora
+
+      // Crear la fila para el alumno
+      row.innerHTML = `
+        <td>${alumno.name}</td>
+        <td><ul style="list-style-type: none; padding-left: 0;">${subtemasDisplay}</ul></td>
+        <td><ul style="list-style-type: none; padding-left: 0;">${calificacionesMaxHtml}</ul></td>
+        <td>${calificacionOb}</td>
+      `;
+
+      // Agregar la fila a la tabla
+      tablaAlumnosBody.appendChild(row);
+    });
+  } catch (error) {
+    console.error('Error cargando alumnos o subtemas:', error);
+  }
+}
+
+    // Función para mostrar alertas
+    function mostrarAlerta(message, type) {
+      const alertaContainer = document.getElementById('alertaContainer');
+      alertaContainer.innerHTML = `
+        <div style="background-color: ${type === 'error' ? '#f8d7da' : '#d4edda'}; color: ${type === 'error' ? '#721c24' : '#155724'}; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+          ${message}
+        </div>
+      `;
+      setTimeout(() => {
+        alertaContainer.innerHTML = '';
+      }, 3000); // Desaparece la alerta después de 3 segundos
+    }
+
+    // Evento para cargar temas cuando se seleccione una materia
+    document.getElementById('materiasContainer').addEventListener('change', (e) => {
+      materiaId = e.target.value;
+      if (materiaId) {
+        cargarTemas(materiaId);
+      }
+    });
+
+    // Evento para cargar alumnos y subtemas cuando se seleccione un tema
+    document.getElementById('topicSelect').addEventListener('change', (e) => {
+      const topicId = e.target.value;
+      if (materiaId && topicId) {
+        cargarAlumnos(materiaId, topicId);
+      }
+    });
+
+    // Evento para buscar alumnos
+    document.getElementById('buscarBtn').addEventListener('click', () => {
+      const topicId = document.getElementById('topicSelect').value;
+      if (materiaId && topicId) {
+        cargarAlumnos(materiaId, topicId);
       } else {
-        document.getElementById('topicSelect').innerHTML = '<option value="">Seleccione un tema</option>'; // Limpiar el select de temas
+        // Mostrar un mensaje si no se seleccionó materia o tema
+        mostrarAlerta('Por favor, seleccione una materia y un tema antes de buscar.', 'error');
       }
     });
 
-    // Evento para cuando se selecciona un tema
-    document.getElementById('topicSelect').addEventListener('change', (event) => {
-      const topicId = event.target.value;
-      if (topicId) {
-        cargarSubtemas(topicId); // Cargar los subtemas del tema seleccionado
-      }
-    });
+    // Cargar materias al inicio
+    window.onload = () => {
+      cargarMaterias();
+    };
   </script>
-
 </body>
 
 </html>
