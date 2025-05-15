@@ -230,6 +230,9 @@
       </thead>
       <tbody></tbody>
     </table>
+    <div style="text-align: center; margin-top: 20px;">
+      <button id="enviarBtn">Enviar Calificaciones</button>
+    </div>
   </main>
   <script>
     const API = 'http://localhost:3000/Subjects';
@@ -315,68 +318,88 @@
           option.dataset.subtopics = JSON.stringify(topic.subtopics);
           topicSelect.appendChild(option);
         });
-        
+
       } catch (error) {
         console.error('Error cargando temas:', error);
       }
     }
 
-   // Función para cargar los alumnos de la materia seleccionada
+    // Función para cargar los alumnos de la materia seleccionada
 
-async function cargarAlumnos(materiaId, topicId) {
-  try {
-    const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` };
+    async function cargarAlumnos(materiaId, topicId) {
+      try {
+        const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` };
 
-    // Obtener los alumnos
-    const resAlumnos = await fetch(`${API_ALUMNOS}/materia/${materiaId}`, { headers });
-    const alumnos = await resAlumnos.json();
+        // Obtener los alumnos
+        const resAlumnos = await fetch(`${API_ALUMNOS}/materia/${materiaId}`, { headers });
+        const alumnos = await resAlumnos.json();
 
-    // Obtener los temas y subtemas relacionados con el topicId
-    const resTemas = await fetch(`${API_TOPICS}/materia/${materiaId}`, { headers });
-    const temas = await resTemas.json();
+        // Obtener los temas y subtemas relacionados con el topicId
+        const resTemas = await fetch(`${API_TOPICS}/materia/${materiaId}`, { headers });
+        const temas = await resTemas.json();
 
-    // Filtrar los subtemas del tema que corresponde al topicId
-    const temaSeleccionado = temas.find(tema => tema._id === topicId);
-    const subtemas = temaSeleccionado ? temaSeleccionado.subtopics : [];
+        // Filtrar los subtemas del tema que corresponde al topicId
+        const temaSeleccionado = temas.find(tema => tema._id === topicId);
+        const subtemas = temaSeleccionado ? temaSeleccionado.subtopics : [];
 
-    tablaAlumnosBody.innerHTML = ''; // Limpiar la tabla antes de agregar los nuevos datos
+        tablaAlumnosBody.innerHTML = ''; // Limpiar la tabla antes de agregar los nuevos datos
 
-    // Recorrer los alumnos y asociarles los subtemas
-    alumnos.forEach(alumno => {
-      const row = document.createElement('tr');
-      
-      // Filtrar los subtemas relacionados con el topicId
-      const subtemasHtml = subtemas.map(subtema => {
-        return `<li>${subtema.name || 'Sin nombre'} </li>`;
-      }).join('');
+        // Recorrer los alumnos y asociarles los subtemas
+        alumnos.forEach(alumno => {
+          const row = document.createElement('tr');
 
-      // Si no hay subtemas, mostrar un mensaje en la tabla
-      const subtemasDisplay = subtemasHtml.length > 0 ? subtemasHtml : '<li>No hay subtemas para este tema</li>';
+          // Filtrar los subtemas relacionados con el topicId
+          const subtemasHtml = subtemas.map(subtema => {
+            return `<li>${subtema.name || 'Sin nombre'} </li>`;
+          }).join('');
 
-      // Mostrar solo el maxScore de los subtemas en la columna de calificación máxima
-      const calificacionesMaxHtml = subtemas.map(subtema => {
-        return `<li>${subtema.maxScore || 0}</li>`;
-      }).join('');
+          // Mostrar solo el maxScore de los subtemas en la columna de calificación máxima
+          const calificacionesMaxHtml = subtemas.map(subtema => {
+            return `<li>${subtema.maxScore || 0}</li>`;
+          }).join('');
 
-      // Placeholder para la calificación observada
-      let calificacionOb = 'Por ingresar'; // Placeholder por ahora
-
-      // Crear la fila para el alumno
-      row.innerHTML = `
+          // Crear inputs para la calificación observada
+        const calificacionesObHtml = subtemas.map(subtema => {
+  return `
+    <div>
+      <input type="number" 
+             min="0" 
+             max="${subtema.maxScore || 0}" 
+             class="calificacion-ob" 
+             data-subtopic-id="${subtema._id}" 
+             data-max="${subtema.maxScore || 0}" />
+    </div>
+  `;
+}).join('');
+          // Crear la fila para el alumno
+          row.innerHTML = `
         <td>${alumno.name}</td>
-        <td><ul style="list-style-type: none; padding-left: 0;">${subtemasDisplay}</ul></td>
+        <td><ul style="list-style-type: none; padding-left: 0;">${subtemasHtml}</ul></td>
         <td><ul style="list-style-type: none; padding-left: 0;">${calificacionesMaxHtml}</ul></td>
-        <td>${calificacionOb}</td>
+        <td><ul style="list-style-type: none; padding-left: 0;">${calificacionesObHtml}</ul></td>
+        
       `;
 
-      // Agregar la fila a la tabla
-      tablaAlumnosBody.appendChild(row);
-    });
-  } catch (error) {
-    console.error('Error cargando alumnos o subtemas:', error);
-  }
-}
+          // Agregar la fila a la tabla
+          tablaAlumnosBody.appendChild(row);
+        });
 
+        // Agregar un evento para la validación de las calificaciones observadas
+        document.querySelectorAll('.calificacion-ob').forEach(input => {
+          input.addEventListener('input', function () {
+            const maxScore = parseFloat(this.getAttribute('data-max'));
+            const value = parseFloat(this.value);
+            if (value < 0 || value > maxScore) {
+              alert(`La calificación debe estar entre 0 y ${maxScore}`);
+              this.value = ''; // Limpiar el campo si es inválido
+            }
+          });
+        });
+
+      } catch (error) {
+        console.error('Error cargando alumnos o subtemas:', error);
+      }
+    }
     // Función para mostrar alertas
     function mostrarAlerta(message, type) {
       const alertaContainer = document.getElementById('alertaContainer');
@@ -416,6 +439,67 @@ async function cargarAlumnos(materiaId, topicId) {
         mostrarAlerta('Por favor, seleccione una materia y un tema antes de buscar.', 'error');
       }
     });
+    //funcion para enviar la informacion de calificaciones
+    // Esta función se llamará cuando el usuario haga clic en el botón "Enviar"
+// Esta función se llamará cuando el usuario haga clic en el botón "Enviar"
+async function sendGrades() {
+  // Obtenemos los valores del formulario
+  const userId = localStorage.getItem('userId');  // El ID del docente
+  const subjectId = document.getElementById('materiasContainer').value;
+  const topicId = document.getElementById('topicSelect').value;
+  
+  // Recopilamos las calificaciones observadas de cada subtema
+  const subTopics = [];
+  const calificacionObInputs = document.querySelectorAll('.calificacion-ob');
+
+  calificacionObInputs.forEach(input => {
+    const subTopicId = input.dataset.subtopicId; // El ID del subtema asociado a este input
+    const grade = parseFloat(input.value);
+    if (subTopicId && !isNaN(grade)) {
+      subTopics.push({
+        subTopicId,
+        grade
+      });
+    }
+  });
+
+  // Preparamos el cuerpo de la solicitud
+  const data = {
+    userId,
+    subjectId,
+    topicId,
+    subTopics
+  };
+
+  try {
+    // Enviar los datos al servidor
+    const response = await fetch('http://localhost:3000/grades', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`  // Token de autorización
+      },
+      body: JSON.stringify(data)
+    });
+console.log('Cuerpo de la solicitud:', data); // Para depuración
+    if (response.ok) {
+      const responseData = await response.json();
+      console.log('Calificaciones enviadas:', responseData);
+      alert('Las calificaciones han sido enviadas exitosamente');
+    } else {
+      throw new Error('Error al enviar las calificaciones');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Hubo un error al enviar las calificaciones');
+  }
+}
+
+// Asociamos el evento al botón de enviar
+document.getElementById('enviarBtn').addEventListener('click', sendGrades);
+ // Asociamos el evento al botón de enviar
+    document.getElementById('enviarBtn').addEventListener('click', sendGrades);
+
 
     // Cargar materias al inicio
     window.onload = () => {
