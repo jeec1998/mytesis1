@@ -87,6 +87,7 @@
       flex-direction: column;
       overflow: hidden;
       transition: transform 0.2s;
+      cursor: pointer;
     }
 
     .card:hover {
@@ -101,6 +102,7 @@
       color: white;
     }
 
+    /* Colores para los headers según materia */
     .header-rojo {
       background: linear-gradient(135deg, #f44336, #e53935);
     }
@@ -117,6 +119,18 @@
     .header-azul {
       background: linear-gradient(135deg, #4A90E2, #357ABD);
       color: white;
+    }
+
+    .header-naranja {
+      background: linear-gradient(135deg, #ff9800, #f57c00);
+    }
+
+    .header-morado {
+      background: linear-gradient(135deg, #9c27b0, #7b1fa2);
+    }
+
+    .header-cian {
+      background: linear-gradient(135deg, #00bcd4, #0097a7);
     }
 
     .card-content {
@@ -160,7 +174,7 @@
       background-color: #357ABD;
     }
 
-    /* Drawer y Modal mismo que tenías */
+    /* Drawer y Modal */
     #drawer {
       position: fixed;
       top: 0;
@@ -254,6 +268,14 @@
       background-color: #F44336;
       color: white;
     }
+    .user-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+  }
   </style>
 </head>
 
@@ -261,11 +283,12 @@
   <header>
     <div class="left-section">
       <button id="menu-btn" class="menu-icon">☰</button>
-      <span class="header-title">Mataerias</span>
+      <span class="header-title">Materias</span>
     </div>
-    <div class="user-section">
-      <span>👤</span> <span id="nombre-usuario"></span>
-    </div>
+   <div class="user-section" id="user-section">
+  <span>👤</span> <span id="nombre-usuario"></span>
+</div>
+
   </header>
 
   <main id="refuerzos-container"></main>
@@ -273,9 +296,8 @@
   <div id="drawer-overlay"></div>
   <div id="drawer">
     <div>
-      <div class="drawer-item" onclick="navigateTo('home-alumno.html')">🏠 Materias</div>
       <div class="drawer-item" onclick="navigateTo('perfil.html')">👤 Perfil</div>
-
+      <div class="drawer-item" onclick="navigateTo('home-alumno.html')">🏠 Materias</div>
     </div>
     <div class="drawer-item logout" onclick="logout()">📤 Cerrar sesión</div>
   </div>
@@ -290,10 +312,40 @@
 
   <script>
     const refuerzos = [
-      { materia: 'Álgebra Lineal', descripcion: 'Refuerza conceptos de matrices y determinantes.' },
-      { materia: 'Trigonometría', descripcion: 'Mejora en el manejo de ángulos notables y razones trigonométricas.' },
-      { materia: 'Cálculo Diferencial', descripcion: 'Fortalece tus habilidades en límites y derivadas.' }
+      {
+        materia: 'Lengua y Literatura:',
+        descripcion: 'Es la materia que estudia el lenguaje y sus diferentes formas de expresión, así como las obras literarias. Desarrolla habilidades de lectura, escritura, comprensión y análisis crítico de textos para mejorar la comunicación y el entendimiento cultura.'
+      },
+      {
+        materia: 'Estudios Sociales:',
+        descripcion: 'Es la materia que explora la sociedad, su historia, cultura, economía y organización política. Busca fomentar el conocimiento sobre el entorno social y cultural, promoviendo el respeto, la ciudadanía activa y la comprensión de los procesos históricos y sociales.'
+      },
+ /*      {
+        materia: 'Matemáticas:',
+        descripcion: 'Materia que desarrolla el pensamiento lógico y la capacidad para resolver problemas numéricos y algebraicos, así como el entendimiento de conceptos matemáticos fundamentales.'
+      },
+      {
+        materia: 'Ciencias Naturales:',
+        descripcion: 'Estudia los fenómenos naturales, la biología, la física y la química para comprender el mundo físico y los seres vivos.'
+      },
+      {
+        materia: 'Inglés:',
+        descripcion: 'Desarrollo de habilidades comunicativas en inglés para mejorar la comprensión oral y escrita, así como la expresión en este idioma.'
+      } */
     ];
+
+    function obtenerClaseColor(materia) {
+      materia = materia.toLowerCase();
+
+      if (materia.includes('lengua')) return 'header-naranja';
+      if (materia.includes('sociales')) return 'header-morado';
+      if (materia.includes('matemáticas')) return 'header-verde';
+      if (materia.includes('naturales')) return 'header-rojo';
+      if (materia.includes('inglés')) return 'header-amarillo';
+
+      // Color por defecto
+      return 'header-azul';
+    }
 
     function cargarRefuerzos() {
       const container = document.getElementById('refuerzos-container');
@@ -305,7 +357,7 @@
         card.onclick = () => abrirActividades(refuerzo.materia);
 
         const header = document.createElement('div');
-        header.className = 'card-header header-azul';
+        header.className = 'card-header ' + obtenerClaseColor(refuerzo.materia);
         header.textContent = refuerzo.materia;
 
         const content = document.createElement('div');
@@ -319,29 +371,63 @@
     }
 
     function abrirActividades(materia) {
-      // Puedes enviar el nombre de la materia como parámetro si quieres
       window.location.href = `actividades.html?materia=${encodeURIComponent(materia)}`;
     }
 
     const drawer = document.getElementById('drawer');
     const overlay = document.getElementById('drawer-overlay');
     const menuBtn = document.getElementById('menu-btn');
-    menuBtn.onclick = () => { drawer.classList.add('show'); overlay.classList.add('show'); };
-    overlay.onclick = () => { drawer.classList.remove('show'); overlay.classList.remove('show'); };
-    function navigateTo(path) { drawer.classList.remove('show'); overlay.classList.remove('show'); setTimeout(() => { window.location.href = path; }, 300); }
-    function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+    menuBtn.onclick = () => {
+      drawer.classList.add('show');
+      overlay.classList.add('show');
+    };
+    overlay.onclick = () => {
+      drawer.classList.remove('show');
+      overlay.classList.remove('show');
+    };
+
+    function navigateTo(path) {
+      drawer.classList.remove('show');
+      overlay.classList.remove('show');
+      setTimeout(() => {
+        window.location.href = path;
+      }, 300);
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    }
+document.getElementById('user-section').onclick = () => {
+  window.location.href = 'perfil.html';
+};
 
     const modalConfirm = document.getElementById('modal-confirm');
     const confirmYes = document.getElementById('confirm-yes');
     const confirmNo = document.getElementById('confirm-no');
-    window.addEventListener('popstate', () => { modalConfirm.style.display = 'flex'; });
-    confirmYes.onclick = () => { localStorage.clear(); window.location.href = 'index.html'; };
-    confirmNo.onclick = () => { modalConfirm.style.display = 'none'; history.pushState(null, '', location.href); };
+
+    window.addEventListener('popstate', () => {
+      modalConfirm.style.display = 'flex';
+    });
+
+    confirmYes.onclick = () => {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    };
+
+    confirmNo.onclick = () => {
+      modalConfirm.style.display = 'none';
+      history.pushState(null, '', location.href);
+    };
+
     history.pushState(null, '', location.href);
 
     async function cargarPerfil() {
       const token = localStorage.getItem('accessToken');
-      if (!token) { window.location.href = 'index.html'; return; }
+      if (!token) {
+        window.location.href = 'index.html';
+        return;
+      }
       try {
         const res = await fetch('http://localhost:3000/users/perfil', {
           method: 'GET',

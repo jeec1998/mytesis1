@@ -2,8 +2,8 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Actividades de Refuerzo</title>
   <style>
     * {
@@ -41,11 +41,11 @@
     .menu-icon {
       font-size: 26px;
       background: none;
-      border: 2px solid white;
-      border-radius: 8px;
-      padding: 6px;
-      cursor: pointer;
+      border: none;
       color: white;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
       transition: background-color 0.2s;
     }
 
@@ -58,8 +58,6 @@
       font-size: 20px;
       letter-spacing: 0.5px;
     }
-
-
 
     main {
       flex: 1;
@@ -120,30 +118,29 @@
       gap: 8px;
     }
 
-    .card-buttons {
-      display: flex;
-      padding: 10px;
-      background-color: #f0f4ff;
-      justify-content: center;
-      gap: 8px;
-      border-top: 1px solid #ddd;
+    /* Barra de progreso */
+    .progress-container {
+      background-color: #eee;
+      border-radius: 10px;
+      height: 20px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,.2);
     }
 
-    .card-buttons button {
-      flex: 1 1 40%;
+    .progress-bar {
+      height: 100%;
       background-color: #4A90E2;
-      border: none;
-      border-radius: 6px;
-      padding: 8px;
+      width: 0;
+      transition: width 0.5s ease;
+      border-radius: 10px 0 0 10px;
+      text-align: right;
+      padding-right: 5px;
       color: white;
       font-weight: bold;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background-color 0.2s;
-    }
-
-    .card-buttons button:hover {
-      background-color: #357ABD;
+      line-height: 20px;
+      font-size: 12px;
+      user-select: none;
     }
 
     #drawer {
@@ -186,7 +183,31 @@
       display: none;
       z-index: 1000;
     }
+  .card-buttons {
+      display: flex;
+      padding: 10px;
+      background-color: #f0f4ff;
+      justify-content: center;
+      gap: 8px;
+      border-top: 1px solid #ddd;
+    }
 
+    .card-buttons button {
+      flex: 1 1 40%;
+      background-color: #4A90E2;
+      border: none;
+      border-radius: 6px;
+      padding: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s;
+    }
+
+    .card-buttons button:hover {
+      background-color: #357ABD;
+    }
     #drawer-overlay.show {
       display: block;
     }
@@ -221,38 +242,40 @@
 
   <script>
     const actividades = [
-      { tema: 'Matrices', subtemas: ['Suma', 'Multiplicación'], nota: 2.5 },
-      { tema: 'Determinantes', subtemas: ['Propiedades de determinantes'], nota: 5.8 },
-      { tema: 'Vectores', subtemas: ['Magnitud', 'Dirección'], nota: 8.3 }
+      { tema: 'APA', subtemas: ['Citas', 'Margenes'], nota: 2.5 },
+      { tema: 'APA', subtemas: ['Citas', 'Margenes'], nota: 6 },
+  
     ];
 
     function cargarActividades() {
       const container = document.getElementById('actividades-container');
+      container.innerHTML = ''; // limpiar
+
       actividades.forEach(act => {
         const card = document.createElement('div');
         card.className = 'card';
 
         const header = document.createElement('div');
         header.className = 'card-header';
-        header.textContent = act.tema;
 
         if (act.nota < 3) header.classList.add('header-rojo');
         else if (act.nota < 7) header.classList.add('header-amarillo');
         else if (act.nota < 9) header.classList.add('header-verde');
 
+        header.textContent = act.tema;
+
         const content = document.createElement('div');
         content.className = 'card-content';
         content.innerHTML = `
-      <p><strong>Nota:</strong> ${act.nota}</p>
-      <p><strong>Subtemas:</strong> ${act.subtemas.join(', ')}</p>
-    `;
+          <p><strong>Subtemas:</strong> ${act.subtemas.join(', ')}</p>
+          <p><strong>Nota:</strong> ${act.nota}</p>
+        `;
 
         const buttons = document.createElement('div');
         buttons.className = 'card-buttons';
         buttons.innerHTML = `
-      <button onclick="verActividad('${act.tema}')">Ver</button>
-      <button onclick="marcarHecho('${act.tema}')">Hecho</button>
-    `;
+          <button onclick="verActividad('${act.tema}')">Ver</button>
+        `;
 
         card.appendChild(header);
         card.appendChild(content);
@@ -288,10 +311,11 @@
       window.location.href = 'index.html';
     }
 
-
     cargarActividades();
   </script>
 
 </body>
+
+</html>
 
 </html>
