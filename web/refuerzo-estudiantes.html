@@ -238,6 +238,7 @@
     const API = 'http://localhost:3000/Subjects';
     const API_TOPICS = 'http://localhost:3000/topics';
     const API_ALUMNOS = 'http://localhost:3000/users';
+    const API_GRADES = 'http://localhost:3000/grades';
     const tablaAlumnosBody = document.querySelector('#tablaAlumnos tbody');
     let materiaId;
     let temas = [];
@@ -338,6 +339,9 @@
         const resTemas = await fetch(`${API_TOPICS}/materia/${materiaId}`, { headers });
         const temas = await resTemas.json();
 
+        const resGradesGroupedBySubtopic = await fetch(`${API_GRADES}/topic/${topicId}`, { headers });
+        const gradesGroupedBySubtopic = await resGradesGroupedBySubtopic.json();
+
         // Filtrar los subtemas del tema que corresponde al topicId
         const temaSeleccionado = temas.find(tema => tema._id === topicId);
         const subtemas = temaSeleccionado ? temaSeleccionado.subtopics : [];
@@ -358,26 +362,29 @@
           }).join('');
 
           // Crear inputs para la calificación observada
-        const calificacionesObHtml = subtemas.map(subtema => {
-  return `
-    <div>
-      <input type="number" 
-             min="0" 
-             max="${subtema.maxScore || 0}" 
-             class="calificacion-ob" 
-             data-subtopic-id="${subtema._id}" 
-             data-alumno-id="${alumno._id}"
-             data-max="${subtema.maxScore || 0}" />
-    </div>
-  `;
-}).join('');
+          const calificacionesObHtml = subtemas.map(subtema => {
+            const currentGrade = gradesGroupedBySubtopic.find(grade => grade.userId === alumno._id && grade.subtopicId === subtema._id);
+            return `
+              <div>
+                <input type="number" 
+                  min="0" 
+                  max="${subtema.maxScore || 0}" 
+                  class="calificacion-ob" 
+                  data-subtopic-id="${subtema._id}" 
+                  data-alumno-id="${alumno._id}"
+                  data-max="${subtema.maxScore || 0}" 
+                  value="${currentGrade ? currentGrade.grade : 0}"
+                />
+              </div>
+            `;
+          }).join('');
           // Crear la fila para el alumno
           row.innerHTML = `
-        <td data-alumno-id="${alumno._id}">${alumno.name}</td>
-        <td><ul style="list-style-type: none; padding-left: 0;">${subtemasHtml}</ul></td>
-        <td><ul style="list-style-type: none; padding-left: 0;">${calificacionesMaxHtml}</ul></td>
-        <td><ul style="list-style-type: none; padding-left: 0;">${calificacionesObHtml}</ul></td>
-      `;
+            <td data-alumno-id="${alumno._id}">${alumno.name}</td>
+            <td><ul style="list-style-type: none; padding-left: 0;">${subtemasHtml}</ul></td>
+            <td><ul style="list-style-type: none; padding-left: 0;">${calificacionesMaxHtml}</ul></td>
+            <td><ul style="list-style-type: none; padding-left: 0;">${calificacionesObHtml}</ul></td>
+          `;
 
           // Agregar la fila a la tabla
           tablaAlumnosBody.appendChild(row);
@@ -424,6 +431,7 @@
     document.getElementById('topicSelect').addEventListener('change', (e) => {
       const topicId = e.target.value;
       if (materiaId && topicId) {
+        console.log('sisisis');
         cargarAlumnos(materiaId, topicId);
       }
     });
@@ -440,74 +448,74 @@
     });
     //funcion para enviar la informacion de calificaciones
     // Esta función se llamará cuando el usuario haga clic en el botón "Enviar"
-// Esta función se llamará cuando el usuario haga clic en el botón "Enviar"
-async function sendGrades() {
-  // Obtenemos los valores del formulario
-  const subjectId = document.getElementById('materiasContainer').value;
-  const topicId = document.getElementById('topicSelect').value;
-  
-  // Recopilamos las calificaciones observadas de cada subtema
-  const subTopics = [];
-  const calificacionObInputs = document.querySelectorAll('.calificacion-ob');
-  const alumnosRows = document.querySelectorAll('#tablaAlumnos tbody tr td');
+    // Esta función se llamará cuando el usuario haga clic en el botón "Enviar"
+    async function sendGrades() {
+      // Obtenemos los valores del formulario
+      const subjectId = document.getElementById('materiasContainer').value;
+      const topicId = document.getElementById('topicSelect').value;
 
-  alumnosRows.forEach(async (row) => {
-    const alumnoId = row.dataset.alumnoId; // Suponiendo que el ID del alumno está en un atributo data-student-id en cada fila
-    if (!alumnoId) return; // Si no hay ID, saltamos esta fila
+      // Recopilamos las calificaciones observadas de cada subtema
+      const subTopics = [];
+      const calificacionObInputs = document.querySelectorAll('.calificacion-ob');
+      const alumnosRows = document.querySelectorAll('#tablaAlumnos tbody tr td');
 
-    const subTopicsForStudent = [];
-    
-    // Recolectamos las calificaciones para cada subtema de este estudiante
-    calificacionObInputs.forEach(input => {
-      const subTopicId = input.dataset.subtopicId; // El ID del subtema asociado a este input
-      const subAlumnoId = input.dataset.alumnoId; // El ID del alumno asociado a este input
-      const grade = parseFloat(input.value);
-      if (subTopicId && !isNaN(grade) && alumnoId === subAlumnoId) {
-        subTopicsForStudent.push({
-          subTopicId,
-          grade
+      alumnosRows.forEach(async (row) => {
+        const alumnoId = row.dataset.alumnoId; // Suponiendo que el ID del alumno está en un atributo data-student-id en cada fila
+        if (!alumnoId) return; // Si no hay ID, saltamos esta fila
+
+        const subTopicsForStudent = [];
+
+        // Recolectamos las calificaciones para cada subtema de este estudiante
+        calificacionObInputs.forEach(input => {
+          const subTopicId = input.dataset.subtopicId; // El ID del subtema asociado a este input
+          const subAlumnoId = input.dataset.alumnoId; // El ID del alumno asociado a este input
+          const grade = parseFloat(input.value);
+          if (subTopicId && !isNaN(grade) && alumnoId === subAlumnoId) {
+            subTopicsForStudent.push({
+              subTopicId,
+              grade
+            });
+          }
         });
-      }
-    });
 
-    // Preparamos el cuerpo de la solicitud para este estudiante
-    const data = {
-      userId: alumnoId,
-      subjectId,
-      topicId,
-      subTopics: subTopicsForStudent
-    };
-    console.log('Datos a enviar:', data); // Para depuración
-    try {
-      // Enviar los datos al servidor para este estudiante
-      const response = await fetch('http://localhost:3000/grades', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`  // Token de autorización
-        },
-        body: JSON.stringify(data)
+        // Preparamos el cuerpo de la solicitud para este estudiante
+        const data = {
+          userId: alumnoId,
+          subjectId,
+          topicId,
+          subTopics: subTopicsForStudent
+        };
+        console.log('Datos a enviar:', data); // Para depuración
+        try {
+          // Enviar los datos al servidor para este estudiante
+          const response = await fetch('http://localhost:3000/grades', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('accessToken')}`  // Token de autorización
+            },
+            body: JSON.stringify(data)
+          });
+
+          console.log('Cuerpo de la solicitud:', data); // Para depuración
+
+          if (response.ok) {
+            const responseData = await response.json();
+            console.log('Calificaciones enviadas:', responseData);
+            alert(`Las calificaciones para el estudiante ${alumnoId} han sido enviadas exitosamente.`);
+          } else {
+            throw new Error('Error al enviar las calificaciones para el estudiante ' + alumnoId);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert(`Hubo un error al enviar las calificaciones para el estudiante ${alumnoId}`);
+        }
       });
-
-      console.log('Cuerpo de la solicitud:', data); // Para depuración
-
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log('Calificaciones enviadas:', responseData);
-        alert(`Las calificaciones para el estudiante ${alumnoId} han sido enviadas exitosamente.`);
-      } else {
-        throw new Error('Error al enviar las calificaciones para el estudiante ' + alumnoId);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert(`Hubo un error al enviar las calificaciones para el estudiante ${alumnoId}`);
     }
-  });
-}
 
-// Asociamos el evento al botón de enviar
-document.getElementById('enviarBtn').addEventListener('click', sendGrades);
- // Asociamos el evento al botón de enviar
+    // Asociamos el evento al botón de enviar
+    document.getElementById('enviarBtn').addEventListener('click', sendGrades);
+    // Asociamos el evento al botón de enviar
     document.getElementById('enviarBtn').addEventListener('click', sendGrades);
 
 
