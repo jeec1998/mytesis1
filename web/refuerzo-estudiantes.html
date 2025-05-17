@@ -107,11 +107,6 @@
       transition: background 0.3s;
       width: 200px;
     }
-
-    button:hover {
-      background-color: #9435bd;
-    }
-
     #topicSelect {
       max-width: 300px;
     }
@@ -213,8 +208,6 @@
           <option value="">Seleccione un tema</option>
         </select>
       </div>
-
-      <button id="buscarBtn">Buscar</button>
     </div>
 
     <!-- Tabla de alumnos -->
@@ -232,6 +225,7 @@
     </table>
     <div style="text-align: center; margin-top: 20px;">
       <button id="enviarBtn">Enviar Calificaciones</button>
+       <button id="buscarBtn">Generar Refuerzo</button>
     </div>
   </main>
   <script>
@@ -502,7 +496,6 @@
           if (response.ok) {
             const responseData = await response.json();
             console.log('Calificaciones enviadas:', responseData);
-            alert(`Las calificaciones para el estudiante ${alumnoId} han sido enviadas exitosamente.`);
           } else {
             throw new Error('Error al enviar las calificaciones para el estudiante ' + alumnoId);
           }

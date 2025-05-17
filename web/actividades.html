@@ -125,7 +125,7 @@
       height: 20px;
       width: 100%;
       overflow: hidden;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,.2);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, .2);
     }
 
     .progress-bar {
@@ -183,7 +183,8 @@
       display: none;
       z-index: 1000;
     }
-  .card-buttons {
+
+    .card-buttons {
       display: flex;
       padding: 10px;
       background-color: #f0f4ff;
@@ -208,6 +209,7 @@
     .card-buttons button:hover {
       background-color: #357ABD;
     }
+
     #drawer-overlay.show {
       display: block;
     }
@@ -244,7 +246,7 @@
     const actividades = [
       { tema: 'APA', subtemas: ['Citas', 'Margenes'], nota: 2.5 },
       { tema: 'APA', subtemas: ['Citas', 'Margenes'], nota: 6 },
-  
+
     ];
 
     function cargarActividades() {
@@ -274,8 +276,9 @@
         const buttons = document.createElement('div');
         buttons.className = 'card-buttons';
         buttons.innerHTML = `
-          <button onclick="verActividad('${act.tema}')">Ver</button>
+        <button onclick="window.location.href='actividad.html'">Ver</button>
         `;
+
 
         card.appendChild(header);
         card.appendChild(content);
@@ -284,9 +287,6 @@
       });
     }
 
-    function verActividad(tema) {
-      alert(`🔍 Viendo actividad: ${tema}`);
-    }
 
     function marcarHecho(tema) {
       alert(`✅ Actividad "${tema}" marcada como hecha`);
