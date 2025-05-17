@@ -10,272 +10,266 @@
       box-sizing: border-box;
     }
 
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #D6E6F2;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #D6E6F2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
 
-    header {
-      background-color: #2F80ED;
-      color: white;
-      padding: 12px 20px;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
+header {
+  background-color: #2F80ED;
+  color: white;
+  padding: 12px 20px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
 
-    .left-section {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+.left-section {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
 
-    .menu-icon {
-      font-size: 26px;
-      background: none;
-      border: none;
-      color: white;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 8px;
-      transition: background-color 0.2s;
-    }
+.menu-icon {
+  font-size: 26px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
 
-    .menu-icon:hover {
-      background-color: rgba(255, 255, 255, 0.2);
-    }
+.menu-icon:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
 
-    .header-title {
-      font-weight: bold;
-      font-size: 20px;
-      letter-spacing: 0.5px;
-    }
+.header-title {
+  font-weight: bold;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+}
 
-    .user-section {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: bold;
-      font-size: 16px;
-    }
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
 
-    main {
-      flex: 1;
-      padding: 30px 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-      overflow-y: auto;
-    }
+main {
+  flex: 1;
+  padding: 30px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  overflow-y: auto;
+}
 
-    .card {
-      width: 200px;
-      height: 280px;
-      border-radius: 14px;
-      background: white;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      transition: transform 0.2s;
-      cursor: pointer;
-    }
+.card {
+  width: 200px;
+  height: 280px;
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
 
-    .card:hover {
-      transform: translateY(-5px);
-    }
+.card:hover {
+  transform: translateY(-5px);
+}
 
-    .card-header {
-      padding: 14px;
-      font-size: 16px;
-      font-weight: bold;
-      text-align: center;
-      color: white;
-    }
+.card-header {
+  padding: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+}
 
-    /* Colores para los headers según materia */
-    .header-rojo {
-      background: linear-gradient(135deg, #f44336, #e53935);
-    }
+/* Colores para los headers según materia */
+.header-rojo {
+  background: linear-gradient(135deg, #f44336, #e53935);
+}
 
-    .header-amarillo {
-      background: linear-gradient(135deg, #ffeb3b, #fbc02d);
-      color: #333;
-    }
+.header-amarillo {
+  background: linear-gradient(135deg, #ffeb3b, #fbc02d);
+  color: #333;
+}
 
-    .header-verde {
-      background: linear-gradient(135deg, #4caf50, #43a047);
-    }
+.header-verde {
+  background: linear-gradient(135deg, #4caf50, #43a047);
+}
 
-    .header-azul {
-      background: linear-gradient(135deg, #4A90E2, #357ABD);
-      color: white;
-    }
+.header-azul {
+  background: linear-gradient(135deg, #4A90E2, #357ABD);
+  color: white;
+}
 
-    .header-naranja {
-      background: linear-gradient(135deg, #ff9800, #f57c00);
-    }
+.header-naranja {
+  background: linear-gradient(135deg, #ff9800, #f57c00);
+}
 
-    .header-morado {
-      background: linear-gradient(135deg, #9c27b0, #7b1fa2);
-    }
+.header-morado {
+  background: linear-gradient(135deg, #9c27b0, #7b1fa2);
+}
 
-    .header-cian {
-      background: linear-gradient(135deg, #00bcd4, #0097a7);
-    }
+.header-cian {
+  background: linear-gradient(135deg, #00bcd4, #0097a7);
+}
 
-    .card-content {
-      flex: 1;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align: center;
-      font-size: 13px;
-      color: #444;
-    }
+.card-content {
+  flex: 1;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  font-size: 13px;
+  color: #444;
+}
 
-    .card-content p {
-      margin: 6px 0;
-    }
+.card-content p {
+  margin: 6px 0;
+}
 
-    .card-buttons {
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-      padding: 8px;
-      background-color: #f0f4ff;
-      border-top: 1px solid #e0e0e0;
-    }
+.card-buttons {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  padding: 8px;
+  background-color: #f0f4ff;
+  border-top: 1px solid #e0e0e0;
+}
 
-    .card-buttons button {
-      flex: 1 1 80px;
-      background-color: #4A90E2;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 6px;
-      font-size: 13px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
+.card-buttons button {
+  flex: 1 1 80px;
+  background-color: #4A90E2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
 
-    .card-buttons button:hover {
-      background-color: #357ABD;
-    }
+.card-buttons button:hover {
+  background-color: #357ABD;
+}
 
-    /* Drawer y Modal */
-    #drawer {
-      position: fixed;
-      top: 0;
-      left: -260px;
-      width: 260px;
-      height: 100%;
-      background-color: #D6E6F2;
-      padding: 50px 20px 30px;
-      box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
-      transition: left 0.3s ease;
-      z-index: 1001;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+/* Drawer y Modal */
+#drawer {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 260px;
+  height: 100%;
+  background-color: #D6E6F2;
+  padding: 50px 20px 30px;
+  box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
+  transition: left 0.3s ease;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 
-    .drawer-item {
-      font-size: 18px;
-      padding: 15px 0;
-      border-bottom: 1px solid #A7C7E7;
-      color: #2F4F6E;
-      cursor: pointer;
-      font-weight: 500;
-    }
+.drawer-item {
+  font-size: 18px;
+  padding: 15px 0;
+  border-bottom: 1px solid #A7C7E7;
+  color: #2F4F6E;
+  cursor: pointer;
+  font-weight: 500;
+}
 
-    .logout {
-      color: #C62828;
-      border-bottom-color: #C62828;
-    }
+.logout {
+  color: #C62828;
+  border-bottom-color: #C62828;
+}
 
-    #drawer-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.3);
-      display: none;
-      z-index: 1000;
-    }
+#drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  display: none;
+  z-index: 1000;
+}
 
-    #drawer-overlay.show {
-      display: block;
-    }
+#drawer-overlay.show {
+  display: block;
+}
 
-    #drawer.show {
-      left: 0;
-    }
+#drawer.show {
+  left: 0;
+}
 
-    #modal-confirm {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-    }
+#modal-confirm {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
 
-    #modal-confirm-content {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      text-align: center;
-      font-size: 18px;
-      color: #333;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      max-width: 300px;
-    }
+#modal-confirm-content {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 18px;
+  color: #333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+}
 
-    #modal-confirm-content button {
-      margin-top: 15px;
-      margin-right: 10px;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 14px;
-    }
+#modal-confirm-content button {
+  margin-top: 15px;
+  margin-right: 10px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+}
 
-    #confirm-yes {
-      background-color: #4CAF50;
-      color: white;
-    }
+#confirm-yes {
+  background-color: #4CAF50;
+  color: white;
+}
 
-    #confirm-no {
-      background-color: #F44336;
-      color: white;
-    }
-    .user-section {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: bold;
-    font-size: 16px;
-    cursor: pointer;
-  }
+#confirm-no {
+  background-color: #F44336;
+  color: white;
+}
+
   </style>
 </head>
 
@@ -285,10 +279,9 @@
       <button id="menu-btn" class="menu-icon">☰</button>
       <span class="header-title">Materias</span>
     </div>
-   <div class="user-section" id="user-section">
-  <span>👤</span> <span id="nombre-usuario"></span>
-</div>
-
+    <div class="user-section" id="user-section">
+      <span>👤</span> <span id="nombre-usuario"></span>
+    </div>
   </header>
 
   <main id="refuerzos-container"></main>
@@ -310,64 +303,78 @@
     </div>
   </div>
 
-  <script>
-    const refuerzos = [
-      {
-        materia: 'Lengua y Literatura:',
-        descripcion: 'Es la materia que estudia el lenguaje y sus diferentes formas de expresión, así como las obras literarias. Desarrolla habilidades de lectura, escritura, comprensión y análisis crítico de textos para mejorar la comunicación y el entendimiento cultura.'
-      },
-      {
-        materia: 'Estudios Sociales:',
-        descripcion: 'Es la materia que explora la sociedad, su historia, cultura, economía y organización política. Busca fomentar el conocimiento sobre el entorno social y cultural, promoviendo el respeto, la ciudadanía activa y la comprensión de los procesos históricos y sociales.'
-      },
- /*      {
-        materia: 'Matemáticas:',
-        descripcion: 'Materia que desarrolla el pensamiento lógico y la capacidad para resolver problemas numéricos y algebraicos, así como el entendimiento de conceptos matemáticos fundamentales.'
-      },
-      {
-        materia: 'Ciencias Naturales:',
-        descripcion: 'Estudia los fenómenos naturales, la biología, la física y la química para comprender el mundo físico y los seres vivos.'
-      },
-      {
-        materia: 'Inglés:',
-        descripcion: 'Desarrollo de habilidades comunicativas en inglés para mejorar la comprensión oral y escrita, así como la expresión en este idioma.'
-      } */
-    ];
-
+ <script>
     function obtenerClaseColor(materia) {
       materia = materia.toLowerCase();
-
       if (materia.includes('lengua')) return 'header-naranja';
       if (materia.includes('sociales')) return 'header-morado';
       if (materia.includes('matemáticas')) return 'header-verde';
       if (materia.includes('naturales')) return 'header-rojo';
       if (materia.includes('inglés')) return 'header-amarillo';
-
-      // Color por defecto
       return 'header-azul';
     }
 
-    function cargarRefuerzos() {
-      const container = document.getElementById('refuerzos-container');
-      container.innerHTML = '';
+    // Decodificar el token para obtener el userId
+    // Esta función solo decodifica base64 el payload sin validar (para obtener userId)
+    function getUserIdFromToken(token) {
+      if (!token) return null;
+      try {
+        const payload = token.split('.')[1];
+        const decoded = atob(payload);
+        const obj = JSON.parse(decoded);
+        return obj._id || obj.id || null;
+      } catch {
+        return null;
+      }
+    }
 
-      refuerzos.forEach(refuerzo => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.onclick = () => abrirActividades(refuerzo.materia);
+    async function cargarMateriasPorUsuario(userId) {
+      const token = localStorage.getItem('accessToken');
+      if (!token || !userId) {
+        window.location.href = 'index.html';
+        return;
+      }
 
-        const header = document.createElement('div');
-        header.className = 'card-header ' + obtenerClaseColor(refuerzo.materia);
-        header.textContent = refuerzo.materia;
+      try {
+        const res = await fetch(`http://localhost:3000/users/${userId}/materia`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
 
-        const content = document.createElement('div');
-        content.className = 'card-content';
-        content.innerHTML = `<p>${refuerzo.descripcion}</p>`;
+        if (!res.ok) throw new Error('Error al obtener materias');
 
-        card.appendChild(header);
-        card.appendChild(content);
-        container.appendChild(card);
-      });
+        const materias = await res.json();
+
+        const container = document.getElementById('refuerzos-container');
+        container.innerHTML = '';
+
+        if (!Array.isArray(materias) || materias.length === 0) {
+          container.innerHTML = '<p>No se encontraron materias para este usuario.</p>';
+          return;
+        }
+
+        materias.forEach(materiaData => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.onclick = () => abrirActividades(materiaData.materia);
+
+          const header = document.createElement('div');
+          header.className = 'card-header ' + obtenerClaseColor(materiaData.materia);
+          header.textContent = materiaData.materia;
+
+          const content = document.createElement('div');
+          content.className = 'card-content';
+          content.innerHTML = `<p>${materiaData.descripcion}</p>`;
+
+          card.appendChild(header);
+          card.appendChild(content);
+          container.appendChild(card);
+        });
+      } catch (error) {
+        console.error(error);
+        alert('Error cargando materias.');
+      }
     }
 
     function abrirActividades(materia) {
@@ -398,9 +405,10 @@
       localStorage.clear();
       window.location.href = 'index.html';
     }
-document.getElementById('user-section').onclick = () => {
-  window.location.href = 'perfil.html';
-};
+
+    document.getElementById('user-section').onclick = () => {
+      window.location.href = 'perfil.html';
+    };
 
     const modalConfirm = document.getElementById('modal-confirm');
     const confirmYes = document.getElementById('confirm-yes');
@@ -440,8 +448,21 @@ document.getElementById('user-section').onclick = () => {
         window.location.href = 'index.html';
       }
     }
-    cargarPerfil();
-    cargarRefuerzos();
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await cargarPerfil();
+
+      const token = localStorage.getItem('accessToken');
+      const userId = getUserIdFromToken(token);
+
+      if (!userId) {
+        alert('Usuario no autenticado');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      cargarMateriasPorUsuario(userId);
+    });
   </script>
 
 </body>
