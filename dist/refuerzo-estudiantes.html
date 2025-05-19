@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Refuerzo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f9ff;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 10vh;
+      flex-direction: column;
+    }
+
+    nav {
+      background-color: #4A90E2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    nav .logo {
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      padding: 6px 10px;
+      transition: background 0.3s;
+    }
+
+    nav ul li a:hover {
+      background-color: #357ABD;
+      border-radius: 5px;
+    }
+
+    main {
+      padding: 30px;
+      width: 100%;
+      margin-top: 80px;
+    }
+
+    h2 {
+      color: #4A90E2;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .selector-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    select,
+    button {
+      padding: 10px 26px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      outline: none;
+      cursor: pointer;
+      width: 400px;
+    }
+
+    select:focus,
+    button:focus {
+      box-shadow: 0 0 8px rgba(66, 133, 244, 0.8);
+    }
+
+    button {
+      background-color: #4A90E2;
+      color: white;
+      font-weight: bold;
+      border: none;
+      transition: background 0.3s;
+      width: 200px;
+    }
+    #topicSelect {
+      max-width: 300px;
+    }
+
+    /* Estilo para la tabla */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 40px;
+    }
+
+    table th,
+    table td {
+      padding: 12px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+
+    table th:nth-child(1),
+    table td:nth-child(1) {
+      width: 20%;
+    }
+
+    table th:nth-child(2),
+    table td:nth-child(2) {
+      width: 40%;
+    }
+
+    table th:nth-child(3),
+    table td:nth-child(3) {
+      width: 20%;
+    }
+
+    table th:nth-child(4),
+    table td:nth-child(4) {
+      width: 20%;
+    }
+
+    table th {
+      background-color: #4A90E2;
+      color: white;
+    }
+
+    table tbody tr:nth-child(even) {
+      background-color: #f4f9ff;
+    }
+
+    table tbody tr:hover {
+      background-color: #e2e6f1;
+    }
+
+    #alertaContainer {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+
+    /* Responsive: Ajustar los selectores en pantallas pequeñas */
+    @media screen and (max-width: 768px) {
+      .selector-container {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+      }
+
+      select,
+      button {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="alertaContainer"></div>
+
+  <nav>
+    <div class="logo">Calificaciones</div>
+    <ul>
+      <li><a href="javascript:history.back()">← Volver</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <h2>Seleccione una Materia y un Tema</h2>
+    <div class="selector-container">
+      <div>
+        <label for="materiasContainer">Materia:</label>
+        <select id="materiasContainer">
+          <option value="">Seleccione una materia</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="topicSelect">Tema:</label>
+        <select id="topicSelect">
+          <option value="">Seleccione un tema</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Tabla de alumnos -->
+    <h2>Alumnos Registrados</h2>
+    <table id="tablaAlumnos">
+      <thead>
+        <tr>
+          <th>Alumno</th>
+          <th>Subtemas</th>
+          <th>Calificación máxima</th>
+          <th>Calificación Obtenida</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div style="text-align: center; margin-top: 20px;">
+      <button id="enviarBtn">Enviar Calificaciones</button>
+       <button id="refuerzoBtn">Generar Refuerzo</button>
+    </div>
+  </main>
+  <script>
+    const API = 'http://localhost:3000/Subjects';
+    const API_TOPICS = 'http://localhost:3000/topics';
+    const API_ALUMNOS = 'http://localhost:3000/users';
+    const API_GRADES = 'http://localhost:3000/grades';
+    const tablaAlumnosBody = document.querySelector('#tablaAlumnos tbody');
+    let materiaId;
+    let temas = [];
+
+    function getAuthHeaders() {
+      const token = localStorage.getItem('accessToken');
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      };
+    }
+
+    function getDocenteIdFromURL() {
+      const docenteId = localStorage.getItem('userId');
+      return docenteId;
+    }
+
+    // Función para cargar las materias del docente
+    async function cargarMaterias() {
+      const docenteId = localStorage.getItem('userId'); // Obtenemos el ID del docente desde localStorage
+
+      // Realizamos la solicitud correctamente al endpoint adecuado
+      try {
+        const res = await fetch(`http://localhost:3000/Subjects/usuario/${docenteId}`, {
+          method: 'GET',
+          headers: getAuthHeaders() // Usamos los headers de autorización
+        });
+
+        if (res.ok) {
+          const materias = await res.json(); // Obtenemos las materias
+          renderMaterias(materias); // Aquí renderizamos las materias en el select
+        } else {
+          throw new Error('No se pudieron cargar las materias.');
+        }
+      } catch (error) {
+        console.error('Error al cargar materias:', error);
+        mostrarAlerta('Error al cargar materias.', 'error');
+      }
+    }
+
+    // Función para mostrar las materias en el select
+    function renderMaterias(materias) {
+      const materiasContainer = document.getElementById('materiasContainer');
+
+      // Limpiar el select antes de agregar nuevas opciones
+      materiasContainer.innerHTML = '<option value="">Seleccione una materia</option>';
+
+      // Agregar las materias al select
+      materias.forEach(m => {
+        const option = document.createElement('option');
+        option.value = m._id;  // Establecer el _id de la materia como valor
+        option.textContent = m.name;  // El nombre de la materia es el texto visible
+        materiasContainer.appendChild(option);  // Añadir la opción al select
+      });
+    }
+    // Limpiar los temas previos si se selecciona otra materia
+    document.getElementById('materiasContainer').addEventListener('change', (e) => {
+      materiaId = e.target.value;
+      const topicSelect = document.getElementById('topicSelect');
+      topicSelect.innerHTML = '<option value="">Seleccione un tema</option>'; // Limpiar el select de temas
+      if (materiaId) {
+        cargarTemas(materiaId);
+      }
+    });
+    // Función para cargar los temas de una materia seleccionada
+    async function cargarTemas() {
+      try {
+        const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` };
+        const res = await fetch(`${API_TOPICS}/materia/${materiaId}`, { headers });
+        listaTopics = await res.json();
+        const topicSelect = document.getElementById('topicSelect');
+
+        topicSelect.innerHTML = '<option value="">Seleccione un tema</option>'; // Clear previous options
+        listaTopics.forEach(topic => {
+          const option = document.createElement('option');
+          option.value = topic._id;
+          option.textContent = topic.name;
+          option.dataset.subtopics = JSON.stringify(topic.subtopics);
+          topicSelect.appendChild(option);
+        });
+
+      } catch (error) {
+        console.error('Error cargando temas:', error);
+      }
+    }
+
+    // Función para cargar los alumnos de la materia seleccionada
+
+    async function cargarAlumnos(materiaId, topicId) {
+      try {
+        const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` };
+
+        // Obtener los alumnos
+        const resAlumnos = await fetch(`${API_ALUMNOS}/materia/${materiaId}`, { headers });
+        const alumnos = await resAlumnos.json();
+
+        // Obtener los temas y subtemas relacionados con el topicId
+        const resTemas = await fetch(`${API_TOPICS}/materia/${materiaId}`, { headers });
+        const temas = await resTemas.json();
+
+        const resGradesGroupedBySubtopic = await fetch(`${API_GRADES}/topic/${topicId}`, { headers });
+        const gradesGroupedBySubtopic = await resGradesGroupedBySubtopic.json();
+
+        // Filtrar los subtemas del tema que corresponde al topicId
+        const temaSeleccionado = temas.find(tema => tema._id === topicId);
+        const subtemas = temaSeleccionado ? temaSeleccionado.subtopics : [];
+
+        tablaAlumnosBody.innerHTML = ''; // Limpiar la tabla antes de agregar los nuevos datos
+
+        // Recorrer los alumnos y asociarles los subtemas
+        alumnos.forEach(alumno => {
+          const row = document.createElement('tr');
+          // Filtrar los subtemas relacionados con el topicId
+          const subtemasHtml = subtemas.map(subtema => {
+            return `<li>${subtema.name || 'Sin nombre'} </li>`;
+          }).join('');
+
+          // Mostrar solo el maxScore de los subtemas en la columna de calificación máxima
+          const calificacionesMaxHtml = subtemas.map(subtema => {
+            return `<li>${subtema.maxScore || 0}</li>`;
+          }).join('');
+
+          // Crear inputs para la calificación observada
+          const calificacionesObHtml = subtemas.map(subtema => {
+            const currentGrade = gradesGroupedBySubtopic.find(grade => grade.userId === alumno._id && grade.subtopicId === subtema._id);
+            return `
+              <div>
+                <input type="number" 
+                  min="0" 
+                  max="${subtema.maxScore || 0}" 
+                  class="calificacion-ob" 
+                  data-subtopic-id="${subtema._id}" 
+                  data-alumno-id="${alumno._id}"
+                  data-max="${subtema.maxScore || 0}" 
+                  value="${currentGrade ? currentGrade.grade : 0}"
+                />
+              </div>
+            `;
+          }).join('');
+          // Crear la fila para el alumno
+          row.innerHTML = `
+            <td data-alumno-id="${alumno._id}">${alumno.name}</td>
+            <td><ul style="list-style-type: none; padding-left: 0;">${subtemasHtml}</ul></td>
+            <td><ul style="list-style-type: none; padding-left: 0;">${calificacionesMaxHtml}</ul></td>
+            <td><ul style="list-style-type: none; padding-left: 0;">${calificacionesObHtml}</ul></td>
+          `;
+
+          // Agregar la fila a la tabla
+          tablaAlumnosBody.appendChild(row);
+        });
+
+        // Agregar un evento para la validación de las calificaciones observadas
+        document.querySelectorAll('.calificacion-ob').forEach(input => {
+          input.addEventListener('input', function () {
+            const maxScore = parseFloat(this.getAttribute('data-max'));
+            const value = parseFloat(this.value);
+            if (value < 0 || value > maxScore) {
+              alert(`La calificación debe estar entre 0 y ${maxScore}`);
+              this.value = ''; // Limpiar el campo si es inválido
+            }
+          });
+        });
+
+      } catch (error) {
+        console.error('Error cargando alumnos o subtemas:', error);
+      }
+    }
+    // Función para mostrar alertas
+    function mostrarAlerta(message, type) {
+      const alertaContainer = document.getElementById('alertaContainer');
+      alertaContainer.innerHTML = `
+        <div style="background-color: ${type === 'error' ? '#f8d7da' : '#d4edda'}; color: ${type === 'error' ? '#721c24' : '#155724'}; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+          ${message}
+        </div>
+      `;
+      setTimeout(() => {
+        alertaContainer.innerHTML = '';
+      }, 3000); // Desaparece la alerta después de 3 segundos
+    }
+
+    // Evento para cargar temas cuando se seleccione una materia
+    document.getElementById('materiasContainer').addEventListener('change', (e) => {
+      materiaId = e.target.value;
+      if (materiaId) {
+        cargarTemas(materiaId);
+      }
+    });
+
+    // Evento para cargar alumnos y subtemas cuando se seleccione un tema
+    document.getElementById('topicSelect').addEventListener('change', (e) => {
+      const topicId = e.target.value;
+      if (materiaId && topicId) {
+
+        cargarAlumnos(materiaId, topicId);
+      }
+    });
+    // Esta función se llamará cuando el usuario haga clic en el botón "Enviar"
+    async function sendGrades() {
+      // Obtenemos los valores del formulario
+      const subjectId = document.getElementById('materiasContainer').value;
+      const topicId = document.getElementById('topicSelect').value;
+
+      // Recopilamos las calificaciones observadas de cada subtema
+      const subTopics = [];
+      const calificacionObInputs = document.querySelectorAll('.calificacion-ob');
+      const alumnosRows = document.querySelectorAll('#tablaAlumnos tbody tr td');
+
+      alumnosRows.forEach(async (row) => {
+        const alumnoId = row.dataset.alumnoId; // Suponiendo que el ID del alumno está en un atributo data-student-id en cada fila
+        if (!alumnoId) return; // Si no hay ID, saltamos esta fila
+
+        const subTopicsForStudent = [];
+
+        // Recolectamos las calificaciones para cada subtema de este estudiante
+        calificacionObInputs.forEach(input => {
+          const subTopicId = input.dataset.subtopicId; // El ID del subtema asociado a este input
+          const subAlumnoId = input.dataset.alumnoId; // El ID del alumno asociado a este input
+          const grade = parseFloat(input.value);
+          if (subTopicId && !isNaN(grade) && alumnoId === subAlumnoId) {
+            subTopicsForStudent.push({
+              subTopicId,
+              grade
+            });
+          }
+        });
+
+        // Preparamos el cuerpo de la solicitud para este estudiante
+        const data = {
+          userId: alumnoId,
+          subjectId,
+          topicId,
+          subTopics: subTopicsForStudent
+        };
+        console.log('Datos a enviar:', data); // Para depuración
+        try {
+          // Enviar los datos al servidor para este estudiante
+          const response = await fetch('http://localhost:3000/grades', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('accessToken')}`  // Token de autorización
+            },
+            body: JSON.stringify(data)
+          });
+
+          console.log('Cuerpo de la solicitud:', data); // Para depuración
+
+          if (response.ok) {
+            const responseData = await response.json();
+            console.log('Calificaciones enviadas:', responseData);
+          } else {
+            throw new Error('Error al enviar las calificaciones para el estudiante ' + alumnoId);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert(`Hubo un error al enviar las calificaciones para el estudiante ${alumnoId}`);
+        }
+      });
+    }
+ async function sendRefuerzo() {
+  // Obtenemos el topicId desde un select o input
+  const topicId = document.getElementById('topicSelect').value;
+
+  try {
+    const response = await fetch(`http://localhost:3000/academic-support/${topicId}/generate`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`, // si usas token
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error en la petición: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Respuesta del servidor:', data);
+
+    // Aquí puedes actualizar la UI con los datos recibidos
+    alert('Refuerzo académico generado correctamente');
+    // Por ejemplo mostrar data.data en algún lugar de la página
+
+  } catch (error) {
+    console.error('Error al generar refuerzo académico:', error);
+    alert('Hubo un error al generar el refuerzo académico');
+  }
+}
+
+
+    // Asociamos el evento al botón de enviar
+    document.getElementById('enviarBtn').addEventListener('click', sendGrades);
+    // Asociamos el evento al botón de enviar Refuerzo
+    document.getElementById('refuerzoBtn').addEventListener('click', sendRefuerzo);
+
+
+    // Cargar materias al inicio
+    window.onload = () => {
+      cargarMaterias();
+    };
+  </script>
+</body>
+
+</html>

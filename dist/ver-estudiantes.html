@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registrar Alumno</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f9ff;
+      color: #333;
+    }
+    nav {
+      background-color: #4A90E2;
+      display: flex;
+      justify-content: space-between;
+      /* Cambié esto para alinear a la izquierda */
+      align-items: center;
+      padding: 12px 24px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    nav .logo {
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+      justify-content: flex-start;
+    }
+
+    main {
+      padding: 30px;
+    }
+
+    h2 {
+      color: #4A90E2;
+      margin-bottom: 20px;
+    }
+
+    #btnMostrarForm {
+      background-color: #4A90E2;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    #btnMostrarForm:hover {
+      background-color: #357ABD;
+    }
+
+    form {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      max-width: 500px;
+      margin: 0 auto 40px auto;
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    form input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .form-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    form button {
+      padding: 10px 16px;
+      background-color: #4A90E2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    form button:hover {
+      background-color: #357ABD;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background-color: #4A90E2;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .table-container {
+      max-width: 90%;
+      margin: 0 auto;
+    }
+
+    #alertaContainer {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+
+    .alerta {
+
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background-color: #edf2f7;
+      color: #333;
+      padding: 14px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-bottom: 12px;
+      font-size: 15px;
+      opacity: 1;
+      transition: opacity 0.5s, transform 0.3s;
+    }
+
+    .alerta-success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .alerta-error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    .alerta-warning {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+
+    .alerta .icono {
+      font-size: 20px;
+    }
+
+
+    @media (max-width: 768px) {
+
+      form,
+      .table-container {
+        width: 90%;
+        margin: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="alertaContainer"></div>
+
+  <nav>
+    <div class="logo">Panel</div>
+    <a href="javascript:history.back()">← Volver</a>
+  </nav>
+  <main>
+    <h2 id="tituloFormulario">Alumnos</h2>
+
+
+    <button id="btnMostrarForm">➕ Agregar Alumno</button>
+
+    <form id="alumnoForm">
+      <input type="text" id="name" placeholder="Nombre completo" required />
+      <input type="email" id="email" placeholder="Correo electrónico" required />
+      <input type="text" id="telefono" placeholder="Teléfono" required />
+      <input type="text" id="telefonorepresentante" placeholder="Teléfono del representante" required />
+      <div id="estiloCheckboxes">
+        <label><input type="checkbox" name="estilo" value="activo" /> Activo</label><br />
+        <label><input type="checkbox" name="estilo" value="reflexivo" /> Reflexivo</label><br />
+        <label><input type="checkbox" name="estilo" value="teorico" /> Teórico</label><br />
+        <label><input type="checkbox" name="estilo" value="pragmatico" /> Pragmático</label>
+      </div>
+      <input type="hidden" id="createbysubject" />
+      <div class="form-buttons">
+        <button type="submit" id="submitBtn">Registrar Alumno</button>
+        <button type="button" id="cancelarBtn" style="background-color:gray;">Cancelar</button>
+      </div>
+    </form>
+    <input type="text" id="buscadorAlumno" placeholder="Buscar alumno por nombre..."
+      style="width:100%; padding:10px; margin-bottom:20px; border:1px solid #ccc; border-radius:6px;" />
+    <div class="table-container">
+      <h2>Alumnos Registrados</h2>
+      <table id="tablaAlumnos">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Representante</th>
+            <th>Estilo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+  </main>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.6/inputmask.min.js"></script>
+  <script>
+    const API = 'http://localhost:3000/users';
+    const form = document.getElementById('alumnoForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const cancelarBtn = document.getElementById('cancelarBtn');
+    const tablaAlumnosBody = document.querySelector('#tablaAlumnos tbody');
+    const tituloFormulario = document.getElementById('tituloFormulario');
+    const btnMostrarForm = document.getElementById('btnMostrarForm');
+    let editandoAlumnoId = null;
+
+    function mostrarAlerta(mensaje, tipo = 'success') {
+      const alertaContainer = document.getElementById('alertaContainer');
+
+      const alerta = document.createElement('div');
+      alerta.className = `alerta alerta-${tipo}`;
+
+      const icon = document.createElement('span');
+      icon.className = 'icono';
+
+      if (tipo === 'success') icon.textContent = '✅';
+      else if (tipo === 'error') icon.textContent = '❌';
+      else if (tipo === 'warning') icon.textContent = '⚠️';
+      else icon.textContent = 'ℹ️';
+
+      const texto = document.createElement('span');
+      texto.textContent = mensaje;
+
+      alerta.appendChild(icon);
+      alerta.appendChild(texto);
+
+      alertaContainer.appendChild(alerta);
+
+      setTimeout(() => {
+        alerta.style.opacity = '0';
+        setTimeout(() => alerta.remove(), 500);
+      }, 4000);
+    }
+
+
+    const params = new URLSearchParams(window.location.search);
+    const materiaId = params.get('materiaId');
+    const docenteId = params.get('docenteId');
+    const nombreDocente = params.get('nombre');
+    const volverBtn = document.querySelector('nav ul li a');
+
+    if (volverBtn) {
+      if (docenteId && nombreDocente) {
+        volverBtn.href = `materias-docentes.html?docenteId=${docenteId}&nombre=${encodeURIComponent(nombreDocente)}`;
+      } else {
+        volverBtn.href = 'admin.html';
+      }
+    }
+
+
+
+    if (materiaId) {
+      document.getElementById('createbysubject').value = materiaId;
+    } else {
+      mostrarAlerta('No se encontró la materia.', 'error');
+    }
+
+    function getAuthHeaders() {
+      const token = localStorage.getItem('accessToken');
+      return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
+    }
+
+    btnMostrarForm.onclick = () => {
+      form.style.display = 'flex';
+      btnMostrarForm.style.display = 'none';
+      cancelarBtn.style.display = 'inline-block';
+    };
+
+    cancelarBtn.addEventListener('click', resetFormulario);
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const estilosSeleccionados = Array.from(document.querySelectorAll('input[name="estilo"]:checked')).map(cb => cb.value);
+      const telefono = document.getElementById('telefono').value;
+      const telefonorepresentante = document.getElementById('telefonorepresentante').value;
+      const regexTelefono = /^\+5939\d{8}$/; // Debe ser +593 seguido de un 9 y 8 dígitos
+if (!regexTelefono.test(telefono)) {
+  mostrarAlerta('El número de teléfono no es válido. Debe comenzar con +593  seguido de 9 dígitos.', 'error');
+  return;
+}
+      const alumno = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        telefono: document.getElementById('telefono').value,
+        telefonorepresentante: document.getElementById('telefonorepresentante').value,
+        estilo: estilosSeleccionados,
+        createbysubject: materiaId,
+        role: 'alumno'
+      };
+
+      try {
+        const url = editandoAlumnoId ? `${API}/${editandoAlumnoId}` : API;
+        const method = editandoAlumnoId ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+          method,
+          headers: getAuthHeaders(),
+          body: JSON.stringify(alumno)
+        });
+
+        if (res.ok) {
+          mostrarAlerta(editandoAlumnoId ? 'Alumno actualizado correctamente ✅' : 'Alumno registrado exitosamente ✅');
+          resetFormulario();
+          cargarAlumnos();
+
+          const createdAlumno = await res.json();
+
+          // Verificar si el campo 'link' está presente en la respuesta
+          if (createdAlumno.link) {
+            mostrarPopupWhatsapp(createdAlumno.link); // Abre el popup con el enlace de WhatsApp
+          } 
+        } else {
+          const error = await res.json();
+          mostrarAlerta(error.message || 'Error en operación', 'error');
+        }
+      } catch (error) {
+        console.error(error);
+        mostrarAlerta('Error de conexión', 'error');
+      }
+    });
+
+
+
+
+    async function restablecerContrasena(id) {
+      if (!confirm("¿Seguro que deseas restablecer la contraseña? Se generará una nueva automáticamente.")) return;
+
+      try {
+        const res = await fetch(`${API}/${id}/reset-password`, {
+          method: 'PUT',
+          headers: getAuthHeaders()
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+
+          if (data.link) {
+            // Si hay un enlace de WhatsApp, mostrar el popup
+            mostrarPopupWhatsapp(data.link);
+          } else {
+            mostrarAlerta('Contraseña restablecida correctamente ✅');
+          }
+        } else {
+          const error = await res.json();
+          mostrarAlerta(error.message || 'Error al restablecer contraseña', 'error');
+        }
+      } catch (error) {
+        console.error('Error al restablecer contraseña:', error);
+        mostrarAlerta('Error de conexión', 'error');
+      }
+    }
+    function generateWhatsappLink(telefono, nombreUsuario, password) {
+      const mensaje = `Hola, mi nombre de usuario es: ${nombreUsuario} y mi nueva contraseña es: ${password}`;
+      return `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+    }
+
+    function mostrarPopupWhatsapp(link) {
+      const popup = document.getElementById('popupWhatsapp');
+      const popupBtn = document.getElementById('popupWhatsappBtn');
+      popupBtn.href = link; // Asigna el enlace al botón del popup
+      popup.style.display = 'flex'; // Muestra el popup
+
+      popupBtn.onclick = () => {
+        popup.style.display = 'none'; // Oculta el popup al hacer clic en el enlace
+        return true; // Permite que el enlace abra en una nueva pestaña
+      };
+    }
+
+
+
+    function resetFormulario() {
+      form.reset();
+      document.getElementById('createbysubject').value = materiaId;
+      form.style.display = 'none';
+      btnMostrarForm.style.display = 'inline-block';
+      editandoAlumnoId = null;
+      tituloFormulario.textContent = 'Registrar Alumno';
+      submitBtn.textContent = 'Registrar Alumno';
+    }
+
+    async function cargarAlumnos() {
+      try {
+        const res = await fetch(`${API}/materia/${materiaId}`, {
+          method: 'GET',
+          headers: getAuthHeaders()
+        });
+        const alumnos = await res.json();
+        tablaAlumnosBody.innerHTML = '';
+
+        if (alumnos.length === 0) {
+          tablaAlumnosBody.innerHTML = '<tr><td colspan="4">No hay alumnos registrados.</td></tr>';
+          return;
+        }
+
+        alumnos.forEach(alumno => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+        <td>${alumno.name}</td>
+        <td>${alumno.telefonorepresentante || '-'}</td>
+        <td>${Array.isArray(alumno.estilo) ? alumno.estilo.join(', ') : alumno.estilo || '-'}</td>
+        <td>
+          <button onclick="editarAlumno('${alumno._id}')" style="background-color:#4A90E2; color:white; border:none; padding:6px 12px; border-radius:6px;">✏️ Editar</button>
+          <button onclick="eliminarAlumno('${alumno._id}')" style="background-color:#E94E77; color:white; border:none; padding:6px 12px; border-radius:6px;">🗑️ Eliminar</button>
+        </td>`;
+          tablaAlumnosBody.appendChild(row);
+        });
+      } catch (error) {
+        console.error('Error al cargar alumnos:', error);
+      }
+    }
+    const buscadorAlumno = document.getElementById('buscadorAlumno');
+    let alumnosCargados = [];
+
+    async function cargarAlumnos() {
+      try {
+        const res = await fetch(`${API}/materia/${materiaId}`, {
+          method: 'GET',
+          headers: getAuthHeaders()
+        });
+        const alumnos = await res.json();
+        alumnosCargados = alumnos;
+        renderTablaAlumnos(alumnosCargados);
+      } catch (error) {
+        console.error('Error al cargar alumnos:', error);
+      }
+    }
+
+    function renderTablaAlumnos(alumnos) {
+      tablaAlumnosBody.innerHTML = '';
+
+      if (alumnos.length === 0) {
+        tablaAlumnosBody.innerHTML = '<tr><td colspan="4">No hay alumnos registrados.</td></tr>';
+        return;
+      }
+
+      alumnos.forEach(alumno => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+      <td>${alumno.name}</td>
+      <td>${alumno.telefonorepresentante || '-'}</td>
+      <td>${Array.isArray(alumno.estilo) ? alumno.estilo.join(', ') : alumno.estilo || '-'}</td>
+      <td>
+        <button onclick="editarAlumno('${alumno._id}')" style="background-color:#4A90E2; color:white; border:none; padding:6px 12px; border-radius:6px; margin-right:6px;">✏️ Editar</button>
+        <button onclick="eliminarAlumno('${alumno._id}')" style="background-color:#E94E77; color:white; border:none; padding:6px 12px; border-radius:6px; margin-right:6px;">🗑️ Eliminar</button>
+        <button onclick="restablecerContrasena('${alumno._id}')" style="background-color:#F4A261; color:white; border:none; padding:6px 12px; border-radius:6px;">🔑 Restablecer Contraseña</button>
+      </td>
+    `;
+        tablaAlumnosBody.appendChild(row);
+      });
+    }
+
+    buscadorAlumno.addEventListener('input', () => {
+      const termino = buscadorAlumno.value.toLowerCase();
+      const filtrados = alumnosCargados.filter(a => a.name.toLowerCase().includes(termino));
+      renderTablaAlumnos(filtrados);
+    });
+
+    async function editarAlumno(id) {
+      try {
+        const res = await fetch(`${API}/${id}`, { method: 'GET', headers: getAuthHeaders() });
+        if (res.ok) {
+          const alumno = await res.json();
+          document.getElementById('name').value = alumno.name;
+          document.getElementById('email').value = alumno.email;
+          document.getElementById('telefono').value = alumno.telefono || '';
+          document.getElementById('telefonorepresentante').value = alumno.telefonorepresentante || '';
+
+          const checkboxes = document.querySelectorAll('input[name="estilo"]');
+          checkboxes.forEach(cb => cb.checked = Array.isArray(alumno.estilo) && alumno.estilo.includes(cb.value));
+          editandoAlumnoId = alumno._id;
+          submitBtn.textContent = 'Actualizar Alumno';
+          form.style.display = 'flex';
+          cancelarBtn.style.display = 'inline-block';
+          btnMostrarForm.style.display = 'none';
+          tituloFormulario.textContent = 'Editar Alumno';
+        }
+      } catch (error) {
+        console.error('Error al cargar alumno:', error);
+        mostrarAlerta('Error al cargar datos', 'error');
+      }
+    }
+    async function eliminarAlumno(id) {
+
+
+      try {
+        const res = await fetch(`${API}/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+
+        if (res.ok) {
+          mostrarAlerta('Alumno eliminado correctamente ✅');
+          cargarAlumnos();
+        } else {
+          const error = await res.json();
+          mostrarAlerta(error.message || 'Error al eliminar alumno', 'error');
+        }
+      } catch (error) {
+        console.error('Error al eliminar alumno:', error);
+        mostrarAlerta('Error de conexión', 'error');
+      }
+    }
+   
+
+    window.onload = function() {
+      const input = document.getElementById('telefono');
+      const inputRepresentante = document.getElementById('telefonorepresentante');
+      const im = new Inputmask({
+        "mask": "+593 9{8}",
+        "numericInput": true
+      });
+      im.mask(input);
+    };
+
+
+    cargarAlumnos();
+  </script>
+
+  <div id="popupWhatsapp"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:10000;">
+    <div
+      style="background:white; padding:30px; border-radius:12px; max-width:400px; text-align:center; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+      <h3 style="margin-bottom:20px; color:#333;">Contraseña Generada</h3>
+      <p style="margin-bottom:25px; color:#555;">Se generó un enlace para enviar la contraseña al alumno por WhatsApp.
+        Debes hacer clic en el botón para continuar.</p>
+      <a id="popupWhatsappBtn" href="#" target="_blank"
+        style="background-color:#25D366; color:white; padding:12px 20px; border-radius:6px; text-decoration:none; font-weight:bold;">Ir
+        al WhatsApp 🚀</a>
+    </div>
+  </div>
+
+
+</body>
+
+</html>

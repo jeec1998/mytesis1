@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "web": "webpack serve --mode development"
+    "web": "webpack serve --mode development",
+    "build": "webpack --mode production"
+
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.1.2",
