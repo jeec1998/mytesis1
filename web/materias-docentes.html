@@ -47,10 +47,7 @@
       transition: background 0.3s;
     }
 
-    nav ul li a:hover {
-      background-color: #357ABD;
-      border-radius: 5px;
-    }
+   
 
     main {
       padding: 30px;
@@ -241,7 +238,7 @@
   <nav>
     <div class="logo">Materias</div>
     <ul>
-      <li><a href="javascript:history.back()" id="volverInicio">Volver al inicio</a></li>
+      <li><a href="javascript:history.back()" id="volverInicio">Volver</a></li>
     </ul>
   </nav>
 
@@ -361,40 +358,41 @@
         container.innerHTML = '<p>Error al cargar materias.</p>';
       }
     }
+function renderMaterias(materias) {
+  container.innerHTML = '';
+  if (materias.length === 0) {
+    container.innerHTML = '<p>No hay materias registradas para este docente.</p>';
+    return;
+  }
 
-    function renderMaterias(materias) {
-      container.innerHTML = '';
-      if (materias.length === 0) {
-        container.innerHTML = '<p>No hay materias registradas para este docente.</p>';
-        return;
-      }
+  materias.forEach(m => {
+    console.log("Renderizando materia:", m);  // Depuración
+    const card = document.createElement('div');
+    card.className = 'card';
 
-      materias.forEach(m => {
-        const card = document.createElement('div');
-        card.className = 'card';
-
-        card.innerHTML = `
-          <div class="card-header">${m.name}</div>
-          <div class="card-content">
-            <p><strong>📘 Curso:</strong> ${m.curso || 'Sin curso'}</p>
-            <div class="card-buttons">
-              <div class="card-row">
-                <button onclick="editarMateria('${m._id}', '${m.name}', '${m.curso || ''}')">✏️ Editar</button>
-                <button onclick="eliminarMateria('${m._id}')">🗑️ Eliminar</button>
-              </div>
-              <div class="card-row">
-                <button onclick="agregarTemas('${m._id}')">📚 Temas</button>
-                <button onclick="agregarRecursos('${m._id}')">🔗 Recursos</button>
-              </div>
-              <div class="card-row single">
-                <button onclick="verEstudiantes('${m._id}')">👥 Estudiantes</button>
-              </div>
-            </div>
+    card.innerHTML = `
+      <div class="card-header">${m.name}</div>
+      <div class="card-content">
+        <p><strong>📘 Curso:</strong> ${m.curso || 'Sin curso'}</p>
+        <div class="card-buttons">
+          <div class="card-row">
+            <button onclick="agregarTemas('${m._id}')">📚 Temas</button>
+            <button onclick="agregarRecursos('${m._id}')">🔗 Recursos</button>
           </div>
-        `;
-        container.appendChild(card);
-      });
-    }
+          <div class="card-row single">
+            <button onclick="verEstudiantes('${m._id}')">👥 Estudiantes</button>
+          </div>
+          <div class="card-row">
+            <button onclick="editarMateria('${m._id}', '${m.name}', '${m.curso || ''}')">✏️ Editar</button>
+            <button onclick="eliminarMateria('${m._id}')">🗑️ Eliminar</button>
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
 
     formMateria.onsubmit = async (e) => {
       e.preventDefault();
@@ -438,15 +436,19 @@
       }
     };
 
-    function editarMateria(id, nombre, curso) {
-      nombreInput.value = nombre;
-      cursoInput.value = curso;
-      editandoId = id;
-      formMateria.style.display = 'flex';
-      btnMostrarFormMateria.style.display = 'none';
-      document.getElementById('btnGuardarMateria').textContent = 'Actualizar Materia';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+function editarMateria(id, nombre, curso) {
+  console.log("Editando materia:", id, nombre, curso);
+  nombreInput.value = nombre;
+  cursoInput.value = curso;
+  editandoId = id;
+  formMateria.style.display = 'flex';  // Asegúrate de que este código funcione correctamente
+  btnMostrarFormMateria.style.display = 'none';
+  document.getElementById('btnGuardarMateria').textContent = 'Actualizar Materia';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+
+
 
     function eliminarMateria(id) {
       if (!confirm('¿Estás seguro de eliminar esta materia?')) return;

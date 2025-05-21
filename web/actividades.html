@@ -71,7 +71,7 @@
 
     .card {
       width: 220px;
-      height: 280px;
+      min-height: 110px;
       background: white;
       border-radius: 14px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -106,41 +106,27 @@
       background: linear-gradient(135deg, #4caf50, #43a047);
     }
 
-    .card-content {
-      flex: 1;
-      padding: 14px;
-      font-size: 14px;
-      color: #555;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align: center;
-      gap: 8px;
+    #refuerzos-container {
+      flex: 1 1 100%;
+      max-width: 300px;
+      max-height: 400px;
+      margin-bottom: 30px;
     }
 
-    /* Barra de progreso */
-    .progress-container {
-      background-color: #eee;
-      border-radius: 10px;
-      height: 20px;
+    table {
       width: 100%;
-      overflow: hidden;
-      box-shadow: inset 0 1px 3px rgba(0, 0, 0, .2);
+      border-collapse: collapse;
     }
 
-    .progress-bar {
-      height: 100%;
-      background-color: #4A90E2;
-      width: 0;
-      transition: width 0.5s ease;
-      border-radius: 10px 0 0 10px;
-      text-align: right;
-      padding-right: 5px;
+    th, td {
+      padding: 6px 8px;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: #4caf50;
       color: white;
-      font-weight: bold;
-      line-height: 20px;
-      font-size: 12px;
-      user-select: none;
+      text-align: left;
     }
 
     #drawer {
@@ -159,18 +145,8 @@
       justify-content: space-between;
     }
 
-    .drawer-item {
-      font-size: 18px;
-      padding: 15px 0;
-      border-bottom: 1px solid #A7C7E7;
-      color: #2F4F6E;
-      cursor: pointer;
-      font-weight: 500;
-    }
-
-    .logout {
-      color: #C62828;
-      border-bottom-color: #C62828;
+    #drawer.show {
+      left: 0;
     }
 
     #drawer-overlay {
@@ -184,138 +160,222 @@
       z-index: 1000;
     }
 
-    .card-buttons {
-      display: flex;
-      padding: 10px;
-      background-color: #f0f4ff;
-      justify-content: center;
-      gap: 8px;
-      border-top: 1px solid #ddd;
-    }
-
-    .card-buttons button {
-      flex: 1 1 40%;
-      background-color: #4A90E2;
-      border: none;
-      border-radius: 6px;
-      padding: 8px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background-color 0.2s;
-    }
-
-    .card-buttons button:hover {
-      background-color: #357ABD;
-    }
-
     #drawer-overlay.show {
       display: block;
     }
 
-    #drawer.show {
-      left: 0;
+    .drawer-item {
+      font-size: 18px;
+      padding: 15px 0;
+      border-bottom: 1px solid #A7C7E7;
+      color: #2F4F6E;
+      cursor: pointer;
+      font-weight: 500;
     }
+
+    .logout {
+      color: #C62828;
+      border-bottom-color: #C62828;
+    }
+      .user-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
   </style>
 </head>
 
 <body>
-
   <header>
     <div class="left-section">
-      <button id="menu-btn" class="menu-icon">☰</button>
+      <button id="menu-btn" class="menu-icon" aria-label="Abrir menú">☰</button>
       <span class="header-title">Actividades de Refuerzo</span>
+    </div>
+     <div class="user-section" id="user-section">
+      <span>👤</span> <span id="nombre-usuario"></span>
     </div>
   </header>
 
-  <main id="actividades-container">
-    <!-- Tarjetas aquí -->
-  </main>
+  <main id="refuerzos-container" aria-label="Subtemas y notas"></main>
+
+  <main id="actividades-container" aria-label="Actividades estáticas"></main>
 
   <div id="drawer-overlay"></div>
-  <div id="drawer">
+  <nav id="drawer" role="navigation" aria-label="Menú lateral">
     <div>
-      <div class="drawer-item" onclick="navigateTo('home-alumno.html')">🏠 Materias</div>
-      <div class="drawer-item" onclick="navigateTo('perfil.html')">👤 Perfil</div>
+      <div class="drawer-item" tabindex="0" onclick="navigateTo('home-alumno.html')">🏠 Materias</div>
+      <div class="drawer-item" tabindex="0" onclick="navigateTo('perfil.html')">👤 Perfil</div>
     </div>
-    <div class="drawer-item logout" onclick="logout()">📤 Cerrar sesión</div>
-  </div>
+    <div class="drawer-item logout" tabindex="0" onclick="logout()">📤 Cerrar sesión</div>
+  </nav>
 
   <script>
-    const actividades = [
-      { tema: 'APA', subtemas: ['Citas', 'Margenes'], nota: 2.5 },
-      { tema: 'APA', subtemas: ['Citas', 'Margenes'], nota: 6 },
+    function getUserIdFromToken(token) {
+      if (!token) return null;
+      try {
+        const payload = token.split('.')[1];
+        const decoded = atob(payload);
+        const obj = JSON.parse(decoded);
+        const userId = obj._id || obj.id || null;
 
-    ];
+        if (userId) {
+          localStorage.setItem('userId', userId);
+        }
 
-    function cargarActividades() {
-      const container = document.getElementById('actividades-container');
-      container.innerHTML = ''; // limpiar
+        return userId;
+      } catch {
+        return null;
+      }
+    }
 
-      actividades.forEach(act => {
+    document.addEventListener('DOMContentLoaded', () => {
+      const drawer = document.getElementById('drawer');
+      const overlay = document.getElementById('drawer-overlay');
+      const menuBtn = document.getElementById('menu-btn');
+
+      menuBtn.addEventListener('click', () => {
+        drawer.classList.add('show');
+        overlay.classList.add('show');
+      });
+
+      overlay.addEventListener('click', () => {
+        drawer.classList.remove('show');
+        overlay.classList.remove('show');
+      });
+
+      window.navigateTo = function (path) {
+        drawer.classList.remove('show');
+        overlay.classList.remove('show');
+        setTimeout(() => {
+          window.location.href = path;
+        }, 300);
+      };
+
+      window.logout = function () {
+        localStorage.clear();
+        window.location.href = 'index.html';
+      };
+
+      // Aquí puedes poner tu código para cargar datos, por ejemplo:
+      const token = localStorage.getItem('accessToken');
+      const userId = getUserIdFromToken(token);
+
+      cargarRefuerzoPorUsuario(userId);
+    });
+
+    async function cargarRefuerzoPorUsuario(userId) {
+      const token = localStorage.getItem('accessToken');
+      if (!token || !userId) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      try {
+        const res = await fetch(`http://localhost:3000/academic-support/${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!res.ok) throw new Error('Error al obtener datos');
+
+        const data = await res.json();
+
+        const container = document.getElementById('refuerzos-container');
+        container.innerHTML = '';
+
+        if (!data.topic || !data.subtopics || !Array.isArray(data.subtopics) || data.subtopics.length === 0) {
+          container.innerHTML = '<p>No hay subtemas disponibles.</p>';
+          return;
+        }
+
         const card = document.createElement('div');
         card.className = 'card';
 
         const header = document.createElement('div');
-        header.className = 'card-header';
-
-        if (act.nota < 3) header.classList.add('header-rojo');
-        else if (act.nota < 7) header.classList.add('header-amarillo');
-        else if (act.nota < 9) header.classList.add('header-verde');
-
-        header.textContent = act.tema;
+        header.className = 'card-header header-verde';
+        header.textContent = data.topic.titulo || 'Sin título de tema';
 
         const content = document.createElement('div');
         content.className = 'card-content';
-        content.innerHTML = `
-          <p><strong>Subtemas:</strong> ${act.subtemas.join(', ')}</p>
-          <p><strong>Nota:</strong> ${act.nota}</p>
-        `;
 
-        const buttons = document.createElement('div');
-        buttons.className = 'card-buttons';
-        buttons.innerHTML = `
-        <button onclick="window.location.href='actividad.html'">Ver</button>
-        `;
+        const tabla = document.createElement('table');
 
+        const thead = document.createElement('thead');
+        thead.innerHTML = `
+          <tr>
+            <th>Subtema</th>
+            <th>Calif</th>
+            <th>Max</th>
+          </tr>
+        `;
+        tabla.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        data.subtopics.forEach(s => {
+          const tr = document.createElement('tr');
+
+          const tdTitulo = document.createElement('td');
+          tdTitulo.textContent = s.titulo;
+          tdTitulo.style.padding = '6px 8px';
+
+          const tdNota = document.createElement('td');
+          tdNota.textContent = s.nota ?? 'N/A';
+          tdNota.style.padding = '6px 8px';
+
+          const tdNotaMax = document.createElement('td');
+          tdNotaMax.textContent = s.notaMaxima ?? 'N/A';
+          tdNotaMax.style.padding = '6px 8px';
+
+          tr.appendChild(tdTitulo);
+          tr.appendChild(tdNota);
+          tr.appendChild(tdNotaMax);
+          tbody.appendChild(tr);
+        });
+
+        tabla.appendChild(tbody);
+        content.appendChild(tabla);
+
+        // Botón Ver
+        const btnVer = document.createElement('button');
+        btnVer.textContent = 'Ver';
+        btnVer.className = 'btn-ver';
+        btnVer.style.margin = '10px auto 0 auto';
+        btnVer.style.padding = '8px 12px';
+        btnVer.style.backgroundColor = '#4caf50';
+        btnVer.style.border = 'none';
+        btnVer.style.borderRadius = '6px';
+        btnVer.style.color = 'white';
+        btnVer.style.fontWeight = 'bold';
+        btnVer.style.cursor = 'pointer';
+        btnVer.style.display = 'block';
+        btnVer.style.width = '90%';
+
+        btnVer.onmouseenter = () => btnVer.style.backgroundColor = '#4caf50';
+        btnVer.onmouseleave = () => btnVer.style.backgroundColor = '#4caf50';
+
+        btnVer.onclick = () => {
+          window.location.href = 'actividad.html';
+        };
+
+        content.appendChild(btnVer);
 
         card.appendChild(header);
         card.appendChild(content);
-        card.appendChild(buttons);
         container.appendChild(card);
-      });
+
+      } catch (error) {
+        console.error(error);
+        alert('Error cargando subtemas.');
+      }
     }
-
-
-    function marcarHecho(tema) {
-      alert(`✅ Actividad "${tema}" marcada como hecha`);
-    }
-
-    // Drawer funcionalidad
-    const drawer = document.getElementById('drawer');
-    const overlay = document.getElementById('drawer-overlay');
-    const menuBtn = document.getElementById('menu-btn');
-
-    menuBtn.onclick = () => { drawer.classList.add('show'); overlay.classList.add('show'); };
-    overlay.onclick = () => { drawer.classList.remove('show'); overlay.classList.remove('show'); };
-
-    function navigateTo(path) {
-      drawer.classList.remove('show');
-      overlay.classList.remove('show');
-      setTimeout(() => { window.location.href = path; }, 300);
-    }
-
-    function logout() {
-      localStorage.clear();
-      window.location.href = 'index.html';
-    }
-
-    cargarActividades();
+    document.getElementById('user-section').onclick = () => {
+      window.location.href = 'perfil.html';
+    };
   </script>
-
 </body>
-
-</html>
 
 </html>
