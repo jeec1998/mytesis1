@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import { useNavigationState, NavigationProp } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -16,9 +17,10 @@ interface Props {
   visible: boolean;
   onClose: () => void;
   navigation: NavigationProp<any>;
+  onLogout: () => void;
 }
 
-const CustomDrawer: React.FC<Props> = ({ visible, onClose, navigation }) => {
+const CustomDrawer: React.FC<Props> = ({ visible, onClose, navigation, onLogout }) => {
   const translateX = useRef(new Animated.Value(-screenWidth)).current;
 
   const state = useNavigationState((state) => state);
@@ -37,25 +39,25 @@ const CustomDrawer: React.FC<Props> = ({ visible, onClose, navigation }) => {
     navigation.navigate(screen);
   };
 
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('accessToken');
+    onClose();
+    onLogout(); // Cambia el estado en App para mostrar pantalla Login
+  };
+
   return (
     <Modal visible={visible} transparent animationType="none">
       <TouchableOpacity style={styles.overlay} onPress={onClose} />
       <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
         <View style={styles.menuContent}>
           <View>
-            {currentRouteName !== 'Home' && (
-              <TouchableOpacity onPress={() => goToScreen('Home')}>
-                <Text style={styles.drawerItem}>🏠 Materias</Text>
-              </TouchableOpacity>
-            )}
             {currentRouteName !== 'Perfil' && (
               <TouchableOpacity onPress={() => goToScreen('Perfil')}>
                 <Text style={styles.drawerItem}>👤 Perfil</Text>
               </TouchableOpacity>
             )}
-
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleLogout}>
             <Text style={[styles.drawerItem, styles.logout]}>📤 Cerrar sesión</Text>
           </TouchableOpacity>
         </View>

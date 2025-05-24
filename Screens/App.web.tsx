@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-// 🔑 Función para decodificar JWT
+
 interface JwtPayload {
   _id: string;
   email: string;
@@ -35,7 +35,7 @@ const App = () => {
 
   const handleLoginWeb = async () => {
     try {
-      const res = await fetch('http://localhost:3000/users/login', {
+      const res = await fetch('https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombreUsuario, password }),

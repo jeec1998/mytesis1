@@ -63,8 +63,11 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#D6E6F2' },
   innerContainer: { flex: 1 },
-  listContent: { padding: 20, gap: 20, justifyContent: 'center' },
-  row: { justifyContent: 'space-evenly', marginBottom: 20 },
+  listContent: { padding: 5, justifyContent: 'center' },
+  row: { 
+    justifyContent: 'space-between', 
+    marginBottom: 20,
+  },
   card: {
     backgroundColor: 'white',
     width: 160,
@@ -76,10 +79,11 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
     alignItems: 'center',
+    marginHorizontal: 8,
   },
   cardHeader: {
     width: '100%',
-    padding: 12,
+    padding: 15,
     backgroundColor: '#2F80ED',
     alignItems: 'center',
   },
@@ -87,3 +91,4 @@ const styles = StyleSheet.create({
   cardContent: { flex: 1, padding: 10, justifyContent: 'center', alignItems: 'center' },
   descriptionText: { fontSize: 13, color: '#444', textAlign: 'center' },
 });
+
