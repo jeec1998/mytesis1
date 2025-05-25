@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,123 +8,187 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
+  Alert,
+  ScrollView,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from './App';
+import ActividadScreen from './ActividadScreen';
 
-interface Refuerzo {
-  id: string;
-  Materia: string;
-  tema: string;
-  nota: number;
-  subtemasMal: string[];
+interface Subtopic {
+  _id: string;
+  titulo: string;
+  nota?: number;
+  notaMaxima?: number;
 }
 
-const HomeScreen: React.FC = () => {
-  const [refuerzos, setRefuerzos] = useState<Refuerzo[]>([
-    {
-      id: '1',
-      Materia: 'Matrices ',
-      tema: 'Matrices y Determinantes',
-      nota: 2.5,
-      subtemasMal: ['Matrices', 'Determinantes'],
-    },
-    {
-      id: '2',
-      Materia: 'Trigonometría',
-      tema: 'Trigonometría',
-      nota: 5.8,
-      subtemasMal: ['Ángulos Notables'],
-    },
-    {
-      id: '3',
-      Materia: 'Cálculo Diferencial',
-      tema: 'Cálculo Diferencial',
-      nota: 8.2,
-      subtemasMal: ['Límites', 'Derivadas'],
-    },
-  ]);
+interface TopicData {
+  topic: {
+    titulo: string;
+  };
+  subtopics: Subtopic[];
+}
 
-  const verRefuerzo = (tema: string) => {
-    alert(`🔍 Ver detalles de: ${tema}`);
+interface Props {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'HomeScreen'>;
+}
+
+const { API } = process.env;
+
+const HomeScreen: React.FC<Props> = ({ navigation }) => {
+  const [topicData, setTopicData] = useState<TopicData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const getUserIdFromToken = (token: string | null): string | null => {
+    if (!token) return null;
+    try {
+      const payload = token.split('.')[1];
+      const decoded = atob(payload);
+      const obj = JSON.parse(decoded);
+      return obj._id || obj.id || null;
+    } catch {
+      return null;
+    }
   };
 
-  const marcarHecho = (tema: string) => {
-    alert(`✅ Refuerzo "${tema}" marcado como hecho`);
-  };
+  useEffect(() => {
+    const fetchActividades = async () => {
+      try {
+        const token = await AsyncStorage.getItem('accessToken');
+        if (!token) {
+          console.warn('Token no disponible');
+          setLoading(false);
+          return;
+        }
+        const userId = getUserIdFromToken(token);
+        if (!userId) {
+          console.warn('No se encontró userId en el token');
+          setLoading(false);
+          return;
+        }
 
-  const getHeaderColor = (nota: number) => {
-    if (nota < 3) return styles.headerRojo;
-    if (nota < 7) return styles.headerAmarillo;
-    return styles.headerVerde;
+        const res = await fetch(`${API}/academic-support/${userId}`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) throw new Error('Error al obtener actividades');
+
+        const data = await res.json();
+
+        if (data && data.topic && Array.isArray(data.subtopics)) {
+          setTopicData({
+            topic: { titulo: data.topic.titulo || data.topic.name || 'Sin título' },
+            subtopics: data.subtopics.map((s: any) => ({
+              _id: s._id,
+              titulo: s.titulo || s.name || 'Sin título',
+              nota: s.nota,
+              notaMaxima: s.notaMaxima,
+            })),
+          });
+        } else {
+          setTopicData(null);
+        }
+      } catch (error) {
+        console.error('Error cargando actividades:', error);
+        Alert.alert('Error', 'No se pudieron cargar las actividades');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActividades();
+  }, []);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#2F80ED" />
+      </SafeAreaView>
+    );
+  }
+
+  if (!topicData) {
+    return (
+      <SafeAreaView style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <Text>No hay actividades disponibles.</Text>
+      </SafeAreaView>
+    );
+  }
+
+  const abrirActividad = () => {
+    // Aquí podrías navegar a otra pantalla con más detalle, o mostrar modal, etc.
+    Alert.alert('Actividad', `Ver detalles de: ${topicData.topic.titulo}`);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
-        style={styles.innerContainer}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={{ flex: 1 }}
       >
-        <FlatList
-          data={refuerzos}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContent}
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              <View style={[styles.cardHeader, getHeaderColor(item.nota)]}>
-                <Text style={styles.headerText}>{item.Materia}</Text>
-              </View>
-
-              <View style={styles.cardContent}>
-                <Text style={styles.infoText}><Text style={styles.bold}>Nota:</Text> {item.nota}</Text>
-                <Text style={styles.infoText}><Text style={styles.bold}>Subtemas:</Text> {item.subtemasMal.join(', ')}</Text>
-              </View>
-
-              <View style={styles.cardButtons}>
-                <TouchableOpacity style={styles.button} onPress={() => verRefuerzo(item.tema)}>
-                  <Text style={styles.buttonText}>Ver</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => marcarHecho(item.tema)}>
-                  <Text style={styles.buttonText}>Hecho</Text>
-                </TouchableOpacity>
-              </View>
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <View style={styles.card}>
+            <View style={[styles.cardHeader, styles.headerVerde]}>
+              <Text style={styles.headerText}>{topicData.topic.titulo}</Text>
             </View>
-          )}
-        />
+
+            <View style={styles.cardContent}>
+              {/* Tabla de subtemas */}
+              <View style={styles.tableHeader}>
+                <Text style={[styles.tableCell, styles.cellTitle]}>Subtema</Text>
+                <Text style={[styles.tableCell, styles.cellCenter]}>Calif</Text>
+                <Text style={[styles.tableCell, styles.cellCenter]}>Max</Text>
+              </View>
+
+              {topicData.subtopics.map((sub) => (
+                <View key={sub._id} style={styles.tableRow}>
+                  <Text style={[styles.tableCell, styles.cellTitle]}>{sub.titulo}</Text>
+                  <Text style={[styles.tableCell, styles.cellCenter]}>{sub.nota ?? 'N/A'}</Text>
+                  <Text style={[styles.tableCell, styles.cellCenter]}>{sub.notaMaxima ?? 'N/A'}</Text>
+                </View>
+              ))}
+            </View>
+
+          <TouchableOpacity
+  style={styles.btnVer}
+  onPress={() => navigation.navigate('ActividadScreen')}
+>
+  <Text style={styles.btnVerText}>Ver Actividad</Text>
+</TouchableOpacity>
+
+          </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
-export default HomeScreen;
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#D6E6F2',
-  },
-  innerContainer: {
-    flex: 1,
-  },
-  listContent: {
-    padding: 20,
-    gap: 20,
+  container: { flex: 1, backgroundColor: '#D6E6F2' },
+  scrollContent: {
+    padding: 30,
+    alignItems: 'center',
   },
   card: {
+    width: 320,
     backgroundColor: 'white',
-    width: '100%',
     borderRadius: 14,
-    overflow: 'hidden',
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3,
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: 20,
+    elevation: 4,
+    overflow: 'hidden',
   },
   cardHeader: {
-    width: '100%',
     padding: 14,
-    alignItems: 'center',
+  },
+  headerVerde: {
+    backgroundColor: '#4caf50',
   },
   headerText: {
     fontWeight: 'bold',
@@ -134,47 +198,43 @@ const styles = StyleSheet.create({
   },
   cardContent: {
     padding: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  infoText: {
+  tableHeader: {
+    flexDirection: 'row',
+    borderBottomWidth: 2,
+    borderBottomColor: '#4caf50',
+    paddingBottom: 6,
+    marginBottom: 10,
+  },
+  tableRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    paddingVertical: 6,
+  },
+  tableCell: {
+    flex: 1,
     fontSize: 14,
     color: '#444',
+  },
+  cellTitle: {
+    flex: 3,
+  },
+  cellCenter: {
     textAlign: 'center',
-    marginBottom: 6,
   },
-  bold: {
-    fontWeight: 'bold',
+  btnVer: {
+    margin: 10,
+    backgroundColor: '#4caf50',
+    paddingVertical: 12,
+    borderRadius: 8,
   },
-  cardButtons: {
-    flexDirection: 'row',
-    padding: 10,
-    gap: 10,
-    backgroundColor: '#f0f4ff',
-    justifyContent: 'center',
-    borderTopColor: '#ccc',
-    borderTopWidth: 1,
-  },
-  button: {
-    backgroundColor: '#4A90E2',
-    borderRadius: 6,
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    alignItems: 'center',
-    flex: 1,
-  },
-  buttonText: {
+  btnVerText: {
     color: 'white',
-    fontSize: 14,
     fontWeight: 'bold',
-  },
-  headerRojo: {
-    backgroundColor: '#e53935',
-  },
-  headerAmarillo: {
-    backgroundColor: '#fbc02d',
-  },
-  headerVerde: {
-    backgroundColor: '#43a047',
+    textAlign: 'center',
+    fontSize: 16,
   },
 });
+
+export default HomeScreen;

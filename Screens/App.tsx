@@ -16,7 +16,7 @@ import CustomDrawer from './CustomDrawer';
 import LoginScreen from './LoginScreen';
 import ActividadesScreen from './ActividadesScreen';
 import NewPasswordScreen from './NewPasswordScreen';
-
+import ActividadScreen from './ActividadScreen';
 export type RootStackParamList = {
   Login: undefined;
   HomeScreen: undefined;
@@ -24,6 +24,7 @@ export type RootStackParamList = {
   Notificaciones: undefined;
   Actividades: { refuerzo: { id: string; Materia: string; descripcion: string } };
   NewPasswordScreen: undefined;
+  ActividadScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -101,6 +102,17 @@ const App: React.FC = () => {
               component={NewPasswordScreen}
               options={{
                 title: 'CONTRSEÑA',
+                headerStyle: {
+                  backgroundColor: '#2F80ED',
+                },
+                headerTintColor: 'white',
+              }}
+            />
+             <Stack.Screen
+              name="ActividadScreen"
+              component={ActividadScreen}
+              options={{
+                title: 'Actividad',
                 headerStyle: {
                   backgroundColor: '#2F80ED',
                 },
