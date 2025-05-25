@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 6,
     paddingHorizontal: 10,
-    paddingRight: 40, // espacio para el icono
+    paddingRight: 40, 
     color: 'black',
   },
   eyeIcon: {
