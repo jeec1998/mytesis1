@@ -24,7 +24,7 @@ export type RootStackParamList = {
   Notificaciones: undefined;
   Actividades: { refuerzo: { id: string; Materia: string; descripcion: string } };
   NewPasswordScreen: undefined;
-  ActividadScreen: undefined;
+  ActividadScreen: { topicId: string };  // <-- aquí el cambio
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

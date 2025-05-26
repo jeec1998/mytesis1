@@ -12,14 +12,16 @@ import {
   Platform,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Icon } from "@iconify/react";
-import Svg, { Path, Rect, Polygon } from 'react-native-svg';
+import Svg, { Path, Rect } from 'react-native-svg';
 import PdfIcons from '../components/material-icon-theme--pdf';
 import WordIcons from '../components/vscode-icons--file-type-word';
 import ExcelIcons from '../components/vscode-icons--file-type-excel';
 import YoutubeIcons from '../components/logos--youtube-icon';
 import ImageIcons from '../components/fluent-color--image-16';
 import AudioIcons from '../components/icon-park--audio-file';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { RootStackParamList } from './App';
+
 interface Recurso {
   titulo: string;
   tipo: string;
@@ -38,6 +40,7 @@ interface Generated {
   recursos_recomendados?: Recurso[];
   actividad_de_refuerzo?: ActividadDeRefuerzo;
 }
+
 const DefaultIcon = (props: { size?: number }) => (
   <Svg width={props.size || 70} height={props.size || 70} viewBox="0 0 24 24" fill="none">
     <Rect width="24" height="24" fill="#999" rx="3" />
@@ -45,7 +48,13 @@ const DefaultIcon = (props: { size?: number }) => (
   </Svg>
 );
 
+type ActividadScreenRouteProp = RouteProp<RootStackParamList, 'ActividadScreen'>;
+
 const ActividadScreen: React.FC = () => {
+  const route = useRoute<ActividadScreenRouteProp>();
+  const { topicId } = route.params;
+  console.log('topicId:', topicId);
+
   const [generated, setGenerated] = useState<Generated | null>(null);
   const [loading, setLoading] = useState(true);
   const [nombreUsuario, setNombreUsuario] = useState('');
@@ -63,6 +72,7 @@ const ActividadScreen: React.FC = () => {
     } catch {
       return null;
     }
+    
   };
 
   useEffect(() => {
@@ -81,9 +91,9 @@ const ActividadScreen: React.FC = () => {
           return;
         }
         setNombreUsuario(userData.nombre);
-
+      console.log('user',userData.userId);
         const res = await fetch(
-          `https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/academic-support/${userData.userId}`,
+          `https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/academic-support/user/${userData.userId}/topic/${topicId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -113,7 +123,7 @@ const ActividadScreen: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [topicId]);
 
   const openUrl = async (url: string | undefined) => {
     if (!url) return;
@@ -125,7 +135,6 @@ const ActividadScreen: React.FC = () => {
 
     // Para Dropbox, no forzar descarga sino vista previa (dl=0)
     if (modifiedUrl.includes('dropbox.com')) {
-      // Asegurarse que tenga dl=0 para vista previa
       if (modifiedUrl.includes('dl=1')) {
         modifiedUrl = modifiedUrl.replace('dl=1', 'dl=0');
       } else if (!modifiedUrl.includes('dl=0')) {
@@ -151,7 +160,13 @@ const ActividadScreen: React.FC = () => {
     if (t.includes('word') || t.includes('doc')) return WordIcons;
     if (t.includes('excel')) return ExcelIcons;
     if (t.includes('video') || t.includes('mp4') || t.includes('youtube')) return YoutubeIcons;
-    if (t.includes('imagen') || t.includes('image') || t.includes('jpeg') || t.includes('jpg') || t.includes('png'))
+    if (
+      t.includes('imagen') ||
+      t.includes('image') ||
+      t.includes('jpeg') ||
+      t.includes('jpg') ||
+      t.includes('png')
+    )
       return ImageIcons;
     if (t.includes('audio')) return AudioIcons;
     return DefaultIcon;
@@ -181,9 +196,7 @@ const ActividadScreen: React.FC = () => {
                 >
                   <IconComponent size={baseIconSize} />
                   <View style={styles.resourceTextContainer}>
-                    <Text style={styles.resourceTitle}>
-                      {recurso.titulo} 
-                    </Text>
+                    <Text style={styles.resourceTitle}>{recurso.titulo}</Text>
                     <Text style={styles.resourceLink}>Abrir recurso</Text>
                   </View>
                 </TouchableOpacity>
@@ -196,12 +209,13 @@ const ActividadScreen: React.FC = () => {
           <View style={[styles.section, { marginTop: 30 }]}>
             <Text style={styles.sectionTitle}>📗 Actividad de Refuerzo</Text>
             <Text style={styles.boldText}>
-              Descripción general: <Text style={styles.normalText}>{generated.actividad_de_refuerzo.descripcion_general}</Text>
+              Descripción general:{' '}
+              <Text style={styles.normalText}>{generated.actividad_de_refuerzo.descripcion_general}</Text>
             </Text>
             <Text style={styles.boldText}>Pasos:</Text>
             {generated.actividad_de_refuerzo.pasos.map((paso, i) => (
-              <Text  style={styles.normalText}>
-              {paso}
+              <Text key={i} style={styles.normalText}>
+                {paso}
               </Text>
             ))}
             <Text style={styles.boldText}>

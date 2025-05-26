@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  FlatList,
+  ScrollView,
   TouchableOpacity,
   SafeAreaView,
   StyleSheet,
@@ -10,12 +10,10 @@ import {
   Platform,
   ActivityIndicator,
   Alert,
-  ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from './App';
-import ActividadScreen from './ActividadScreen';
 
 interface Subtopic {
   _id: string;
@@ -26,18 +24,17 @@ interface Subtopic {
 
 interface TopicData {
   topic: {
+    _id: string;
     titulo: string;
   };
   subtopics: Subtopic[];
 }
 
 interface Props {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'HomeScreen'>;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Actividades'>;
 }
 
-const { API } = process.env;
-
-const HomeScreen: React.FC<Props> = ({ navigation }) => {
+const ActividadesScreen: React.FC<Props> = ({ navigation }) => {
   const [topicData, setTopicData] = useState<TopicData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -69,12 +66,16 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           return;
         }
 
-        const res = await fetch(`${API}/academic-support/${userId}`, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await fetch(
+          `https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/academic-support/${userId}`,
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
 
         if (!res.ok) throw new Error('Error al obtener actividades');
 
@@ -82,7 +83,10 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
         if (data && data.topic && Array.isArray(data.subtopics)) {
           setTopicData({
-            topic: { titulo: data.topic.titulo || data.topic.name || 'Sin título' },
+            topic: {
+              _id: data.topic.id || '', // revisa cuál es el campo correcto
+              titulo: data.topic.titulo || data.topic.name || 'Sin título',
+            },
             subtopics: data.subtopics.map((s: any) => ({
               _id: s._id,
               titulo: s.titulo || s.name || 'Sin título',
@@ -99,6 +103,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       } finally {
         setLoading(false);
       }
+
     };
 
     fetchActividades();
@@ -120,17 +125,9 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     );
   }
 
-  const abrirActividad = () => {
-    // Aquí podrías navegar a otra pantalla con más detalle, o mostrar modal, etc.
-    Alert.alert('Actividad', `Ver detalles de: ${topicData.topic.titulo}`);
-  };
-
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={{ flex: 1 }}
-      >
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.card}>
             <View style={[styles.cardHeader, styles.headerVerde]}>
@@ -138,7 +135,6 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
             </View>
 
             <View style={styles.cardContent}>
-              {/* Tabla de subtemas */}
               <View style={styles.tableHeader}>
                 <Text style={[styles.tableCell, styles.cellTitle]}>Subtema</Text>
                 <Text style={[styles.tableCell, styles.cellCenter]}>Calif</Text>
@@ -154,12 +150,15 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
               ))}
             </View>
 
-          <TouchableOpacity
-  style={styles.btnVer}
-  onPress={() => navigation.navigate('ActividadScreen')}
->
-  <Text style={styles.btnVerText}>Ver Actividad</Text>
-</TouchableOpacity>
+            <TouchableOpacity
+              style={styles.btnVer}
+              onPress={() => {
+                console.log('Navegando a ActividadScreen con topicId:', topicData.topic._id);
+                navigation.navigate('ActividadScreen', { topicId: topicData.topic._id });
+              }}
+            >
+              <Text style={styles.btnVerText}>Ver Actividad</Text>
+            </TouchableOpacity>
 
           </View>
         </ScrollView>
@@ -237,4 +236,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default ActividadesScreen;

@@ -48,7 +48,7 @@ const NewPasswordScreen = ({ navigation }: any) => {
     }
     setIsLoading(true);
     try {
-      const res = await fetch(`${API}/users/cambiar-contrasena`, {
+      const res = await fetch(`https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/users/cambiar-contrasena`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -27,7 +27,7 @@ const LoginScreen: React.FC<Props> = ({ onLogin }) => {
   const handleLogin = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch(`${API}/users/login`, {
+      const res = await fetch(`https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/users/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombreUsuario, password }),
