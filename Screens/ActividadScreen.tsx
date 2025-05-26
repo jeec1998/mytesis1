@@ -12,9 +12,14 @@ import {
   Platform,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import { Icon } from "@iconify/react";
+import Svg, { Path, Rect, Polygon } from 'react-native-svg';
+import PdfIcons from '../components/material-icon-theme--pdf';
+import WordIcons from '../components/vscode-icons--file-type-word';
+import ExcelIcons from '../components/vscode-icons--file-type-excel';
+import YoutubeIcons from '../components/logos--youtube-icon';
+import ImageIcons from '../components/fluent-color--image-16';
+import AudioIcons from '../components/icon-park--audio-file';
 interface Recurso {
   titulo: string;
   tipo: string;
@@ -33,6 +38,12 @@ interface Generated {
   recursos_recomendados?: Recurso[];
   actividad_de_refuerzo?: ActividadDeRefuerzo;
 }
+const DefaultIcon = (props: { size?: number }) => (
+  <Svg width={props.size || 70} height={props.size || 70} viewBox="0 0 24 24" fill="none">
+    <Rect width="24" height="24" fill="#999" rx="3" />
+    <Path fill="#666" d="M8 8h8v8H8z" />
+  </Svg>
+);
 
 const ActividadScreen: React.FC = () => {
   const [generated, setGenerated] = useState<Generated | null>(null);
@@ -71,9 +82,12 @@ const ActividadScreen: React.FC = () => {
         }
         setNombreUsuario(userData.nombre);
 
-        const res = await fetch(`https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/academic-support/${userData.userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch(
+          `https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/academic-support/${userData.userId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
         if (!res.ok) throw new Error('Error al obtener datos');
 
@@ -101,35 +115,46 @@ const ActividadScreen: React.FC = () => {
     fetchData();
   }, []);
 
- const openUrl = async (url: string | undefined) => {
-  if (!url) return;
+  const openUrl = async (url: string | undefined) => {
+    if (!url) return;
 
-  let modifiedUrl = url.trim();
-  if (!modifiedUrl.startsWith('http://') && !modifiedUrl.startsWith('https://')) {
-    modifiedUrl = 'https://' + modifiedUrl;
-  }
-
-  try {
-    const supported = await Linking.canOpenURL(modifiedUrl);
-    if (!supported) {
-      Alert.alert('Error', 'No se pudo abrir el enlace');
-      return;
+    let modifiedUrl = url.trim();
+    if (!modifiedUrl.startsWith('http://') && !modifiedUrl.startsWith('https://')) {
+      modifiedUrl = 'https://' + modifiedUrl;
     }
-    await Linking.openURL(modifiedUrl);
-  } catch (error) {
-    Alert.alert('Error', 'No se pudo abrir el enlace');
-  }
-};
 
-  const getIconNameByTipo = (tipo: string) => {
+    // Para Dropbox, no forzar descarga sino vista previa (dl=0)
+    if (modifiedUrl.includes('dropbox.com')) {
+      // Asegurarse que tenga dl=0 para vista previa
+      if (modifiedUrl.includes('dl=1')) {
+        modifiedUrl = modifiedUrl.replace('dl=1', 'dl=0');
+      } else if (!modifiedUrl.includes('dl=0')) {
+        modifiedUrl += modifiedUrl.includes('?') ? '&dl=0' : '?dl=0';
+      }
+    }
+
+    try {
+      const supported = await Linking.canOpenURL(modifiedUrl);
+      if (!supported) {
+        Alert.alert('Error', 'No se pudo abrir el enlace');
+        return;
+      }
+      await Linking.openURL(modifiedUrl);
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo abrir el enlace');
+    }
+  };
+
+  const getIconByTipo = (tipo: string) => {
     const t = tipo.toLowerCase();
-    if (t.includes('pdf')) return 'file-pdf-box';
-    if (t.includes('word') || t.includes('doc')) return 'file-word-box';
-    if (t.includes('excel')) return 'file-excel-box';
-    if (t.includes('video') || t.includes('mp4') || t.includes('youtube')) return 'youtube';
-    if (t.includes('imagen') || t.includes('image') || t.includes('jpeg') || t.includes('jpg') || t.includes('png')) return 'image';
-    if (t.includes('audio')) return 'music-note';
-    return 'file-document'; 
+    if (t.includes('pdf')) return PdfIcons;
+    if (t.includes('word') || t.includes('doc')) return WordIcons;
+    if (t.includes('excel')) return ExcelIcons;
+    if (t.includes('video') || t.includes('mp4') || t.includes('youtube')) return YoutubeIcons;
+    if (t.includes('imagen') || t.includes('image') || t.includes('jpeg') || t.includes('jpg') || t.includes('png'))
+      return ImageIcons;
+    if (t.includes('audio')) return AudioIcons;
+    return DefaultIcon;
   };
 
   if (loading) {
@@ -147,21 +172,18 @@ const ActividadScreen: React.FC = () => {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>📘 Recursos Recomendados</Text>
             {generated.recursos_recomendados.map((recurso, idx) => {
-              const iconName = getIconNameByTipo(recurso.tipo);
+              const IconComponent = getIconByTipo(recurso.tipo);
               return (
                 <TouchableOpacity
-                 
+                  key={idx}
                   style={styles.resourceRow}
                   onPress={() => openUrl(recurso.dropbox_url)}
                 >
-                  <MaterialCommunityIcons
-                    name={iconName}
-                    size={70}
-                    color="#4A90E2"
-                    style={styles.icon}
-                  />
+                  <IconComponent size={baseIconSize} />
                   <View style={styles.resourceTextContainer}>
-                    <Text style={styles.resourceTitle}>{recurso.titulo} ({recurso.tipo})</Text>
+                    <Text style={styles.resourceTitle}>
+                      {recurso.titulo} 
+                    </Text>
                     <Text style={styles.resourceLink}>Abrir recurso</Text>
                   </View>
                 </TouchableOpacity>
@@ -178,7 +200,9 @@ const ActividadScreen: React.FC = () => {
             </Text>
             <Text style={styles.boldText}>Pasos:</Text>
             {generated.actividad_de_refuerzo.pasos.map((paso, i) => (
-              <Text style={styles.normalText}>{paso}</Text>
+              <Text  style={styles.normalText}>
+              {paso}
+              </Text>
             ))}
             <Text style={styles.boldText}>
               Tipo de documento entregable:{' '}
@@ -219,7 +243,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontWeight: 'bold',
     textAlign: 'center',
-
   },
 
   resourceRow: {
