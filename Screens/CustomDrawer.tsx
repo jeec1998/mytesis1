@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     width: screenWidth * 0.65,
-    backgroundColor: '#D6E6F2',
+    backgroundColor: 	'#EBF8FF', //modificar el color de drwer
     paddingTop: 50,
     paddingHorizontal: 20,
     elevation: 5,
@@ -95,8 +95,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   logout: {
-    color: '#C62828',
-    borderBottomColor: '#C62828',
+    color: '#F87171',
+    borderBottomColor: '#F87171',
   },
   overlay: {
     position: 'absolute',

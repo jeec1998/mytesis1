@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -13,6 +14,7 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from './App';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import FastImage from 'react-native-fast-image';
 
 interface Refuerzo {
   id: string;
@@ -134,10 +136,13 @@ const abrirActividades = (refuerzo: Refuerzo) => {
               <View style={[styles.cardHeader, { backgroundColor: getHeaderColor(item.Materia) }]}>
                 <Text style={[styles.headerText, styles.uppercaseText]}>{item.Materia}</Text>
               </View>
-              <View style={styles.cardContent}>
-                <Text style={styles.descriptionText}>{item.descripcion}</Text>
-                
-              </View>
+               <View style={styles.container}>
+      <FastImage
+        style={styles.gif}
+        source={require('../components/leer.gif')} // Aquí la ruta local
+        resizeMode={FastImage.resizeMode.contain}
+      />
+    </View>
               
             </TouchableOpacity>
             
@@ -157,7 +162,7 @@ const abrirActividades = (refuerzo: Refuerzo) => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#D6E6F2' },
+  container: { flex: 1, backgroundColor: 'withe' }, //backgroundColor: '#07376c', 
   innerContainer: { flex: 1 },
   listContent: { padding: 5, justifyContent: 'center' },
   row: {
@@ -206,4 +211,5 @@ const styles = StyleSheet.create({
   uppercaseText: {
     textTransform: 'uppercase',
   },
+  gif: { width: 200, height: 200 },
 });

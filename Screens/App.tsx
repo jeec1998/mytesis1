@@ -49,7 +49,7 @@ const App: React.FC = () => {
               options={{
                 title: 'INICIO',
                 headerStyle: {
-                  backgroundColor: '#2F80ED', 
+                  backgroundColor: '#07376c', 
                 },
                 headerTintColor: 'white',
                 headerTitleAlign: 'center',
@@ -87,7 +87,7 @@ const App: React.FC = () => {
               options={{
                 title: 'PERFIL',
                 headerStyle: {
-                  backgroundColor: '#2F80ED',
+                 backgroundColor: '#07376c', 
                 },
                 headerTintColor: 'white',
               }}
@@ -103,7 +103,7 @@ const App: React.FC = () => {
               options={{
                 title: 'CONTRSEÑA',
                 headerStyle: {
-                  backgroundColor: '#2F80ED',
+                  backgroundColor: '#07376c', 
                 },
                 headerTintColor: 'white',
               }}
@@ -114,7 +114,7 @@ const App: React.FC = () => {
               options={{
                 title: 'Refuerzo',
                 headerStyle: {
-                  backgroundColor: '#2F80ED',
+                  backgroundColor: '#07376c', 
                 },
                 headerTintColor: 'white',
               }}
@@ -126,7 +126,7 @@ const App: React.FC = () => {
               options={{
                 title: 'Refuerzo',
                 headerStyle: {
-                  backgroundColor: '#2F80ED',
+                 backgroundColor: '#07376c', 
                 },
                 headerTintColor: 'white',
               }}

@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingTop: 20,
-    backgroundColor: '#D6E6F2',
+    backgroundColor: 'white',
   },
   title: {
     fontSize: 24,
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   editButton: {
-    backgroundColor: '#2F80ED',
+    backgroundColor: '#07376c',
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 10,

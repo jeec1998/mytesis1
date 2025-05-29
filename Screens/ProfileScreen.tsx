@@ -14,6 +14,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { TextInputMask } from 'react-native-masked-text';
+import EditIcon from '../components/typcn--edit';
 
 const { API } = process.env;
 
@@ -136,10 +137,33 @@ const ProfileScreen: React.FC<Props> = ({ navigation, onLogout }) => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <KeyboardAvoidingView style={styles.container}     behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
 
-        <Text style={[styles.name, styles.uppercaseText]}>{user.nombre}</Text>
+        <View style={styles.nameContainer}>
+          <Text style={[styles.name, styles.uppercaseText]}>{user.nombre}</Text>
+        </View>
+
+     <View style={styles.editIconWrapper}>
+  <TouchableOpacity
+    onPress={() => {
+      if (isEditing) {
+        // Si está editando, al tocar la X cancela los cambios
+        setUser(originalUser);
+        setIsEditing(false);
+      } else {
+        setIsEditing(true);
+      }
+    }}
+    style={styles.editIconContainer}
+  >
+    {isEditing ? (
+      <Text style={styles.closeIcon}>✕</Text>
+    ) : (
+      <EditIcon width={26} height={26} />
+    )}
+  </TouchableOpacity>
+</View>
 
         <View style={styles.card}>
           <Text style={styles.label}>Usuario</Text>
@@ -176,36 +200,7 @@ const ProfileScreen: React.FC<Props> = ({ navigation, onLogout }) => {
             <Text style={[styles.value, styles.uppercaseText]}>📱 {user.telefono}</Text>
           )}
         </View>
-
-        {isLoading ? (
-          <ActivityIndicator size="large" color="#2F80ED" />
-        ) : isEditing ? (
-          <>
-            <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-              <Text style={styles.editButtonText}>Guardar cambios</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.editButton, styles.cancelButton]} onPress={handleCancel}>
-              <Text style={styles.editButtonText}>Cancelar</Text>
-            </TouchableOpacity>
-          </>
-        ) : (
-          <TouchableOpacity style={styles.editButton} onPress={() => setIsEditing(true)}>
-            <Text style={styles.editButtonText}>✏️ Editar Perfil</Text>
-          </TouchableOpacity>
-        )}
-
-        <TouchableOpacity style={[styles.editButton, { backgroundColor: '#E0A800' }]} onPress={handleChangePassword}>
-          <Text style={styles.editButtonText}>🔑 Cambiar Contraseña</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.editButton, { backgroundColor: '#E94E4E', marginTop: 15 }]}
-          onPress={handleLogout}
-        >
-          <Text style={styles.editButtonText}>🔒 Cerrar sesión</Text>
-        </TouchableOpacity>
-
-        {/* MODAL DE ALERTA */}
+ 
         <Modal
           animationType="fade"
           transparent={true}
@@ -222,6 +217,32 @@ const ProfileScreen: React.FC<Props> = ({ navigation, onLogout }) => {
             </View>
           </View>
         </Modal>
+
+    
+   <View style={styles.footerButtons}>
+
+  <TouchableOpacity
+    style={[styles.editButton, { backgroundColor: '#07376c' }]}
+    onPress={handleChangePassword}
+  >
+    <Text style={styles.editButtonText}>🔑 Cambiar Contraseña</Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity
+    style={[styles.editButton, { backgroundColor: '#E53E3E', marginTop: 15 }]}
+    onPress={handleLogout}
+  >
+    <Text style={styles.editButtonText}>📤 Cerrar sesión</Text>
+  </TouchableOpacity>
+
+  {isEditing && (
+    <TouchableOpacity style={[styles.editButton, { marginTop: 15 }]} onPress={handleEdit}>
+      <Text style={styles.editButtonText}>Guardar cambios</Text>
+    </TouchableOpacity>
+  )}
+
+</View>
+
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -230,21 +251,29 @@ const ProfileScreen: React.FC<Props> = ({ navigation, onLogout }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#D6E6F2',
+    backgroundColor: 'white', // corregido typo 'wihte' a 'white'
   },
+  
   scrollContainer: {
     flexGrow: 1,
     alignItems: 'center',
     paddingTop: 20,
-    paddingBottom: 40,
+    paddingBottom: 20,
   },
-
+  headerContainer: {
+    width: '85%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  editIconContainer: {
+    padding: 4,
+  },
   name: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
     color: '#2F4F6E',
-    alignItems: 'center',
     textAlign: 'center',
   },
   card: {
@@ -274,7 +303,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   editButton: {
-    backgroundColor: '#2F80ED',
+    backgroundColor: '#07376c',
     paddingVertical: 12,
     borderRadius: 10,
     marginTop: 10,
@@ -329,6 +358,30 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
+  nameContainer: {
+    width: '85%',
+    marginBottom: 5,
+    alignItems: 'center',
+  },
+
+  editIconWrapper: {
+    width: '85%',
+    alignItems: 'flex-end',
+    marginBottom: 10,
+  },
+  closeIcon: {
+  fontSize: 18,
+  color: '#E53E3E',
+  fontWeight: 'bold',
+  marginRight: 5,
+},
+ footerButtons: {
+   
+    width: '100%',
+    alignContent: 'center',
+    alignItems: 'center',
+  },
+
 });
 
 export default ProfileScreen;

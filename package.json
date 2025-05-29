@@ -25,6 +25,7 @@
     "react-native": "0.78.1",
     "react-native-awesome-alerts": "^2.0.0",
     "react-native-dotenv": "^3.4.11",
+    "react-native-fast-image": "^8.6.3",
     "react-native-inappbrowser-reborn": "^3.7.0",
     "react-native-masked-text": "^1.13.0",
     "react-native-safe-area-context": "^5.4.0",

@@ -236,7 +236,7 @@ const ActividadScreen: React.FC = () => {
 const baseIconSize = 70;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#D6E6F2' },
+  container: { flex: 1, backgroundColor: 'withe' },
   containerCentered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#D6E6F2' },
 
   mainContent: {

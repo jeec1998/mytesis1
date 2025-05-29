@@ -168,7 +168,7 @@ const ActividadesScreen: React.FC<Props> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#D6E6F2' },
+  container: { flex: 1, backgroundColor: 'white' },
   scrollContent: {
     padding: 30,
     alignItems: 'center',

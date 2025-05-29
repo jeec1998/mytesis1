@@ -55,7 +55,7 @@ const LoginScreen: React.FC<Props> = ({ onLogin }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, { color: '#4A9EE9' }]}>Iniciar Sesión</Text>
+      <Text style={[styles.title, { color: '#07376c' }]}>Iniciar Sesión</Text>
       <TextInput
         style={styles.input}
         placeholder="Usuario"
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   button: {
-    backgroundColor: '#4A90E2',
+    backgroundColor: '#07376c',
     paddingVertical: 14,
     paddingHorizontal: 30,
     borderRadius: 8,
