@@ -11,6 +11,8 @@ import {
   Alert,
   Platform,
   Dimensions,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Svg, { Path, Rect } from 'react-native-svg';
@@ -57,11 +59,11 @@ const carouselWidth = screenWidth * 0.9;
 const ActividadScreen: React.FC = () => {
   const route = useRoute<ActividadScreenRouteProp>();
   const { topicId } = route.params;
-  console.log('topicId:', topicId);
 
   const [generated, setGenerated] = useState<Generated | null>(null);
   const [loading, setLoading] = useState(true);
   const [nombreUsuario, setNombreUsuario] = useState('');
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const getUserDataFromToken = (token: string | null) => {
     if (!token) return null;
@@ -94,7 +96,6 @@ const ActividadScreen: React.FC = () => {
           return;
         }
         setNombreUsuario(userData.nombre);
-        console.log('user', userData.userId);
         const res = await fetch(
           `https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/academic-support/user/${userData.userId}/topic/${topicId}`,
           {
@@ -136,7 +137,6 @@ const ActividadScreen: React.FC = () => {
       modifiedUrl = 'https://' + modifiedUrl;
     }
 
-    // Para Dropbox, no forzar descarga sino vista previa (dl=0)
     if (modifiedUrl.includes('dropbox.com')) {
       if (modifiedUrl.includes('dl=1')) {
         modifiedUrl = modifiedUrl.replace('dl=1', 'dl=0');
@@ -173,6 +173,12 @@ const ActividadScreen: React.FC = () => {
       return ImageIcons;
     if (t.includes('audio')) return AudioIcons;
     return DefaultIcon;
+  };
+
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const offsetX = event.nativeEvent.contentOffset.x;
+    const newIndex = Math.round(offsetX / carouselWidth);
+    setActiveIndex(newIndex);
   };
 
   if (loading) {
@@ -213,13 +219,13 @@ const ActividadScreen: React.FC = () => {
             <Text style={styles.sectionTitle}>📗 Actividad de Refuerzo</Text>
 
             <Text style={styles.normalText}>{generated.actividad_de_refuerzo.descripcion_general}</Text>
-            {/* Contenedor sin padding horizontal y con ancho igual a pantalla */}
             <View style={{ marginTop: 12, width: carouselWidth, alignSelf: 'center' }}>
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 pagingEnabled
                 contentContainerStyle={styles.carouselContainer}
+                onMomentumScrollEnd={handleScroll}
               >
                 {generated.actividad_de_refuerzo.pasos.map((paso, i) => (
                   <View key={i} style={[styles.carouselItem, { width: carouselWidth }]}>
@@ -228,17 +234,16 @@ const ActividadScreen: React.FC = () => {
                   </View>
                 ))}
               </ScrollView>
+              <View style={styles.pagination}>
+                {generated.actividad_de_refuerzo.pasos.map((_, i) => (
+                  <View
+                    key={i}
+                    style={[styles.dot, i === activeIndex ? styles.activeDot : null]}
+                  />
+                ))}
+              </View>
             </View>
 
-
-            <Text style={styles.boldText}>
-              Tipo de documento entregable:{' '}
-              <Text style={styles.normalText}>{generated.actividad_de_refuerzo.tipo_documento_entregable}</Text>
-            </Text>
-            <Text style={styles.boldText}>
-              Objetivo:{' '}
-              <Text style={styles.normalText}>{generated.actividad_de_refuerzo.objetivo}</Text>
-            </Text>
           </View>
         )}
       </ScrollView>
@@ -255,7 +260,6 @@ const styles = StyleSheet.create({
   mainContent: {
     paddingTop: 30,
     paddingBottom: 60,
-    // Quitar padding horizontal para que no afecte ancho del carrusel
   },
 
   section: {
@@ -304,20 +308,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     textAlign: 'justify',
   },
-  boldText1: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginTop: 12,
-    alignContent: 'center',
-    textAlign: 'center',
-  },
-  boldText2: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginTop: 12,
-    alignContent: 'center',
-    textAlign: 'center',
-  },
   normalText: {
     fontWeight: 'normal',
     marginTop: 10,
@@ -334,27 +324,42 @@ const styles = StyleSheet.create({
     backgroundColor: '#E8F0FE',
     borderRadius: 20,
     padding: 10,
-    paddingLeft: 30,
+    paddingLeft: 20,
+    paddingBottom: 30,
     justifyContent: 'center',
     shadowColor: '#000',
     elevation: 3,
-    // quita width y marginRight para manejarlo en inline styles
   },
-
   carouselStepNumber: {
     fontWeight: 'bold',
     fontSize: 16,
     marginBottom: 10,
     color: '#2F80ED',
-    textAlignVertical: 'center',
   },
   carouselStepText: {
     fontSize: 14,
     color: '#333',
     textAlign: 'justify',
+    marginRight: 10,
   },
 
-
+  pagination: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#bbb',
+    marginHorizontal: 5,
+  },
+  activeDot: {
+    backgroundColor: '#2F80ED',
+    width: 10,
+    height: 10,
+  },
 });
 
 export default ActividadScreen;
