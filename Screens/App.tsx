@@ -112,7 +112,7 @@ const App: React.FC = () => {
               name="ActividadScreen"
               component={ActividadScreen}
               options={{
-                title: 'Actividad',
+                title: 'Refuerzo',
                 headerStyle: {
                   backgroundColor: '#2F80ED',
                 },

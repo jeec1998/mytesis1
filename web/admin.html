@@ -5,322 +5,391 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Docentes</title>
-  <style>/* Aseguramos que html y body ocupen toda la pantalla */
-html, body {
-  height: 10%;
-  margin: 0;
-  padding: 0;
-}
+  <style>
+    /* Aseguramos que html y body ocupen toda la pantalla */
+    html,
+    body {
+      height: 10%;
+      margin: 0;
+      padding: 0;
+    }
 
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #f4f9ff;
-  color: #333;
-  display: flex;
-  flex-direction: column;
-}
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f9ff;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+    }
 
-nav {
-  background-color: #4A90E2;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 24px;
-}
+    nav {
+      background-color: #4A90E2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1px 24px;
+    }
 
-nav .logo {
-  color: white;
-  font-size: 22px;
-  font-weight: bold;
-}
+    nav .logo {
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+    }
 
-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-}
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
 
-nav ul li a {
-  color: white;
-  text-decoration: none;
-  font-size: 16px;
-}
-
-
-main {
-  padding: 30px;
-  max-width: 100%;
-  margin: auto;
-}
-
-h2 {
-  color: #4A90E2;
-  margin-bottom: 20px;
-}
-
-#btnMostrarForm {
-  background-color: #4A90E2;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-bottom: 20px;
-}
-
-#btnMostrarForm:hover {
-  background-color: #357ABD;
-}
-
-form {
-  width: 50%;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-  display: none;
-  flex-direction: column;
-  gap: 12px;
-}
-
-form input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-form button {
-  background-color: #4A90E2;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 16px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-form button:hover {
-  background-color: #357ABD;
-}
-
-.botones-form {
-  display: flex;
-  gap: 10px;
-}
-
-#buscadorDocente {
-  padding: 10px;
-  margin-bottom: 20px;
-  width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-#docentesContainer {
-  width: 80%;
-  margin: 0 auto;
-}
-
-table {
-  width: 100%;
-  margin: 0 auto;
-  border-collapse: collapse;
-  background-color: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  overflow: hidden;
-  table-layout: fixed; /* Hace que las celdas de la tabla tengan un ancho fijo */
-}
-
-th, td {
-  padding: 12px 16px;
-  border-bottom: 1px solid #ddd;
-  text-align: center;
-  word-wrap: break-word; /* Asegura que el texto largo se rompa en líneas */
-}
-
-th:nth-child(1), td:nth-child(1) {
-  width: 200px;
-}
-
-th {
-  background-color: #4A90E2;
-  color: white;
-}
-
-tr:hover {
-  background-color: #f1f1f1;
-}
-
-button.action {
-  padding: 8px 12px;
-  background-color: #4A90E2;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-right: 6px;
-  font-size: 14px;
-}
-
-button.action:hover {
-  background-color: #357ABD;
-}
-
-/* Alerta flotante */
-#alertaContainer {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 9999;
-}
-
-/* Media Queries para hacerlo responsive */
-@media (max-width: 1200px) {
-  form {
-    width: 60%;
-  }
-
-  #docentesContainer {
-    width: 90%;
-  }
-}
-
-@media (max-width: 768px) {
-  form {
-    width: 90%; /* El formulario ocupará más espacio */
-  }
-
-  #docentesContainer {
-    width: 100%; /* Asegura que la tabla ocupe el 100% */
-  }
-
-  table {
-    width: 100%;
-    overflow-x: auto; /* Habilita el desplazamiento horizontal si es necesario */
-    display: block; /* Hace que la tabla se pueda desplazar */
-  }
-
-  nav ul {
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-  }
-
-  nav .logo {
-    font-size: 18px;
-  }
-
-  button.action {
-    width: 100%; /* Los botones ocuparán todo el ancho disponible */
-    margin-top: 5px;
-  }
-
-  #buscadorDocente {
-    width: 100%; /* El campo de búsqueda ocupa todo el ancho disponible */
-  }
-
-  .botones-form {
-    flex-direction: column; /* Los botones se apilan verticalmente */
-  }
-
-  button.action, #btnMostrarForm {
-    font-size: 14px;
-    padding: 8px 10px;
-  }
-
-  #alertaContainer {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 9999;
-  }
-
-  th, td {
-    padding: 10px 8px;
-  }
-
-  th:nth-child(1), td:nth-child(1) {
-    width: auto;
-  }
-}
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 18px;
+    }
 
 
-@media (max-width: 510px) {
-  /* Ajustar el tamaño de la tabla */
-  table {
-    width: 100%;
-    font-size: 12px; /* Reducir el tamaño de la fuente en la tabla */
-    overflow-x: auto; /* Habilita desplazamiento horizontal si es necesario */
-    display: block; /* Hacer que la tabla sea desplazable */
+    main {
+      padding: 30px;
+      max-width: 100%;
+      margin: auto;
+      align-items: center;
+    }
+
+    h2 {
+      color: #4A90E2;
+      margin-bottom: 20px;
+    }
+
+    #btnMostrarForm {
+      background-color: #4A90E2;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 20px auto 0 auto;
+      display: block;
+      align-items: center;
+    }
+
+    #btnMostrarForm:hover {
+      background-color: #357ABD;
+    }
+
+    form {
+      width: 50%;
+      background: white;
+      padding: 45px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
     margin: 0 auto;
-  }
+    }
 
-  /* Ajustar el tamaño de los botones de la tabla */
-  button.action, #btnMostrarForm {
-    width: 100%; /* Los botones ocuparán todo el ancho disponible */
-    padding: 6px 10px; /* Reducir el tamaño del padding */
-    font-size: 12px; /* Reducir el tamaño de la fuente */
-    margin-top: 5px;
-  }
+    form input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
 
-  /* Ajustar el tamaño de la letra de la tabla */
-  th, td {
-    padding: 8px 12px; /* Reducir el padding de las celdas */
-    font-size: 12px; /* Reducir el tamaño de la fuente */
-  }
+    form button {
+      background-color: #4A90E2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 15px ;
+    }
 
-  /* Ajustar el tamaño del formulario */
-  form {
-    width: 90%; /* Ajusta el formulario para pantallas pequeñas */
-  }
+    form button:hover {
+      background-color: #357ABD;
+    }
 
-  /* Ajustar el tamaño del buscador */
-  #buscadorDocente {
-    width: 100%; /* El campo de búsqueda ocupa todo el ancho disponible */
-    font-size: 12px; /* Reducir el tamaño de la fuente */
-  }
+    .botones-form {
+      display: flex;
+      gap: 10px;
+    }
 
-  /* Ajuste de los enlaces en el menú de navegación */
-  nav ul li a {
-    font-size: 12px; /* Reducir el tamaño de la fuente de los enlaces */
-  }
+    #buscadorDocente {
+      padding: 10px;
+      margin-bottom: 20px;
+      width: 80%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      align-items: center;
+    }
 
-  /* Ajuste de la letra del logo */
-  nav .logo {
-    font-size: 16px; /* Reducir el tamaño del logo */
-  }
+    #docentesContainer {
+      width: 90%;
+      margin: 0 auto;
+    }
 
-  /* Asegurarse de que las celdas se ajusten al tamaño de la pantalla */
-  th:nth-child(1), td:nth-child(1) {
-    width: auto; /* Ajuste automático de la columna */
-  }
+    .buscarContainer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      align-content: center;
+      margin-top: 20px
+    }
 
-  /* Eliminar el margen de los elementos flotantes */
-  #alertaContainer {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 9999;
-  }
+    table {
+      width: 100%;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      table-layout: fixed;
+      align-items: center;
+      /* Hace que las celdas de la tabla tengan un ancho fijo */
+    }
 
-  /* Ajuste general del diseño */
-  nav ul {
-    flex-direction: column; /* Los enlaces de la navegación se apilan */
-    gap: 5px;
-    align-items: center;
-  }
-}
+    th {
+      padding: 12px 16px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+      word-wrap: break-word;
+      /* Asegura que el texto largo se rompa en líneas */
+    }
 
-</style>
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+      word-wrap: break-word;
+      /* Asegura que el texto largo se rompa en líneas */
+    }
+
+    th:nth-child(1),
+    td:nth-child(1) {
+      width: 250px;
+    }
+
+    th:nth-child(2),
+    td:nth-child(2) {
+      width: 250px;
+    }
+
+    td:nth-child(3) {
+      align-items: right;
+      text-align: right;
+    }
+
+    th {
+      background-color: #4A90E2;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+      text-align: center;
+    }
+
+    button.action {
+      padding: 8px 12px;
+      background-color: #4A90E2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-right: 6px;
+      font-size: 14px;
+    }
+
+    button.action:hover {
+      background-color: #357ABD;
+    }
+
+    /* Alerta flotante */
+    #alertaContainer {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+
+    /* Media Queries para hacerlo responsive */
+    @media (max-width: 1200px) {
+      form {
+        width: 60%;
+      }
+
+      #docentesContainer {
+        width: 90%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      form {
+        width: 90%;
+        /* El formulario ocupará más espacio */
+      }
+
+      #docentesContainer {
+        width: 100%;
+        /* Asegura que la tabla ocupe el 100% */
+      }
+
+      table {
+        width: 100%;
+        overflow-x: auto;
+        /* Habilita el desplazamiento horizontal si es necesario */
+        display: block;
+        /* Hace que la tabla se pueda desplazar */
+      }
+
+      nav ul {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+      }
+
+      nav .logo {
+        font-size: 18px;
+      }
+
+      button.action {
+        width: 100%;
+        /* Los botones ocuparán todo el ancho disponible */
+        margin-top: 5px;
+      }
+
+      #buscadorDocente {
+        width: 100%;
+        /* El campo de búsqueda ocupa todo el ancho disponible */
+      }
+
+      .botones-form {
+        flex-direction: column;
+        /* Los botones se apilan verticalmente */
+      }
+
+      button.action,
+      #btnMostrarForm {
+        font-size: 14px;
+        padding: 8px 10px;
+      }
+
+      #alertaContainer {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 9999;
+      }
+
+      th,
+      td {
+        padding: 10px 8px;
+      }
+
+      th:nth-child(1),
+      td:nth-child(1) {
+        width: auto;
+      }
+    }
+
+
+    @media (max-width: 510px) {
+
+      /* Ajustar el tamaño de la tabla */
+      table {
+        width: 100%;
+        font-size: 12px;
+        /* Reducir el tamaño de la fuente en la tabla */
+        overflow-x: auto;
+        /* Habilita desplazamiento horizontal si es necesario */
+        display: block;
+        /* Hacer que la tabla sea desplazable */
+        margin: 0 auto;
+      }
+
+      /* Ajustar el tamaño de los botones de la tabla */
+      button.action,
+      #btnMostrarForm {
+        width: 100%;
+        /* Los botones ocuparán todo el ancho disponible */
+        padding: 6px 10px;
+        /* Reducir el tamaño del padding */
+        font-size: 12px;
+        /* Reducir el tamaño de la fuente */
+        margin-top: 5px;
+      }
+
+      /* Ajustar el tamaño de la letra de la tabla */
+      th,
+      td {
+        padding: 8px 12px;
+        /* Reducir el padding de las celdas */
+        font-size: 12px;
+        /* Reducir el tamaño de la fuente */
+      }
+
+      /* Ajustar el tamaño del formulario */
+      form {
+        width: 90%;
+        /* Ajusta el formulario para pantallas pequeñas */
+      }
+
+      /* Ajustar el tamaño del buscador */
+      #buscadorDocente {
+        width: 100%;
+        /* El campo de búsqueda ocupa todo el ancho disponible */
+        font-size: 12px;
+        /* Reducir el tamaño de la fuente */
+      }
+
+      /* Ajuste de los enlaces en el menú de navegación */
+      nav ul li a {
+        font-size: 12px;
+        /* Reducir el tamaño de la fuente de los enlaces */
+      }
+
+      /* Ajuste de la letra del logo */
+      nav .logo {
+        font-size: 16px;
+        /* Reducir el tamaño del logo */
+      }
+
+      /* Asegurarse de que las celdas se ajusten al tamaño de la pantalla */
+      th:nth-child(1),
+      td:nth-child(1) {
+        width: auto;
+        /* Ajuste automático de la columna */
+      }
+
+      /* Eliminar el margen de los elementos flotantes */
+      #alertaContainer {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 9999;
+      }
+
+      /* Ajuste general del diseño */
+      nav ul {
+        flex-direction: column;
+        /* Los enlaces de la navegación se apilan */
+        gap: 5px;
+        align-items: center;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-  <div id="alertaContainer"></div> 
+  <div id="alertaContainer"></div>
 
   <nav>
     <div class="logo">Panel</div>
@@ -330,21 +399,23 @@ button.action:hover {
   </nav>
 
   <main>
-    <h2 id="tituloForm">Docentes</h2>
+   <h2 id="tituloForm">Docentes</h2>
+    <div class="buscarContainer">
+      <input type="text" id="buscadorDocente" placeholder="Buscar docente por nombre...">
+    </div>
+    <div id="docentesContainer"></div>
+     
     <button id="btnMostrarForm">➕ Agregar Docente</button>
 
     <form id="formDocente">
       <input type="text" id="nombreDocente" placeholder="Nombre completo" required>
       <input type="email" id="emailDocente" placeholder="Correo electrónico" required>
-    <input type="text" id="telefonoDocente" placeholder="+593 968144760" required/>
+      <input type="text" id="telefonoDocente" placeholder="+593 968144760" required />
       <div class="botones-form">
         <button type="submit" id="btnGuardar">Guardar Docente</button>
         <button type="button" id="btnCancelar" style="background-color: gray; display: none;">Cancelar</button>
       </div>
     </form>
-
-    <input type="text" id="buscadorDocente" placeholder="Buscar docente por nombre...">
-    <div id="docentesContainer"></div>
   </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.6/inputmask.min.js"></script>
   <script>
@@ -353,31 +424,31 @@ button.action:hover {
     let editandoId = null;
 
     function mostrarAlerta(mensaje, tipo = 'success') {
-  const alertaContainer = document.getElementById('alertaContainer');
-  const alerta = document.createElement('div');
-  alerta.textContent = mensaje;
-  alerta.style.backgroundColor = tipo === 'success' ? '#4CAF50' : '#f44336';
-  alerta.style.color = 'white';
-  alerta.style.padding = '12px 20px';
-  alerta.style.marginBottom = '10px';
-  alerta.style.borderRadius = '8px';
-  alerta.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-  alerta.style.fontSize = '16px';
-  alerta.style.minWidth = '250px';
-  alerta.style.textAlign = 'center';
-  alerta.style.opacity = '0';
-  alerta.style.transition = 'opacity 0.5s';
-
-  alertaContainer.appendChild(alerta);
-
-  setTimeout(() => {
-    alerta.style.opacity = '1';
-    setTimeout(() => {
+      const alertaContainer = document.getElementById('alertaContainer');
+      const alerta = document.createElement('div');
+      alerta.textContent = mensaje;
+      alerta.style.backgroundColor = tipo === 'success' ? '#4CAF50' : '#f44336';
+      alerta.style.color = 'white';
+      alerta.style.padding = '12px 20px';
+      alerta.style.marginBottom = '10px';
+      alerta.style.borderRadius = '8px';
+      alerta.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+      alerta.style.fontSize = '16px';
+      alerta.style.minWidth = '250px';
+      alerta.style.textAlign = 'center';
       alerta.style.opacity = '0';
-      setTimeout(() => alerta.remove(), 500);
-    }, 3000);
-  }, 100);
-}
+      alerta.style.transition = 'opacity 0.5s';
+
+      alertaContainer.appendChild(alerta);
+
+      setTimeout(() => {
+        alerta.style.opacity = '1';
+        setTimeout(() => {
+          alerta.style.opacity = '0';
+          setTimeout(() => alerta.remove(), 500);
+        }, 3000);
+      }, 100);
+    }
 
     function getAuthHeaders() {
       const token = localStorage.getItem('accessToken');
@@ -445,7 +516,7 @@ button.action:hover {
       document.getElementById('formDocente').style.display = 'flex';
       document.getElementById('btnMostrarForm').style.display = 'none';
       document.getElementById('btnCancelar').style.display = 'inline-block';
-      document.getElementById('btnGuardar').textContent = editando ? 'Actualizar Docente' : 'Guardar Docente';
+      document.getElementById('btnGuardar').textContent = editando ? 'Actualizar ' : 'Guardar ';
     }
 
     function ocultarFormulario() {
@@ -460,45 +531,45 @@ button.action:hover {
     document.getElementById('btnCancelar').onclick = () => ocultarFormulario();
 
     document.getElementById('formDocente').onsubmit = async (e) => {
-  e.preventDefault();
-  const telefono = document.getElementById('telefonoDocente').value;
+      e.preventDefault();
+      const telefono = document.getElementById('telefonoDocente').value;
 
-// Verifica si el número de teléfono cumple con el formato
-const regexTelefono = /^\+5939\d{8}$/; // Debe ser +593 seguido de un 9 y 8 dígitos
-if (!regexTelefono.test(telefono)) {
-  mostrarAlerta('El número de teléfono no es válido. Debe comenzar con +593  seguido de 9 dígitos.', 'error');
-  return;
-}
-  const nuevoDocente = {
-    name: document.getElementById('nombreDocente').value,
-    email: document.getElementById('emailDocente').value,
-    telefono: document.getElementById('telefonoDocente').value,
-    role: 'docente'
-  };
+      // Verifica si el número de teléfono cumple con el formato
+      const regexTelefono = /^\+5939\d{8}$/; // Debe ser +593 seguido de un 9 y 8 dígitos
+      if (!regexTelefono.test(telefono)) {
+        mostrarAlerta('El número de teléfono no es válido. Debe comenzar con +593  seguido de 9 dígitos.', 'error');
+        return;
+      }
+      const nuevoDocente = {
+        name: document.getElementById('nombreDocente').value,
+        email: document.getElementById('emailDocente').value,
+        telefono: document.getElementById('telefonoDocente').value,
+        role: 'docente'
+      };
 
-  const url = editandoId ? `${API_USERS}/${editandoId}` : API_USERS;
-  const method = editandoId ? 'PUT' : 'POST';
-  const res = await fetch(url, { method, headers: getAuthHeaders(), body: JSON.stringify(nuevoDocente) });
+      const url = editandoId ? `${API_USERS}/${editandoId}` : API_USERS;
+      const method = editandoId ? 'PUT' : 'POST';
+      const res = await fetch(url, { method, headers: getAuthHeaders(), body: JSON.stringify(nuevoDocente) });
 
-  if (res.ok) {
-    const createdDocente = await res.json();  // Aquí obtenemos la respuesta del servidor
+      if (res.ok) {
+        const createdDocente = await res.json();  // Aquí obtenemos la respuesta del servidor
 
-    mostrarAlerta(editandoId ? 'Docente actualizado correctamente ✅' : 'Docente registrado exitosamente ✅');
-    ocultarFormulario();
-    fetchDocentes();
+        mostrarAlerta(editandoId ? 'Docente actualizado correctamente ✅' : 'Docente registrado exitosamente ✅');
+        ocultarFormulario();
+        fetchDocentes();
 
-    // Verificamos si la respuesta contiene un enlace para WhatsApp
-    if (createdDocente.link) {
-      mostrarPopupWhatsapp(createdDocente.link);  // Si hay un enlace, mostramos el popup
-    } else {
-      mostrarAlerta('Usuario creado sin teléfono o enlace de WhatsApp', 'warning');
-    }
+        // Verificamos si la respuesta contiene un enlace para WhatsApp
+        if (createdDocente.link) {
+          mostrarPopupWhatsapp(createdDocente.link);  // Si hay un enlace, mostramos el popup
+        } else {
+          mostrarAlerta('Usuario creado sin teléfono o enlace de WhatsApp', 'warning');
+        }
 
-  } else {
-    const error = await res.json();
-    mostrarAlerta(error.message || 'Error en operación', 'error');
-  }
-};
+      } else {
+        const error = await res.json();
+        mostrarAlerta(error.message || 'Error en operación', 'error');
+      }
+    };
 
 
     document.getElementById('buscadorDocente').addEventListener('input', function () {
@@ -507,50 +578,50 @@ if (!regexTelefono.test(telefono)) {
       renderTablaDocentes(filtrados);
     });
     async function restablecerContrasenaDocente(id) {
-  if (!confirm("¿Seguro que deseas restablecer la contraseña? Se generará una nueva automáticamente.")) return;
+      if (!confirm("¿Seguro que deseas restablecer la contraseña? Se generará una nueva automáticamente.")) return;
 
-  try {
-    const res = await fetch(`${API_USERS}/${id}/reset-password`, {
-      method: 'PUT',
-      headers: getAuthHeaders()
-    });
+      try {
+        const res = await fetch(`${API_USERS}/${id}/reset-password`, {
+          method: 'PUT',
+          headers: getAuthHeaders()
+        });
 
-    if (res.ok) {
-      const data = await res.json();
+        if (res.ok) {
+          const data = await res.json();
 
-      if (data.link) {
-     
-        mostrarPopupWhatsapp(data.link);
-      } else {
-        mostrarAlerta('Contraseña restablecida correctamente ✅');
+          if (data.link) {
+
+            mostrarPopupWhatsapp(data.link);
+          } else {
+            mostrarAlerta('Contraseña restablecida correctamente ✅');
+          }
+        } else {
+          const error = await res.json();
+          mostrarAlerta(error.message || 'Error al restablecer contraseña', 'error');
+        }
+      } catch (error) {
+        console.error('Error al restablecer contraseña:', error);
+        mostrarAlerta('Error de conexión', 'error');
       }
-    } else {
-      const error = await res.json();
-      mostrarAlerta(error.message || 'Error al restablecer contraseña', 'error');
     }
-  } catch (error) {
-    console.error('Error al restablecer contraseña:', error);
-    mostrarAlerta('Error de conexión', 'error');
-  }
-}
 
     function generateWhatsappLink(telefono, nombreUsuario, password) {
       const mensaje = `Hola, mi nombre de usuario es: ${nombreUsuario} y mi nueva contraseña es: ${password}`;
       return `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
     }
-function mostrarPopupWhatsapp(link) {
-  const popup = document.getElementById('popupWhatsapp');
-  const popupBtn = document.getElementById('popupWhatsappBtn');
-  popupBtn.href = link; // Asigna el enlace al botón del popup
-  popup.style.display = 'flex'; // Muestra el popup
+    function mostrarPopupWhatsapp(link) {
+      const popup = document.getElementById('popupWhatsapp');
+      const popupBtn = document.getElementById('popupWhatsappBtn');
+      popupBtn.href = link; // Asigna el enlace al botón del popup
+      popup.style.display = 'flex'; // Muestra el popup
 
-  popupBtn.onclick = () => {
-    popup.style.display = 'none'; // Oculta el popup al hacer clic en el enlace
-    return true; // Permite que el enlace abra en una nueva pestaña
-  };
-}
-   // Aplicando máscara de entrada
-   window.onload = function() {
+      popupBtn.onclick = () => {
+        popup.style.display = 'none'; // Oculta el popup al hacer clic en el enlace
+        return true; // Permite que el enlace abra en una nueva pestaña
+      };
+    }
+    // Aplicando máscara de entrada
+    window.onload = function () {
       const input = document.getElementById('telefonoDocente');
       const im = new Inputmask({
         "mask": "+593 9{8}",
@@ -560,13 +631,18 @@ function mostrarPopupWhatsapp(link) {
     };
     fetchDocentes();
   </script>
-<div id="popupWhatsapp" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:10000;">
-  <div style="background:white; padding:30px; border-radius:12px; max-width:400px; text-align:center; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
-    <h3 style="margin-bottom:20px; color:#333;">Contraseña Generada</h3>
-    <p style="margin-bottom:25px; color:#555;">Se generó un enlace para enviar la contraseña al docente por WhatsApp. Debes hacer clic en el botón para continuar.</p>
-    <a id="popupWhatsappBtn" href="#" target="_blank" style="background-color:#25D366; color:white; padding:12px 20px; border-radius:6px; text-decoration:none; font-weight:bold;">Ir al WhatsApp 🚀</a>
+  <div id="popupWhatsapp"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:10000;">
+    <div
+      style="background:white; padding:30px; border-radius:12px; max-width:400px; text-align:center; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+      <h3 style="margin-bottom:20px; color:#333;">Contraseña Generada</h3>
+      <p style="margin-bottom:25px; color:#555;">Se generó un enlace para enviar la contraseña al docente por WhatsApp.
+        Debes hacer clic en el botón para continuar.</p>
+      <a id="popupWhatsappBtn" href="#" target="_blank"
+        style="background-color:#25D366; color:white; padding:12px 20px; border-radius:6px; text-decoration:none; font-weight:bold;">Ir
+        al WhatsApp 🚀</a>
+    </div>
   </div>
-</div>
 
 </body>
 

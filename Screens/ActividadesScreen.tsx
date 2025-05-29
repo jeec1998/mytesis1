@@ -137,8 +137,8 @@ const ActividadesScreen: React.FC<Props> = ({ navigation }) => {
             <View style={styles.cardContent}>
               <View style={styles.tableHeader}>
                 <Text style={[styles.tableCell, styles.cellTitle]}>Subtema</Text>
-                <Text style={[styles.tableCell, styles.cellCenter]}>Calif</Text>
-                <Text style={[styles.tableCell, styles.cellCenter]}>Max</Text>
+                <Text style={[styles.tableCell, styles.cellCenter]}>Calificación</Text>
+                <Text style={[styles.tableCell, styles.cellCenter]}>Calificación máxima</Text>
               </View>
 
               {topicData.subtopics.map((sub) => (
@@ -157,7 +157,7 @@ const ActividadesScreen: React.FC<Props> = ({ navigation }) => {
                 navigation.navigate('ActividadScreen', { topicId: topicData.topic._id });
               }}
             >
-              <Text style={styles.btnVerText}>Ver Actividad</Text>
+              <Text style={styles.btnVerText}>Ver Refuerzo</Text>
             </TouchableOpacity>
 
           </View>
@@ -204,23 +204,30 @@ const styles = StyleSheet.create({
     borderBottomColor: '#4caf50',
     paddingBottom: 6,
     marginBottom: 10,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   tableRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
-    paddingVertical: 6,
+    paddingVertical: 8,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   tableCell: {
     flex: 1,
-    fontSize: 14,
+    fontSize: 13,
     color: '#444',
+    textAlign: 'center',
+
   },
   cellTitle: {
-    flex: 3,
+    flex: 2,
+    textAlign: 'left',
   },
   cellCenter: {
-    textAlign: 'center',
+
   },
   btnVer: {
     margin: 10,

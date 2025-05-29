@@ -136,8 +136,11 @@ const abrirActividades = (refuerzo: Refuerzo) => {
               </View>
               <View style={styles.cardContent}>
                 <Text style={styles.descriptionText}>{item.descripcion}</Text>
+                
               </View>
+              
             </TouchableOpacity>
+            
           )}
           ListEmptyComponent={
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 50 }}>
@@ -149,6 +152,7 @@ const abrirActividades = (refuerzo: Refuerzo) => {
     </SafeAreaView>
   );
 };
+
 
 export default HomeScreen;
 
@@ -176,8 +180,11 @@ const styles = StyleSheet.create({
   },
   cardHeader: {
     width: '100%',
-    padding: 15,
+    height: 55, // Tamaño fijo para el header
+    paddingHorizontal: 15,
+    justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#2F80ED', // fallback color
   },
   headerText: {
     fontWeight: 'bold',
