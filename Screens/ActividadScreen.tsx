@@ -10,6 +10,7 @@ import {
   Linking,
   Alert,
   Platform,
+  Dimensions,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Svg, { Path, Rect } from 'react-native-svg';
@@ -50,6 +51,9 @@ const DefaultIcon = (props: { size?: number }) => (
 
 type ActividadScreenRouteProp = RouteProp<RootStackParamList, 'ActividadScreen'>;
 
+const screenWidth = Dimensions.get('window').width;
+const carouselWidth = screenWidth * 0.9;
+
 const ActividadScreen: React.FC = () => {
   const route = useRoute<ActividadScreenRouteProp>();
   const { topicId } = route.params;
@@ -72,7 +76,6 @@ const ActividadScreen: React.FC = () => {
     } catch {
       return null;
     }
-    
   };
 
   useEffect(() => {
@@ -91,7 +94,7 @@ const ActividadScreen: React.FC = () => {
           return;
         }
         setNombreUsuario(userData.nombre);
-      console.log('user',userData.userId);
+        console.log('user', userData.userId);
         const res = await fetch(
           `https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/academic-support/user/${userData.userId}/topic/${topicId}`,
           {
@@ -206,18 +209,28 @@ const ActividadScreen: React.FC = () => {
         )}
 
         {generated?.actividad_de_refuerzo && (
-          <View style={[styles.section, { marginTop: 30 }]}>
+          <View style={[styles.section, { marginTop: 10 }]}>
             <Text style={styles.sectionTitle}>📗 Actividad de Refuerzo</Text>
-            <Text style={styles.boldText}>
-              Descripción general:{' '}
-              <Text style={styles.normalText}>{generated.actividad_de_refuerzo.descripcion_general}</Text>
-            </Text>
-            <Text style={styles.boldText}>Pasos:</Text>
-            {generated.actividad_de_refuerzo.pasos.map((paso, i) => (
-              <Text key={i} style={styles.normalText}>
-                {paso}
-              </Text>
-            ))}
+
+            <Text style={styles.normalText}>{generated.actividad_de_refuerzo.descripcion_general}</Text>
+            {/* Contenedor sin padding horizontal y con ancho igual a pantalla */}
+            <View style={{ marginTop: 12, width: carouselWidth, alignSelf: 'center' }}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                pagingEnabled
+                contentContainerStyle={styles.carouselContainer}
+              >
+                {generated.actividad_de_refuerzo.pasos.map((paso, i) => (
+                  <View key={i} style={[styles.carouselItem, { width: carouselWidth }]}>
+                    <Text style={styles.carouselStepNumber}>Paso {i + 1}</Text>
+                    <Text style={styles.carouselStepText}>{paso}</Text>
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
+
+
             <Text style={styles.boldText}>
               Tipo de documento entregable:{' '}
               <Text style={styles.normalText}>{generated.actividad_de_refuerzo.tipo_documento_entregable}</Text>
@@ -236,12 +249,13 @@ const ActividadScreen: React.FC = () => {
 const baseIconSize = 70;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: 'withe' },
+  container: { flex: 1, backgroundColor: 'white' },
   containerCentered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#D6E6F2' },
 
   mainContent: {
-    padding: 30,
+    paddingTop: 30,
     paddingBottom: 60,
+    // Quitar padding horizontal para que no afecte ancho del carrusel
   },
 
   section: {
@@ -254,7 +268,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: '#2F80ED',
     fontSize: 22,
-    marginBottom: 15,
+    marginBottom: 5,
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -287,12 +301,60 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     marginTop: 12,
+    alignContent: 'center',
+    textAlign: 'justify',
+  },
+  boldText1: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginTop: 12,
+    alignContent: 'center',
+    textAlign: 'center',
+  },
+  boldText2: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginTop: 12,
+    alignContent: 'center',
+    textAlign: 'center',
   },
   normalText: {
     fontWeight: 'normal',
+    marginTop: 10,
     fontSize: 14,
     marginVertical: 3,
+    textAlign: 'justify',
   },
+
+  carouselContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 0,
+  },
+  carouselItem: {
+    backgroundColor: '#E8F0FE',
+    borderRadius: 20,
+    padding: 10,
+    paddingLeft: 30,
+    justifyContent: 'center',
+    shadowColor: '#000',
+    elevation: 3,
+    // quita width y marginRight para manejarlo en inline styles
+  },
+
+  carouselStepNumber: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 10,
+    color: '#2F80ED',
+    textAlignVertical: 'center',
+  },
+  carouselStepText: {
+    fontSize: 14,
+    color: '#333',
+    textAlign: 'justify',
+  },
+
+
 });
 
 export default ActividadScreen;
