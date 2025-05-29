@@ -3,8 +3,8 @@ import Svg, { Path } from 'react-native-svg';
 
 const YoutubeIcon = (props) => (
   <Svg
-    width={props.width || 256}
-    height={props.height || 180}
+    width={props.width || 64}
+    height={props.height || 45}
     viewBox="0 0 256 180"
     fill="none"
   >
