@@ -100,11 +100,12 @@ module.exports = {
       ],
     }),
   ],
-  devServer: {
+ devServer: {
     static: {
       directory: path.join(__dirname, 'dist'),
     },
-    port: 3001,
-    host: 'localhost',
+    port: 3001,  // Puedes cambiar este puerto si 3001 ya está en uso
+    host: '0.0.0.0',  // Asegúrate de que Webpack esté accesible desde otras máquinas (si es necesario)
+    open: true,  // Abre automáticamente en el navegador
   },
 };
