@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Refuerzos Académicos</title>
     <script src="https://code.iconify.design/2/2.0.0-rc.3/iconify.min.js"></script>
-
     <style>
         * {
             box-sizing: border-box;
@@ -17,14 +16,14 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', sans-serif;
-            background-color: #D6E6F2;
+            background-color: white;
             height: 100%;
             display: flex;
             flex-direction: column;
         }
 
         header {
-            background-color: #2F80ED;
+            background-color: #07376c;
             color: white;
             padding: 12px 20px;
             font-size: 18px;
@@ -77,6 +76,8 @@
             gap: 20px;
             justify-content: center;
             overflow-y: auto;
+            flex-direction: column;
+            align-items: center;
         }
 
         .card {
@@ -119,7 +120,7 @@
         }
 
         .header-azul {
-            background: linear-gradient(135deg, #4A90E2, #357ABD);
+            background: linear-gradient(135deg, #07376c, #07376c);
             color: white;
         }
 
@@ -148,6 +149,8 @@
 
         .card-content p {
             margin: 6px 0;
+            text-align: justify;
+            align-items: justify;
         }
 
         .card-buttons {
@@ -161,7 +164,7 @@
 
         .card-buttons button {
             flex: 1 1 80px;
-            background-color: #4A90E2;
+            background-color: #07376c;
             color: white;
             border: none;
             border-radius: 6px;
@@ -173,113 +176,98 @@
         }
 
         .card-buttons button:hover {
-            background-color: #357ABD;
+            background-color: #07376c;
         }
 
         /* Drawer y Modal */
-       #drawer {
-      position: fixed;
-      top: 0;
-      left: -260px;
-      width: 260px;
-      height: 100%;
-      background-color: #D6E6F2;
-      padding: 50px 20px 30px;
-      box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
-      transition: left 0.3s ease;
-      z-index: 1001;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+        #drawer {
+            position: fixed;
+            top: 0;
+            left: -260px;
+            width: 260px;
+            height: 100%;
+            background-color: #07376c;
+            padding: 50px 20px 30px;
+            box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
+            transition: left 0.3s ease;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
 
-    .drawer-item {
-      font-size: 18px;
-      padding: 15px 0;
-      border-bottom: 1px solid #A7C7E7;
-      color: #2F4F6E;
-      cursor: pointer;
-      font-weight: 500;
-    }
+        .drawer-item {
+            font-size: 18px;
+            padding: 15px 0;
+            border-bottom: 1px solid #A7C7E7;
+            color: #2F4F6E;
+            cursor: pointer;
+            font-weight: 500;
+        }
 
-    .logout {
-      color: #C62828;
-      border-bottom-color: #C62828;
-    }
+        .logout {
+            color: #C62828;
+            border-bottom-color: #C62828;
+        }
 
-    #drawer-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.3);
-      display: none;
-      z-index: 1000;
-    }
-
-    #drawer-overlay.show {
-      display: block;
-    }
-
-    #drawer.show {
-      left: 0;
-    }
-
-        #modal-confirm {
+        #drawer-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
             display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
+            z-index: 1000;
         }
 
-        #modal-confirm-content {
+        #drawer-overlay.show {
+            display: block;
+        }
+
+        #drawer.show {
+            left: 0;
+        }
+
+        /* Contenedor para generated */
+        #generated-container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
             background: white;
-            padding: 30px;
             border-radius: 10px;
-            text-align: center;
-            font-size: 18px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             color: #333;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            max-width: 300px;
         }
 
-        #modal-confirm-content button {
-            margin-top: 15px;
-            margin-right: 10px;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        #confirm-yes {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        #confirm-no {
-            background-color: #F44336;
-            color: white;
-        }
-
-        .user-section {
-            display: flex;
+        #generated-container h2 {
+            color: #07376c;
+            margin-bottom: 15px;
             align-items: center;
-            gap: 8px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
+            text-align: center;
         }
 
+        #generated-container a {
+            color: #07376c;
+            text-decoration: none;
+        }
+
+        #generated-container a:hover {
+            text-decoration: underline;
+        }
+
+        #generated-container ul {
+            list-style: inside disc;
+            padding-left: 0;
+            margin-bottom: 20px;
+        }
+
+        #generated-container ol {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Iconos para tipos de archivo */
         .material-icon-theme--pdf {
             display: inline-block;
             width: 90px;
@@ -309,8 +297,8 @@
 
         .logos--youtube-icon {
             display: inline-block;
-            width: 125px;
-            height: 90px;
+            width: 105px;
+            height: 70px;
             background-repeat: no-repeat;
             background-size: 100% 100%;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 180'%3E%3Cpath fill='%23f00' d='M250.346 28.075A32.18 32.18 0 0 0 227.69 5.418C207.824 0 127.87 0 127.87 0S47.912.164 28.046 5.582A32.18 32.18 0 0 0 5.39 28.24c-6.009 35.298-8.34 89.084.165 122.97a32.18 32.18 0 0 0 22.656 22.657c19.866 5.418 99.822 5.418 99.822 5.418s79.955 0 99.82-5.418a32.18 32.18 0 0 0 22.657-22.657c6.338-35.348 8.291-89.1-.164-123.134'/%3E%3Cpath fill='%23fff' d='m102.421 128.06l66.328-38.418l-66.328-38.418z'/%3E%3C/svg%3E");
@@ -338,75 +326,121 @@
             -webkit-mask-size: 100% 100%;
             mask-size: 100% 100%;
         }
-          /* Para agrupar los iconos en fila */
-    .section-title {
-            color: #2F80ED;
-            font-weight: 700;
-            margin: 0 0 10px 0;
-            font-size: 1.8rem;
-            border-bottom: 3px solid #2F80ED;
-            padding-bottom: 6px;
+
+        /* ==================== NUEVO ESTILO CARRUSEL ==================== */
+        #carousel-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 25px;
+            flex-wrap: wrap;
         }
 
-        .subtitle {
-            color: #2F80ED;
-            font-weight: 600;
-            margin: 24px 0 8px 0;
-            font-size: 1.3rem;
-        }
-
-        .intro-text {
-            font-size: 1rem;
-            color: #333;
-            max-width: 700px;
+        #carousel-step {
+            min-width: 280px;
+            max-width: 400px;
+            padding: 20px 25px;
+            background: linear-gradient(145deg, #f0f5ff, #d9e4ff);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(70, 130, 250, 0.15);
+            font-size: 16px;
+            font-weight: 500;
+            color: #1a237e;
+            text-align: left;
+            transition: opacity 0.3s ease-in-out;
+            position: relative;
+            min-height: 100px;
             line-height: 1.5;
-            margin-bottom: 20px;
-            text-align: center;
-            align-self: center;
         }
 
-        /* Icon container */
-        .icon-container {
-            cursor: pointer;
-            width: 100px;
+        .carousel-buttons {
             display: flex;
             flex-direction: column;
+            gap: 15px;
+        }
+
+        .carousel-button {
+            background-color: #3f51b5;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(63, 81, 181, 0.4);
+            display: flex;
             align-items: center;
-            gap: 8px;
-            transition: transform 0.2s ease;
-            color: #2F80ED;
-        }
-
-        .icon-container:hover {
-            transform: translateY(-5px);
-            color: #164d9f;
-        }
-
-        .icon-container p {
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin: 0;
+            justify-content: center;
+            transition: background-color 0.25s ease, transform 0.15s ease;
             user-select: none;
         }
 
-        /* Para agrupar los iconos en fila */
-        .icon-row {
+        .carousel-button:hover:not(:disabled) {
+            background-color: #303f9f;
+            transform: scale(1.1);
+        }
+
+        .carousel-button:disabled {
+            background-color: #9fa8da;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Indicadores tipo puntos */
+        #carousel-indicators {
             display: flex;
-            flex-wrap: wrap;
-            gap: 24px;
             justify-content: center;
+            margin-top: 15px;
+            gap: 8px;
+        }
+
+        .carousel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #c5cae9;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .carousel-indicator.active {
+            background-color: #3f51b5;
+        }
+
+        /* Responsive */
+        @media (max-width: 520px) {
+            #carousel-container {
+                gap: 10px;
+            }
+
+            #carousel-step {
+                min-width: 90vw;
+                max-width: 90vw;
+            }
+
+            .carousel-buttons {
+                flex-direction: row;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 
 <body>
     <header>
-      <div class="left-section">
-      <button id="menu-btn" class="menu-icon">☰</button>
-      <span class="header-title">Actividades</span>
-    </div>
-  
+        <div class="left-section">
+            <button id="menu-btn" class="menu-icon">☰</button>
+            <span class="header-title">Actividades</span>
+        </div>
+        <div class="user-section" id="user-section">
+            <span>👤</span> <span id="nombre-usuario"></span>
+        </div>
     </header>
+
     <div id="drawer-overlay"></div>
     <div id="drawer">
         <div>
@@ -415,154 +449,274 @@
         </div>
         <div class="drawer-item logout" onclick="logout()">📤 Cerrar sesión</div>
     </div>
-
-    <div id="modal-confirm">
-        <div id="modal-confirm-content">
-            ¿Deseas cerrar sesión?<br>
-            <button id="confirm-yes">Sí</button>
-            <button id="confirm-no">No</button>
-        </div>
-    </div>
-<main id="refuerzos-container" style="background-color: white; padding: 60px 80px; width: 100%; min-height: calc(100vh - 70px); box-shadow: inset 0 0 10px rgba(0,0,0,0.05); display: flex; flex-direction: row; align-items: center;">
-
-    <h1 class="section-title">📘 Paso 1: Recursos recomendados</h1>
-      <p class="intro-text" style="max-width: 900px;">
-        Los siguientes recursos han sido seleccionados cuidadosamente para fortalecer las necesidades específicas de cada subtema trabajado en clase. Cada uno de ellos te brindará herramientas, ejemplos y contenidos complementarios que te ayudarán a comprender mejor los conceptos y a desarrollar con éxito tus actividades de refuerzo. Te invitamos a explorarlos y aprovecharlos según el tipo de documento o medio que se adapte mejor a tu estilo de aprendizaje
-    </p>
-
-  <div class="icon-row" style="margin-top: 30px; margin-bottom: 50px; display: flex; flex-direction: row; gap: 20px; align-items: center;">
-
-        <div class="icon-container" onclick="openLink('https://www.dropbox.com/scl/fi/vn7hqhnbju3wg4h8hqrj6/Margenes_Normas_APA.pdf?rlkey=azdfz8kcdcntiri3ilt377tgr&dl=0')">
-            <span class="material-icon-theme--pdf"></span>
-            <p>Margenes descripción</p>
-        </div>
-
-        <div class="icon-container" onclick="openLink('https://www.dropbox.com/scl/fi/kgamizsm54kee1k7yvff7/Margenes_Normas_APA.docx?rlkey=b8ho3mag5x1rha18hcvb73iyo&dl=0')">
-            <span class="vscode-icons--file-type-word"></span>
-            <p>Margenes Explicación</p>
-        </div>
-
-      <!--   <div class="icon-container" onclick="openLink('https://www.example.com/excel')">
-            <span class="vscode-icons--file-type-excel2"></span>
-            <p>Excel</p>
-        </div> -->
-<!-- 
-        <div class="icon-container" onclick="openLink('https://www.dropbox.com/scl/fi/2e8h0pilzlc9mackv6miw/margenes-audio.m4a.crdownload?rlkey=79rrtr42mszdd68hrgeo12a8i&dl=0')">
-            <span class="flat-color-icons--audio-file"></span>
-            <p>Audio</p>
-        </div> -->
-
-        <div class="icon-container" onclick="openLink('https://www.dropbox.com/scl/fi/4b6ott25xmwg87nftm1a7/Word-Normas-APA-7.-Formato-m-rgenes-interlineado-fuente-y-m-s-2024.mp4?rlkey=aclh1o24b4z2o372gi1pb5oom&dl=0')">
-            <span class="logos--youtube-icon"></span>
-            <p>Margenes</p>
-        </div>
-
-        <div class="icon-container" onclick="openLink('https://www.dropbox.com/scl/fi/7t7xdid4v38kv77hc8h8a/Margenes.jpeg?rlkey=0sotnaaujz98mtn8zde6g6pm4&dl=0')">
-            <span class="lets-icons--img-box-fill"></span>
-            <p>Imegen de Margenes</p>
-        </div>
-    </div>
-
-    <hr style="width: 100%; margin: 40px 0; border: none; border-top: 2px solid #e0e0e0;">
-
-    <h2 class="section-title">📗 Paso 2: Actividades de refuerzo</h2>
-    <p class="intro-text" style="max-width: 900px;">
-       <section style="background-color: #ffffff; padding: 40px; max-width: 900px; margin: auto; box-shadow: 0 0 12px rgba(0,0,0,0.1); border-radius: 12px;">
-  <h2 style="color: #2F80ED; font-size: 1.8rem; border-bottom: 3px solid #2F80ED; padding-bottom: 10px;">📘 Actividad: Configuración de márgenes en un documento según Normas APA</h2>
-
-  <p style="font-size: 1.05rem; color: #333; margin-top: 20px;"><strong>Objetivo:</strong> Aprender a configurar correctamente los márgenes en un documento siguiendo las Normas APA (7.ª edición).</p>
-
-  <ol style="margin-top: 20px; padding-left: 20px; color: #333; font-size: 1rem; line-height: 1.6;">
-    <li><strong>📝 Paso 1:</strong> Abre Microsoft Word o Google Docs. Crea un documento nuevo y guárdalo como <em>Margenes_APA_TuNombre</em>.</li>
-
-    <li><strong>📏 Paso 2:</strong> En Word, ve a <strong>Diseño de página</strong> (o Formato). En Google Docs, haz clic en <strong>Archivo &gt; Configuración de página</strong>.</li>
-
-    <li><strong>📐 Paso 3:</strong> Configura los cuatro márgenes (superior, inferior, izquierdo y derecho) en <strong>1 pulgada (2.54 cm)</strong>.</li>
-
-    <li><strong>📄 Paso 4:</strong> Haz clic en <strong>Aceptar</strong> o <strong>Guardar</strong> para aplicar los cambios al documento.</li>
-
-    <li><strong>✍️ Paso 5:</strong> Escribí un párrafo de 4 a 5 líneas justificando por qué es importante respetar los márgenes APA en los trabajos académicos.</li>
-
-    <li><strong>💾 Paso 6:</strong> Guardá el documento final y subilo según las instrucciones del docente.</li>
-  </ol>
-</section>
-
-    </p>
-
-    <hr style="width: 100%; margin: 40px 0; border: none; border-top: 2px dashed #b0bec5;">
-
-    <h3 class="section-title">📙 Paso 3: Tipo de documento a entregar</h3>
-    <p class="intro-text" style="max-width: 900px;">
-        <div class="documento">
-    <ul>
-      <li><strong>Formato:</strong> Documento Word (.docx)</li>
-      <li><strong>Nombre del archivo:</strong> Margenes_APA_TuNombre.docx</li>
-      <li><strong>Contenido:</strong> Configuración de márgenes APA + explicación corta</li>
-    </ul>
-  </div>
-    </p>
-
-</main>
-
-
-
+    <!-- Contenedor donde mostraremos generated -->
+    <section id="generated-container">
+        <!-- contenido generado dinámicamente -->
+    </section>
 
     <script>
-        // Aquí definimos las actividades con las notas
+        // Función para extraer userId del token JWT guardado
+        function getUserIdFromToken(token) {
+            if (!token) return null;
+            try {
+                const payload = token.split('.')[1];
+                const decoded = atob(payload);
+                const obj = JSON.parse(decoded);
+                const userId = obj._id || obj.id || null;
 
+                if (userId) {
+                    localStorage.setItem('userId', userId);
+                }
 
-        function getQueryParams() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('tema');
+                return userId;
+            } catch {
+                return null;
+            }
         }
 
-        window.onload = function () {
-            const tema = getQueryParams();
-            const temaInfo = actividades.find(act => act.tema === tema);
+        // Función para navegar entre páginas
+        function navigateTo(path) {
+            drawer.classList.remove('show');
+            overlay.classList.remove('show');
+            setTimeout(() => {
+                window.location.href = path;
+            }, 300);
+        }
 
-            if (temaInfo) {
-                document.getElementById('actividad-tema').textContent = temaInfo.tema;
-                actualizarBarraProgreso(temaInfo.nota);
+        // Función para cerrar sesión
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
 
-                document.getElementById('submit-progress').onclick = function () {
-                    alert(`La actividad "${temaInfo.tema}" ha sido subida con éxito.`);
-                };
-            } else {
-                // Si no se encuentra la actividad, se muestra un mensaje de error
-                document.getElementById('actividad-tema').textContent = "Actividad no encontrada";
-                document.getElementById('submit-progress').style.display = "none";
-            }
-        };
+        // Abrir link en nueva pestaña
+        function openLink(url) {
+            window.open(url, '_blank');
+        }
 
-        // Función para mostrar el menú
+        // Variables drawer, overlay y menuBtn
         const drawer = document.getElementById('drawer');
         const overlay = document.getElementById('drawer-overlay');
         const menuBtn = document.getElementById('menu-btn');
 
         menuBtn.onclick = () => {
-            drawer.classList.toggle('show');
-            overlay.classList.toggle('show');
+            drawer.classList.add('show');
+            overlay.classList.add('show');
         };
-
         overlay.onclick = () => {
             drawer.classList.remove('show');
             overlay.classList.remove('show');
         };
 
-        function navigateTo(path) {
-            drawer.classList.remove('show');
-            overlay.classList.remove('show');
-            setTimeout(() => { window.location.href = path; }, 300);
+        // Mostrar nombre usuario si está disponible
+        function mostrarNombreUsuario() {
+            const token = localStorage.getItem('accessToken');
+            if (!token) return;
+            try {
+                const payload = token.split('.')[1];
+                const decoded = atob(payload);
+                const obj = JSON.parse(decoded);
+                const nombre = obj.nombre || obj.name || '';
+                if (nombre) {
+                    document.getElementById('nombre-usuario').textContent = nombre;
+                }
+            } catch {
+                // no hacer nada
+            }
         }
 
-        function logout() {
-            localStorage.clear();
-            window.location.href = 'index.html';
-        }
-        function openLink(url) {
-            window.open(url, '_blank');
+        mostrarNombreUsuario();
+
+        async function cargarRefuerzoPorUsuario(userId) {
+            const token = localStorage.getItem('accessToken');
+            if (!token || !userId) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            try {
+                const res = await fetch(`https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/academic-support/${userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!res.ok) throw new Error('Error al obtener datos');
+
+                const data = await res.json();
+
+                if (!data.topic || !data.subtopics || !Array.isArray(data.subtopics) || data.subtopics.length === 0) {
+                    const container = document.getElementById('generated-container');
+                    container.innerHTML = '<p>No hay subtemas disponibles.</p>';
+                }
+
+                // Cargar sección generated
+                if (data.generated) {
+                    mostrarGenerated(data.generated);
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert('Error cargando subtemas.');
+            }
         }
 
+        // Función para mostrar la info de generated con iconos y carrusel mejorado
+        function mostrarGenerated(generatedString) {
+            let generatedObj;
+            try {
+                generatedObj = JSON.parse(generatedString);
+            } catch (e) {
+                console.error('Error parseando generated:', e);
+                return;
+            }
+            const container = document.getElementById('generated-container');
+            container.innerHTML = '';
+
+            if (generatedObj.recursos_recomendados && generatedObj.recursos_recomendados.length > 0) {
+                const recursosDiv = document.createElement('div');
+                recursosDiv.innerHTML = `<h2>📘 Recursos Recomendados</h2>`;
+
+                generatedObj.recursos_recomendados.forEach(recurso => {
+                    const recursoElem = document.createElement('div');
+                    recursoElem.style.marginBottom = '10px';
+                    recursoElem.style.display = 'flex';
+                    recursoElem.style.alignItems = 'center';
+                    recursoElem.style.gap = '12px';
+
+                    // Determinar clase icono según tipo
+                    let iconClass = '';
+                    const tipo = (recurso.tipo || '').toLowerCase();
+                    if (tipo.includes('pdf')) iconClass = 'material-icon-theme--pdf';
+                    else if (tipo.includes('word') || tipo.includes('doc')) iconClass = 'vscode-icons--file-type-word';
+                    else if (tipo.includes('excel')) iconClass = 'vscode-icons--file-type-excel2';
+                    else if (tipo.includes('video') || tipo.includes('mp4') || tipo.includes('youtube')) iconClass = 'logos--youtube-icon';
+                    else if (tipo.includes('imagen') || tipo.includes('image') || tipo.includes('jpeg') || tipo.includes('jpg') || tipo.includes('png')) iconClass = 'lets-icons--img-box-fill';
+                    else if (tipo.includes('audio')) iconClass = 'flat-color-icons--audio-file';
+                    else iconClass = '';
+
+                    const urlRecurso = recurso.dropbox_url || recurso.dropbuxUrl;
+
+                    const iconSpan = document.createElement('span');
+                    iconSpan.className = iconClass;
+                    iconSpan.style.cursor = 'pointer';
+                    if (urlRecurso) {
+                        iconSpan.onclick = () => {
+                            window.open(urlRecurso, '_blank');
+                        };
+                    }
+
+                    const textDiv = document.createElement('div');
+                    textDiv.innerHTML = `
+        <strong>${recurso.titulo}</strong> (${recurso.tipo})<br/>
+        <a href="${urlRecurso}" target="_blank" rel="noopener noreferrer">Abrir recurso</a>
+    `;
+
+                    recursoElem.appendChild(iconSpan);
+                    recursoElem.appendChild(textDiv);
+
+                    recursosDiv.appendChild(recursoElem);
+                });
+
+                container.appendChild(recursosDiv);
+            }
+
+            if (generatedObj.actividad_de_refuerzo) {
+                const actividad = generatedObj.actividad_de_refuerzo;
+                const actividadDiv = document.createElement('div');
+                actividadDiv.style.marginTop = '30px';
+                actividadDiv.innerHTML = `
+                    <h2 style="color:#07376c; font-weight: 700;">📗 Actividad de Refuerzo</h2>
+                    <h4><strong>Descripción general</strong></h4>
+                    <p style="font-size: 15px; line-height: 1.6; color: #333;">${actividad.descripcion_general}</p>
+
+                    <div id="carousel-container">
+                        <button id="carousel-prev" class="carousel-button" aria-label="Anterior paso">&#8592;</button>
+
+                        <div id="carousel-step" aria-live="polite" aria-atomic="true"></div>
+
+                        <button id="carousel-next" class="carousel-button" aria-label="Siguiente paso">&#8594;</button>
+                    </div>
+
+                    <div id="carousel-indicators" role="tablist" aria-label="Indicadores de pasos"></div>
+                `;
+                container.appendChild(actividadDiv);
+
+                const pasos = actividad.pasos || [];
+                let current = 0;
+                const stepDiv = document.getElementById('carousel-step');
+                const prevBtn = document.getElementById('carousel-prev');
+                const nextBtn = document.getElementById('carousel-next');
+                const indicatorsContainer = document.getElementById('carousel-indicators');
+
+                function renderStep() {
+                    if (!pasos.length) {
+                        stepDiv.textContent = 'No hay pasos disponibles.';
+                        prevBtn.disabled = true;
+                        nextBtn.disabled = true;
+                        indicatorsContainer.style.display = 'none';
+                        return;
+                    }
+
+                    // Animación suave de desvanecimiento
+                    stepDiv.style.opacity = 0;
+                    setTimeout(() => {
+                        stepDiv.innerHTML = `<strong>Paso ${current + 1}:</strong> ${pasos[current]}`;
+                        stepDiv.style.opacity = 1;
+                    }, 200);
+
+                    prevBtn.disabled = current === 0;
+                    nextBtn.disabled = current === pasos.length - 1;
+
+                    // Actualizar indicadores
+                    indicatorsContainer.innerHTML = '';
+                    pasos.forEach((_, i) => {
+                        const dot = document.createElement('div');
+                        dot.className = 'carousel-indicator' + (i === current ? ' active' : '');
+                        dot.setAttribute('role', 'tab');
+                        dot.setAttribute('aria-selected', i === current ? 'true' : 'false');
+                        dot.setAttribute('tabindex', '0');
+                        dot.addEventListener('click', () => {
+                            current = i;
+                            renderStep();
+                        });
+                        dot.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                current = i;
+                                renderStep();
+                            }
+                        });
+                        indicatorsContainer.appendChild(dot);
+                    });
+                }
+
+                prevBtn.onclick = () => {
+                    if (current > 0) {
+                        current--;
+                        renderStep();
+                    }
+                };
+                nextBtn.onclick = () => {
+                    if (current < pasos.length - 1) {
+                        current++;
+                        renderStep();
+                    }
+                };
+
+                renderStep();
+            }
+        }
+
+        // Inicio
+        document.getElementById('user-section').onclick = () => {
+            window.location.href = 'perfil.html';
+        };
+        const token = localStorage.getItem('accessToken');
+        const userId = getUserIdFromToken(token);
+        if (userId) {
+            cargarRefuerzoPorUsuario(userId);
+        }
     </script>
 
 </body>

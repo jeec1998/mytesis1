@@ -16,14 +16,14 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', sans-serif;
-            background-color: #D6E6F2;
+            background-color: white;
             height: 100%;
             display: flex;
             flex-direction: column;
         }
 
         header {
-            background-color: #2F80ED;
+            background-color: #07376c;
             color: white;
             padding: 12px 20px;
             font-size: 18px;
@@ -120,7 +120,7 @@
         }
 
         .header-azul {
-            background: linear-gradient(135deg, #4A90E2, #357ABD);
+            background: linear-gradient(135deg, #07376c, #07376c);
             color: white;
         }
 
@@ -149,6 +149,8 @@
 
         .card-content p {
             margin: 6px 0;
+            text-align: justify;
+            align-items: justify;
         }
 
         .card-buttons {
@@ -162,7 +164,7 @@
 
         .card-buttons button {
             flex: 1 1 80px;
-            background-color: #4A90E2;
+            background-color: #07376c;
             color: white;
             border: none;
             border-radius: 6px;
@@ -174,7 +176,7 @@
         }
 
         .card-buttons button:hover {
-            background-color: #357ABD;
+            background-color: #07376c;
         }
 
         /* Drawer y Modal */
@@ -184,7 +186,7 @@
             left: -260px;
             width: 260px;
             height: 100%;
-            background-color: #D6E6F2;
+            background-color: #07376c;
             padding: 50px 20px 30px;
             box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
             transition: left 0.3s ease;
@@ -234,17 +236,19 @@
             padding: 20px;
             background: white;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             color: #333;
         }
 
         #generated-container h2 {
-            color: #2F80ED;
+            color: #07376c;
             margin-bottom: 15px;
+            align-items: center;
+            text-align: center;
         }
 
         #generated-container a {
-            color: #4A90E2;
+            color: #07376c;
             text-decoration: none;
         }
 
@@ -293,8 +297,8 @@
 
         .logos--youtube-icon {
             display: inline-block;
-            width: 125px;
-            height: 90px;
+            width: 105px;
+            height: 70px;
             background-repeat: no-repeat;
             background-size: 100% 100%;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 180'%3E%3Cpath fill='%23f00' d='M250.346 28.075A32.18 32.18 0 0 0 227.69 5.418C207.824 0 127.87 0 127.87 0S47.912.164 28.046 5.582A32.18 32.18 0 0 0 5.39 28.24c-6.009 35.298-8.34 89.084.165 122.97a32.18 32.18 0 0 0 22.656 22.657c19.866 5.418 99.822 5.418 99.822 5.418s79.955 0 99.82-5.418a32.18 32.18 0 0 0 22.657-22.657c6.338-35.348 8.291-89.1-.164-123.134'/%3E%3Cpath fill='%23fff' d='m102.421 128.06l66.328-38.418l-66.328-38.418z'/%3E%3C/svg%3E");
@@ -322,6 +326,107 @@
             -webkit-mask-size: 100% 100%;
             mask-size: 100% 100%;
         }
+
+        /* ==================== NUEVO ESTILO CARRUSEL ==================== */
+        #carousel-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        #carousel-step {
+            min-width: 280px;
+            max-width: 400px;
+            padding: 20px 25px;
+            background: linear-gradient(145deg, #f0f5ff, #d9e4ff);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(70, 130, 250, 0.15);
+            font-size: 16px;
+            font-weight: 500;
+            color: #1a237e;
+            text-align: left;
+            transition: opacity 0.3s ease-in-out;
+            position: relative;
+            min-height: 100px;
+            line-height: 1.5;
+        }
+
+        .carousel-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .carousel-button {
+            background-color: #3f51b5;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(63, 81, 181, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.25s ease, transform 0.15s ease;
+            user-select: none;
+        }
+
+        .carousel-button:hover:not(:disabled) {
+            background-color: #303f9f;
+            transform: scale(1.1);
+        }
+
+        .carousel-button:disabled {
+            background-color: #9fa8da;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Indicadores tipo puntos */
+        #carousel-indicators {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            gap: 8px;
+        }
+
+        .carousel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #c5cae9;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .carousel-indicator.active {
+            background-color: #3f51b5;
+        }
+
+        /* Responsive */
+        @media (max-width: 520px) {
+            #carousel-container {
+                gap: 10px;
+            }
+
+            #carousel-step {
+                min-width: 90vw;
+                max-width: 90vw;
+            }
+
+            .carousel-buttons {
+                flex-direction: row;
+                gap: 10px;
+            }
+        }
     </style>
 </head>
 
@@ -346,7 +451,7 @@
     </div>
     <!-- Contenedor donde mostraremos generated -->
     <section id="generated-container">
-      <!-- contenido generado dinámicamente -->
+        <!-- contenido generado dinámicamente -->
     </section>
 
     <script>
@@ -373,7 +478,9 @@
         function navigateTo(path) {
             drawer.classList.remove('show');
             overlay.classList.remove('show');
-            setTimeout(() => { window.location.href = path; }, 300);
+            setTimeout(() => {
+                window.location.href = path;
+            }, 300);
         }
 
         // Función para cerrar sesión
@@ -454,7 +561,7 @@
             }
         }
 
-        // Función para mostrar la info de generated con iconos
+        // Función para mostrar la info de generated con iconos y carrusel mejorado
         function mostrarGenerated(generatedString) {
             let generatedObj;
             try {
@@ -470,47 +577,46 @@
                 const recursosDiv = document.createElement('div');
                 recursosDiv.innerHTML = `<h2>📘 Recursos Recomendados</h2>`;
 
-               generatedObj.recursos_recomendados.forEach(recurso => {
-    const recursoElem = document.createElement('div');
-    recursoElem.style.marginBottom = '10px';
-    recursoElem.style.display = 'flex';
-    recursoElem.style.alignItems = 'center';
-    recursoElem.style.gap = '12px';
+                generatedObj.recursos_recomendados.forEach(recurso => {
+                    const recursoElem = document.createElement('div');
+                    recursoElem.style.marginBottom = '10px';
+                    recursoElem.style.display = 'flex';
+                    recursoElem.style.alignItems = 'center';
+                    recursoElem.style.gap = '12px';
 
-    // Determinar clase icono según tipo
-    let iconClass = '';
-    const tipo = (recurso.tipo || '').toLowerCase();
-    if (tipo.includes('pdf')) iconClass = 'material-icon-theme--pdf';
-    else if (tipo.includes('word') || tipo.includes('doc')) iconClass = 'vscode-icons--file-type-word';
-    else if (tipo.includes('excel')) iconClass = 'vscode-icons--file-type-excel2';
-    else if (tipo.includes('video') || tipo.includes('mp4') || tipo.includes('youtube')) iconClass = 'logos--youtube-icon';
-    else if (tipo.includes('imagen') || tipo.includes('image') || tipo.includes('jpeg') || tipo.includes('jpg') || tipo.includes('png')) iconClass = 'lets-icons--img-box-fill';
-    else if (tipo.includes('audio')) iconClass = 'flat-color-icons--audio-file';
-    else iconClass = '';
+                    // Determinar clase icono según tipo
+                    let iconClass = '';
+                    const tipo = (recurso.tipo || '').toLowerCase();
+                    if (tipo.includes('pdf')) iconClass = 'material-icon-theme--pdf';
+                    else if (tipo.includes('word') || tipo.includes('doc')) iconClass = 'vscode-icons--file-type-word';
+                    else if (tipo.includes('excel')) iconClass = 'vscode-icons--file-type-excel2';
+                    else if (tipo.includes('video') || tipo.includes('mp4') || tipo.includes('youtube')) iconClass = 'logos--youtube-icon';
+                    else if (tipo.includes('imagen') || tipo.includes('image') || tipo.includes('jpeg') || tipo.includes('jpg') || tipo.includes('png')) iconClass = 'lets-icons--img-box-fill';
+                    else if (tipo.includes('audio')) iconClass = 'flat-color-icons--audio-file';
+                    else iconClass = '';
 
-    const urlRecurso = recurso.dropbox_url || recurso.dropbuxUrl;
+                    const urlRecurso = recurso.dropbox_url || recurso.dropbuxUrl;
 
-    const iconSpan = document.createElement('span');
-    iconSpan.className = iconClass;
-    iconSpan.style.cursor = 'pointer';
-    if (urlRecurso) {
-        iconSpan.onclick = () => {
-            window.open(urlRecurso, '_blank');
-        };
-    }
+                    const iconSpan = document.createElement('span');
+                    iconSpan.className = iconClass;
+                    iconSpan.style.cursor = 'pointer';
+                    if (urlRecurso) {
+                        iconSpan.onclick = () => {
+                            window.open(urlRecurso, '_blank');
+                        };
+                    }
 
-    const textDiv = document.createElement('div');
-    textDiv.innerHTML = `
+                    const textDiv = document.createElement('div');
+                    textDiv.innerHTML = `
         <strong>${recurso.titulo}</strong> (${recurso.tipo})<br/>
-        ${recurso.descripcion}<br/>
         <a href="${urlRecurso}" target="_blank" rel="noopener noreferrer">Abrir recurso</a>
     `;
 
-    recursoElem.appendChild(iconSpan);
-    recursoElem.appendChild(textDiv);
+                    recursoElem.appendChild(iconSpan);
+                    recursoElem.appendChild(textDiv);
 
-    recursosDiv.appendChild(recursoElem);
-});
+                    recursosDiv.appendChild(recursoElem);
+                });
 
                 container.appendChild(recursosDiv);
             }
@@ -520,22 +626,92 @@
                 const actividadDiv = document.createElement('div');
                 actividadDiv.style.marginTop = '30px';
                 actividadDiv.innerHTML = `
-                    <h2>📗 Actividad de Refuerzo</h2>
-                    <p><strong>Descripción general:</strong> ${actividad.descripcion_general}</p>
-                    <ol>
-                        ${actividad.pasos.map(paso => `<li>${paso}</li>`).join('')}
-                    </ol>
-                    <p><strong>Tipo de documento entregable:</strong> ${actividad.tipo_documento_entregable}</p>
-                    <p><strong>Objetivo:</strong> ${actividad.objetivo}</p>
+                    <h2 style="color:#07376c; font-weight: 700;">📗 Actividad de Refuerzo</h2>
+                    <h4><strong>Descripción general</strong></h4>
+                    <p style="font-size: 15px; line-height: 1.6; color: #333;">${actividad.descripcion_general}</p>
+
+                    <div id="carousel-container">
+                        <button id="carousel-prev" class="carousel-button" aria-label="Anterior paso">&#8592;</button>
+
+                        <div id="carousel-step" aria-live="polite" aria-atomic="true"></div>
+
+                        <button id="carousel-next" class="carousel-button" aria-label="Siguiente paso">&#8594;</button>
+                    </div>
+
+                    <div id="carousel-indicators" role="tablist" aria-label="Indicadores de pasos"></div>
                 `;
                 container.appendChild(actividadDiv);
+
+                const pasos = actividad.pasos || [];
+                let current = 0;
+                const stepDiv = document.getElementById('carousel-step');
+                const prevBtn = document.getElementById('carousel-prev');
+                const nextBtn = document.getElementById('carousel-next');
+                const indicatorsContainer = document.getElementById('carousel-indicators');
+
+                function renderStep() {
+                    if (!pasos.length) {
+                        stepDiv.textContent = 'No hay pasos disponibles.';
+                        prevBtn.disabled = true;
+                        nextBtn.disabled = true;
+                        indicatorsContainer.style.display = 'none';
+                        return;
+                    }
+
+                    // Animación suave de desvanecimiento
+                    stepDiv.style.opacity = 0;
+                    setTimeout(() => {
+                        stepDiv.innerHTML = `<strong>Paso ${current + 1}:</strong> ${pasos[current]}`;
+                        stepDiv.style.opacity = 1;
+                    }, 200);
+
+                    prevBtn.disabled = current === 0;
+                    nextBtn.disabled = current === pasos.length - 1;
+
+                    // Actualizar indicadores
+                    indicatorsContainer.innerHTML = '';
+                    pasos.forEach((_, i) => {
+                        const dot = document.createElement('div');
+                        dot.className = 'carousel-indicator' + (i === current ? ' active' : '');
+                        dot.setAttribute('role', 'tab');
+                        dot.setAttribute('aria-selected', i === current ? 'true' : 'false');
+                        dot.setAttribute('tabindex', '0');
+                        dot.addEventListener('click', () => {
+                            current = i;
+                            renderStep();
+                        });
+                        dot.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                current = i;
+                                renderStep();
+                            }
+                        });
+                        indicatorsContainer.appendChild(dot);
+                    });
+                }
+
+                prevBtn.onclick = () => {
+                    if (current > 0) {
+                        current--;
+                        renderStep();
+                    }
+                };
+                nextBtn.onclick = () => {
+                    if (current < pasos.length - 1) {
+                        current++;
+                        renderStep();
+                    }
+                };
+
+                renderStep();
             }
         }
 
         // Inicio
-         document.getElementById('user-section').onclick = () => {
-      window.location.href = 'perfil.html';
-    };
+        document.getElementById('user-section').onclick = () => {
+            window.location.href = 'perfil.html';
+        };
         const token = localStorage.getItem('accessToken');
         const userId = getUserIdFromToken(token);
         if (userId) {

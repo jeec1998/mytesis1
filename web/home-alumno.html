@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -15,14 +15,14 @@
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', sans-serif;
-      background-color: #D6E6F2;
+      background-color: white;
       height: 100%;
       display: flex;
       flex-direction: column;
     }
 
     header {
-      background-color: #2F80ED;
+      background-color: #07376c;
       color: white;
       padding: 12px 20px;
       font-size: 18px;
@@ -89,6 +89,7 @@
       overflow: hidden;
       transition: transform 0.2s;
       cursor: pointer;
+      align-items: center;
     }
 
     .card:hover {
@@ -101,6 +102,7 @@
       font-weight: bold;
       text-align: center;
       color: white;
+      width: 100%;
     }
 
     /* Colores para los headers según materia */
@@ -118,7 +120,7 @@
     }
 
     .header-azul {
-      background: linear-gradient(135deg, #4A90E2, #357ABD);
+      background: linear-gradient(135deg, #07376c, #07376c);
       color: white;
     }
 
@@ -134,142 +136,105 @@
       background: linear-gradient(135deg, #00bcd4, #0097a7);
     }
 
-.card-content {
-  flex: 1;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  font-size: 13px;
-  color: #444;
-}
+    /* Estilo para el gif dentro de la tarjeta */
+    .card-gif {
+      width: 160px;
+      height: 160px;
+      object-fit: contain;
+      margin-top: auto;
+      margin-bottom: 12px;
+    }
 
-.card-content p {
-  margin: 6px 0;
-}
+    .card-content {
+      flex: 1;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      font-size: 13px;
+      color: #444;
+    }
 
-.card-buttons {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-  padding: 8px;
-  background-color: #f0f4ff;
-  border-top: 1px solid #e0e0e0;
-}
+    .card-content p {
+      margin: 6px 0;
+    }
 
-.card-buttons button {
-  flex: 1 1 80px;
-  background-color: #4A90E2;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 6px;
-  font-size: 13px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
+    .card-buttons {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      padding: 8px;
+      background-color: #f0f4ff;
+      border-top: 1px solid #e0e0e0;
+    }
 
-.card-buttons button:hover {
-  background-color: #357ABD;
-}
+    .card-buttons button {
+      flex: 1 1 80px;
+      background-color: #07376c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
 
-/* Drawer y Modal */
-#drawer {
-  position: fixed;
-  top: 0;
-  left: -260px;
-  width: 260px;
-  height: 100%;
+    .card-buttons button:hover {
+      background-color: #07376c;
+    }
+
+    /* Drawer y Modal */
+    #drawer {
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 260px;
+      height: 100%;
   background-color: #D6E6F2;
-  padding: 50px 20px 30px;
-  box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
-  transition: left 0.3s ease;
-  z-index: 1001;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
+      padding: 50px 20px 30px;
+      box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
+      transition: left 0.3s ease;
+      z-index: 1001;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
 
-.drawer-item {
-  font-size: 18px;
-  padding: 15px 0;
-  border-bottom: 1px solid #A7C7E7;
-  color: #2F4F6E;
-  cursor: pointer;
-  font-weight: 500;
-}
+    .drawer-item {
+      font-size: 18px;
+      padding: 15px 0;
+      border-bottom: 1px solid #A7C7E7;
+      color: #2F4F6E;
+      cursor: pointer;
+      font-weight: 500;
+    }
 
-.logout {
-  color: #C62828;
-  border-bottom-color: #C62828;
-}
+    .logout {
+      color: #C62828;
+      border-bottom-color: #C62828;
+    }
 
-#drawer-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.3);
-  display: none;
-  z-index: 1000;
-}
+    #drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.3);
+      display: none;
+      z-index: 1000;
+    }
 
-#drawer-overlay.show {
-  display: block;
-}
+    #drawer-overlay.show {
+      display: block;
+    }
 
-#drawer.show {
-  left: 0;
-}
-
-#modal-confirm {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-}
-
-#modal-confirm-content {
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  text-align: center;
-  font-size: 18px;
-  color: #333;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  max-width: 300px;
-}
-
-#modal-confirm-content button {
-  margin-top: 15px;
-  margin-right: 10px;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-#confirm-yes {
-  background-color: #4CAF50;
-  color: white;
-}
-
-#confirm-no {
-  background-color: #F44336;
-  color: white;
-}
-
+    #drawer.show {
+      left: 0;
+    }
   </style>
 </head>
 
@@ -280,7 +245,7 @@
       <span class="header-title">Materias</span>
     </div>
     <div class="user-section" id="user-section">
-      <span>👤</span> <span id="nombre-usuario"></span>
+      <span>👤</span> <span id="nombre-usuario-text"></span>
     </div>
   </header>
 
@@ -293,14 +258,6 @@
       <div class="drawer-item" onclick="navigateTo('home-alumno.html')">🏠 Materias</div>
     </div>
     <div class="drawer-item logout" onclick="logout()">📤 Cerrar sesión</div>
-  </div>
-
-  <div id="modal-confirm">
-    <div id="modal-confirm-content">
-      ¿Deseas cerrar sesión?<br>
-      <button id="confirm-yes">Sí</button>
-      <button id="confirm-no">No</button>
-    </div>
   </div>
 
   <script>
@@ -364,6 +321,16 @@
           header.textContent = nombreMateria;
 
           card.appendChild(header);
+
+          const gif = document.createElement('img');
+          gif.src = './img/leer.gif';  // ruta correcta según estructura
+          gif.alt = 'Leer';
+          gif.className = 'card-gif';
+          card.appendChild(gif);
+
+
+          card.appendChild(gif);
+
           container.appendChild(card);
         });
       } catch (error) {
@@ -405,51 +372,23 @@
       window.location.href = 'perfil.html';
     };
 
-    const modalConfirm = document.getElementById('modal-confirm');
-    const confirmYes = document.getElementById('confirm-yes');
-    const confirmNo = document.getElementById('confirm-no');
-
-    window.addEventListener('popstate', () => {
-      modalConfirm.style.display = 'flex';
-    });
-
-    confirmYes.onclick = () => {
-      localStorage.clear();
-      window.location.href = 'index.html';
-    };
-
-    confirmNo.onclick = () => {
-      modalConfirm.style.display = 'none';
-      history.pushState(null, '', location.href);
-    };
-
-    history.pushState(null, '', location.href);
-
-    async function cargarPerfil() {
-      const token = localStorage.getItem('accessToken');
-      if (!token) {
-        window.location.href = 'index.html';
-        return;
-      }
-      try {
-        const res = await fetch('https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/users/perfil', {
-          method: 'GET',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const { usuario } = await res.json();
-        document.getElementById('nombre-usuario').textContent = usuario.nombreUsuario || 'Usuario';
-      } catch (error) {
-        console.error(error);
-        window.location.href = 'index.html';
-      }
-    }
-
     document.addEventListener('DOMContentLoaded', async () => {
-      await cargarPerfil();
-
+      // Puedes cargar el nombre usuario aquí si tienes API o token con info
       const token = localStorage.getItem('accessToken');
-      const userId = getUserIdFromToken(token);
+      if (token) {
+        try {
+          const payload = token.split('.')[1];
+          const decoded = atob(payload);
+          const obj = JSON.parse(decoded);
+          document.getElementById('nombre-usuario-text').textContent = obj.nombre || obj.name || 'Usuario';
+        } catch {
+          document.getElementById('nombre-usuario-text').textContent = 'Usuario';
+        }
+      } else {
+        document.getElementById('nombre-usuario-text').textContent = 'Invitado';
+      }
 
+      const userId = getUserIdFromToken(token);
       if (!userId) {
         alert('Usuario no autenticado');
         window.location.href = 'index.html';
