@@ -67,7 +67,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'TutorIA'
+          app-name: 'TutorIA1'
           slot-name: 'Production'
           package: .
           
