@@ -7,10 +7,10 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",
-    "start": "npm run web",
+    "start": "node simple-server.js",
+    "build": "webpack --mode production",
     "test": "jest",
-    "web": "webpack serve --mode development",
-    "build": "webpack --mode production"
+    "web": "webpack serve --mode development"
   },
   "dependencies": {
     "@iconify/icons-mdi": "^1.2.48",
@@ -20,6 +20,7 @@
     "@react-navigation/stack": "^7.3.2",
     "ajv": "^8.17.1",
     "ajv-keywords": "^5.1.0",
+    "http-server": "^14.1.1",
     "react": "19.0.0",
     "react-dom": "^19.0.0",
     "react-native": "0.78.1",
