@@ -19,8 +19,14 @@ const mimeTypes = {
 http.createServer((req, res) => {
   console.log(`Request: ${req.url}`);
 
-  let filePath = path.join(__dirname, 'dist', req.url === '/' ? 'index.html' : req.url);
+  // Extraer la ruta sin los parámetros de la consulta (query parameters)
+  let filePath = path.join(__dirname, 'dist', req.url.split('?')[0] === '/' ? 'index.html' : req.url.split('?')[0]);
   let ext = path.extname(filePath);
+
+  // Extraer parámetros de la consulta (si los hay)
+  let urlParams = new URLSearchParams(req.url.split('?')[1]);
+
+  console.log("Query Parameters:", Object.fromEntries(urlParams));
 
   fs.exists(filePath, exists => {
     if (!exists) {
