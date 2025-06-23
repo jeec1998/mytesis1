@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -48,7 +49,7 @@
       transition: background 0.3s;
     }
 
-   
+
 
     main {
       padding: 30px;
@@ -74,45 +75,64 @@
       background-color: #07376c;
     }
 
-   #materiaForm {
-  display: none;
-  flex-direction: column;
-  gap: 12px;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  max-width: 40%;
-  margin-bottom: 30px;
-  margin: 0 auto; /* Centra el formulario */
-}
+    #materiaForm {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 40%;
+      margin-bottom: 30px;
+      margin: 0 auto;
+      align-items: center;
+      /* Centra el formulario */
+    }
 
-@media (max-width: 1200px) {
-  #materiaForm {
-    max-width: 60%; /* Ajusta el tamaño en pantallas más grandes */
-  }
-}
+    @media (max-width: 1200px) {
+      #materiaForm {
+        max-width: 60%;
+        /* Ajusta el tamaño en pantallas más grandes */
+      }
+    }
 
-@media (max-width: 768px) {
-  #materiaForm {
-    max-width: 80%; /* Aumenta el ancho en pantallas medianas */
-  }
-}
+    @media (max-width: 768px) {
+      #materiaForm {
+        max-width: 80%;
+        /* Aumenta el ancho en pantallas medianas */
+      }
+    }
 
-@media (max-width: 480px) {
-  #materiaForm {
-    max-width: 90%; /* Ajusta el formulario a pantallas pequeñas */
-  }
-}
+    @media (max-width: 480px) {
+      #materiaForm {
+        max-width: 90%;
+        /* Ajusta el formulario a pantallas pequeñas */
+      }
+    }
 
 
-    #materiaForm input {
+    #materiaForm input[type="text"],
+    #materiaForm select {
       width: 100%;
       padding: 10px;
       margin-bottom: 10px;
       border-radius: 6px;
       border: 1px solid #ccc;
     }
+    
+    /* --- NUEVO ESTILO PARA LOS SELECTS --- */
+    .select-group {
+        display: flex;
+        gap: 10px;
+    }
+
+    .select-group select {
+        flex-grow: 1;
+        margin-bottom: 0;
+    }
+    /* --- FIN NUEVO ESTILO --- */
+
 
     .botones-form {
       display: flex;
@@ -231,6 +251,46 @@
       right: 20px;
       z-index: 9999;
     }
+
+    #confirmModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    #confirmModal div {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #confirmModal button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #confirmBtn {
+      background-color: #f44336;
+      color: white;
+    }
+
+    #cancelBtn {
+      background-color: #ccc;
+      color: white;
+      margin-left: 10px;
+    }
   </style>
 </head>
 
@@ -249,26 +309,65 @@
     <button id="btnMostrarFormMateria">➕ Agregar Materia</button>
 
     <form id="materiaForm">
-      <input type="text" id="nombreMateria" placeholder="Nombre de la materia" required />
-      <input type="text" id="cursoMateria" placeholder="Curso" required />
-      <div class="botones-form">
-        <button type="submit" id="btnGuardarMateria">Guardar Materia</button>
-        <button type="button" id="btnCancelarMateria">Cancelar</button>
-      </div>
-    </form>
+        <input type="text" id="nombreMateria" placeholder="Nombre de la materia" required />
+        
+        <div class="select-group">
+            <select id="selectCurso" required>
+                <option value="">Seleccione Curso</option>
+                <option value="8">Octavo EGB</option>
+                <option value="9">Noveno EGB</option>
+                <option value="10">Décimo EGB</option>
+                <option value="1">Primero BGU</option>
+                <option value="2">Segundo BGU</option>
+                <option value="3">Tercero BGU</option>
+            </select>
+            <select id="selectParalelo" required>
+                <option value="">Seleccione Paralelo</option>
+                <option value="A">"A"</option>
+                <option value="B">"B"</option>
+                <option value="C">"C"</option>
+                <option value="D">"D"</option>
+                <option value="D">"E"</option>
+                <option value="D">"F"</option>
+                <option value="D">"G"</option>
+                <option value="D">"H"</option>
+                <option value="D">"I"</option>
+              </select>
+        </div>
 
+        <input type="hidden" id="idCursoMateria" name="idCursoMateria">
+
+        <div class="botones-form">
+            <button type="submit" id="btnGuardarMateria">Guardar Materia</button>
+            <button type="button" id="btnCancelarMateria">Cancelar</button>
+        </div>
+    </form>
     <div class="cards-container" id="materiasContainer"></div>
+    <div id="confirmModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; z-index: 1000;">
+      <div style="background-color: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <h3>¿Estás seguro de eliminar esta materia?</h3>
+        <div>
+          <button id="confirmBtn" style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">Eliminar</button>
+          <button id="cancelBtn" style="background-color: #ccc; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer;">Cancelar</button>
+        </div>
+      </div>
+    </div>
   </main>
 
   <script>
     const container = document.getElementById('materiasContainer');
-    const API = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/Subjects';
+    const API = 'http://localhost:3000/Subjects';
 
     const btnMostrarFormMateria = document.getElementById('btnMostrarFormMateria');
     const btnCancelarMateria = document.getElementById('btnCancelarMateria');
     const formMateria = document.getElementById('materiaForm');
     const nombreInput = document.getElementById('nombreMateria');
-    const cursoInput = document.getElementById('cursoMateria');
+    
+    // --- NUEVAS CONSTANTES PARA LOS SELECTS ---
+    const selectCurso = document.getElementById('selectCurso');
+    const selectParalelo = document.getElementById('selectParalelo');
+    const idCursoMateriaInput = document.getElementById('idCursoMateria');
+    
     let editandoId = null;
 
     btnMostrarFormMateria.onclick = () => {
@@ -278,11 +377,31 @@
 
     btnCancelarMateria.onclick = () => {
       formMateria.reset();
+      idCursoMateriaInput.value = ''; // Limpiar el campo oculto también
       formMateria.style.display = 'none';
       btnMostrarFormMateria.style.display = 'inline-block';
       editandoId = null;
       document.getElementById('btnGuardarMateria').textContent = 'Guardar Materia';
     };
+
+    // --- NUEVA FUNCIÓN PARA ACTUALIZAR EL ID COMBINADO ---
+    function actualizarIdCursoMateria() {
+        const cursoId = selectCurso.value;
+        const paraleloId = selectParalelo.value;
+
+        if (cursoId && paraleloId) {
+            // Une los valores para crear un ID único. Ejemplo: "1-A"
+            const idCombinado = `${cursoId}-${paraleloId}`;
+            idCursoMateriaInput.value = idCombinado;
+        } else {
+            idCursoMateriaInput.value = ''; // Limpiar si falta alguna selección
+        }
+    }
+
+    // --- AÑADIR LISTENERS A LOS SELECTS ---
+    selectCurso.addEventListener('change', actualizarIdCursoMateria);
+    selectParalelo.addEventListener('change', actualizarIdCursoMateria);
+
 
     function mostrarAlerta(mensaje, tipo = 'success') {
       const alertaContainer = document.getElementById('alertaContainer');
@@ -323,7 +442,7 @@
 
       if (!docenteId) {
         docenteId = localStorage.getItem('userId');
-      
+
       }
 
       return docenteId;
@@ -359,19 +478,20 @@
         container.innerHTML = '<p>Error al cargar materias.</p>';
       }
     }
-function renderMaterias(materias) {
-  container.innerHTML = '';
-  if (materias.length === 0) {
-    container.innerHTML = '<p>No hay materias registradas para este docente.</p>';
-    return;
-  }
 
-  materias.forEach(m => {
-    console.log("Renderizando materia:", m);  // Depuración
-    const card = document.createElement('div');
-    card.className = 'card';
+    function renderMaterias(materias) {
+      container.innerHTML = '';
+      if (materias.length === 0) {
+        container.innerHTML = '<p>No hay materias registradas para este docente.</p>';
+        return;
+      }
 
-    card.innerHTML = `
+      materias.forEach(m => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        // Modificamos el onclick de editar para pasar el valor correcto de `m.curso`
+        card.innerHTML = `
       <div class="card-header">${m.name}</div>
       <div class="card-content">
         <p><strong>📘 Curso:</strong> ${m.curso || 'Sin curso'}</p>
@@ -390,17 +510,24 @@ function renderMaterias(materias) {
         </div>
       </div>
     `;
-    container.appendChild(card);
-  });
-}
+        container.appendChild(card);
+      });
+    }
 
 
     formMateria.onsubmit = async (e) => {
       e.preventDefault();
+      
+      // --- VALIDACIÓN Y USO DEL NUEVO ID ---
+      if (!idCursoMateriaInput.value) {
+          mostrarAlerta('Por favor, seleccione un curso y un paralelo.', 'error');
+          return;
+      }
+
       const docenteId = getDocenteIdFromURL();
       const materia = {
         name: nombreInput.value,
-        curso: cursoInput.value,
+        curso: idCursoMateriaInput.value, // Usamos el valor del campo oculto
         createdBy: docenteId
       };
 
@@ -422,10 +549,7 @@ function renderMaterias(materias) {
 
         if (res.ok) {
           mostrarAlerta(editandoId ? 'Materia actualizada correctamente ✅' : 'Materia registrada correctamente ✅');
-          formMateria.reset();
-          formMateria.style.display = 'none';
-          btnMostrarFormMateria.style.display = 'inline-block';
-          editandoId = null;
+          btnCancelarMateria.onclick(); // Llama a la función de cancelar para limpiar y ocultar
           fetchMateriasByDocente();
         } else {
           const error = await res.json();
@@ -437,32 +561,66 @@ function renderMaterias(materias) {
       }
     };
 
-function editarMateria(id, nombre, curso) {
-  console.log("Editando materia:", id, nombre, curso);
-  nombreInput.value = nombre;
-  cursoInput.value = curso;
-  editandoId = id;
-  formMateria.style.display = 'flex';  // Asegúrate de que este código funcione correctamente
-  btnMostrarFormMateria.style.display = 'none';
-  document.getElementById('btnGuardarMateria').textContent = 'Actualizar Materia';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+    // --- FUNCIÓN EDITAR MODIFICADA ---
+    function editarMateria(id, nombre, curso) {
+        nombreInput.value = nombre;
+        editandoId = id;
+        
+        // Separar el ID combinado (ej: "1-A") y seleccionar las opciones correctas
+        if (curso && curso.includes('-')) {
+            const [cursoVal, paraleloVal] = curso.split('-');
+            selectCurso.value = cursoVal;
+            selectParalelo.value = paraleloVal;
+        } else {
+            // Si no hay curso o no tiene el formato esperado, limpiar selects
+            selectCurso.value = '';
+            selectParalelo.value = '';
+        }
+        
+        // Actualizar el valor del input oculto
+        actualizarIdCursoMateria();
 
-
-
-
-    function eliminarMateria(id) {
-      if (!confirm('¿Estás seguro de eliminar esta materia?')) return;
-      fetch(`${API}/admin/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders()
-      })
-        .then(res => res.ok ? fetchMateriasByDocente() : mostrarAlerta('No se pudo eliminar', 'error'))
-        .catch(err => {
-          mostrarAlerta('Error de conexión', 'error');
-          console.error(err);
-        });
+        formMateria.style.display = 'flex';
+        btnMostrarFormMateria.style.display = 'none';
+        document.getElementById('btnGuardarMateria').textContent = 'Actualizar Materia';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    async function eliminarMateria(id) {
+      const confirmModal = document.getElementById('confirmModal');
+      const confirmBtn = document.getElementById('confirmBtn');
+      const cancelBtn = document.getElementById('cancelBtn');
+
+      confirmModal.style.display = 'flex';
+
+      confirmBtn.onclick = async () => {
+        try {
+          const res = await fetch(`${API}/admin/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+          });
+
+          if (res.ok) {
+            mostrarAlerta('Materia eliminada correctamente ✅');
+            fetchMateriasByDocente();
+          } else {
+            mostrarAlerta('Error al eliminar Materia ❌', 'error');
+          }
+
+          confirmModal.style.display = 'none';
+
+        } catch (err) {
+          console.error('Error al eliminar la materia', err);
+          mostrarAlerta('Error en la conexión o al realizar la acción', 'error');
+          confirmModal.style.display = 'none';
+        }
+      };
+
+      cancelBtn.onclick = () => {
+        confirmModal.style.display = 'none';
+      };
+    }
+
 
     function agregarTemas(materiaId) {
       window.location.href = `agregar-temas.html?materiaId=${materiaId}`;
@@ -474,16 +632,15 @@ function editarMateria(id, nombre, curso) {
       let nombre = params.get('nombre');
 
       if (!docenteId || !nombre) {
-        // 🔥 Si no existen en URL, usamos el LocalStorage
         docenteId = localStorage.getItem('userId');
-        nombre = localStorage.getItem('userEmail'); // o 'userNombre' si guardas nombre real
+        nombre = localStorage.getItem('userEmail'); 
       }
 
       if (docenteId && nombre) {
         window.location.href = `agregar-recursos.html?materiaId=${materiaId}&docenteId=${docenteId}&nombre=${encodeURIComponent(nombre)}`;
       } else {
         alert('No se encontró información del docente.');
-        window.location.href = 'home.html'; // 🔥 Mejor regresar al home del docente
+        window.location.href = 'home.html'; 
       }
     }
 
@@ -505,3 +662,4 @@ function editarMateria(id, nombre, curso) {
   </script>
 </body>
 </html>
+```

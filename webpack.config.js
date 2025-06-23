@@ -93,6 +93,13 @@ module.exports = {
           from: path.resolve(__dirname, 'web/actividad.html'),
           to: 'actividad.html',
         },
+        {
+          from: path.resolve(__dirname, 'web/alumnosagregaradmin.html'),
+          to: 'alumnosagregaradmin.html',
+        },{
+           from: path.resolve(__dirname, 'web/recursosgenerador.html'),
+          to: 'recursosgenerador.html',
+        },
           {
       from: path.resolve(__dirname, 'web/img'),  // carpeta con tus imágenes
       to: 'img',                                // destino en la carpeta dist

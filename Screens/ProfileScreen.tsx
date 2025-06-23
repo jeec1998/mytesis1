@@ -47,7 +47,7 @@ const ProfileScreen: React.FC<Props> = ({ navigation, onLogout }) => {
       const token = await AsyncStorage.getItem('accessToken');
       if (!token) throw new Error('Token no disponible');
 
-      const res = await fetch(`https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/users/perfil`, {
+      const res = await fetch(`http://localhost:3000/users/perfil`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ const ProfileScreen: React.FC<Props> = ({ navigation, onLogout }) => {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/users/actualizar`, {
+      const res = await fetch(`http://localhost:3000/users/actualizar`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

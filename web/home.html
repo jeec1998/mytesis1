@@ -233,6 +233,45 @@
       right: 20px;
       z-index: 9999;
     }
+       #confirmModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+#confirmModal div {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#confirmModal button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#confirmBtn {
+  background-color: #f44336;
+  color: white;
+}
+
+#cancelBtn {
+  background-color: #ccc;
+  color: white;
+  margin-left: 10px;
+}
   </style>
 </head>
 
@@ -261,11 +300,21 @@
     </form>
 
     <div class="cards-container" id="materiasContainer"></div>
+      <div class="cards-container" id="materiasContainer"></div>
+    <div id="confirmModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; z-index: 1000;">
+  <div style="background-color: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <h3>¿Estás seguro de eliminar esta materia?</h3>
+    <div>
+      <button id="confirmBtn" style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">Eliminar</button>
+      <button id="cancelBtn" style="background-color: #ccc; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer;">Cancelar</button>
+    </div>
+  </div>
+</div>
   </main>
 
   <script>
     const container = document.getElementById('materiasContainer');
-    const API = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/Subjects';
+    const API = 'http://localhost:3000/Subjects';
 
     const btnMostrarFormMateria = document.getElementById('btnMostrarFormMateria');
     const btnCancelarMateria = document.getElementById('btnCancelarMateria');
@@ -361,17 +410,19 @@
           <div class="card-content">
             <p><strong>📘 Curso:</strong> ${m.curso || 'Sin curso'}</p>
             <div class="card-buttons">
+                <div class="card-row">
+                <button onclick="agregarTemas('${m._id}')">📚 Temas</button>
+                <button onclick="agregarRecursos('${m._id}')">🔗 Recursos</button>
+              </div>
+                <div class="card-row single">
+                <button onclick="verEstudiantes('${m._id}')">👥 Estudiantes</button>
+              </div>
               <div class="card-row">
                 <button onclick="editarMateria('${m._id}', '${m.name}', '${m.curso || ''}')">✏️ Editar</button>
                 <button onclick="eliminarMateria('${m._id}')">🗑️ Eliminar</button>
               </div>
-              <div class="card-row">
-                <button onclick="agregarTemas('${m._id}')">📚 Temas</button>
-                <button onclick="agregarRecursos('${m._id}')">🔗 Recursos</button>
-              </div>
-              <div class="card-row single">
-                <button onclick="verEstudiantes('${m._id}')">👥 Estudiantes</button>
-              </div>
+            
+            
             </div>
           </div>
         `;
@@ -431,18 +482,46 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function eliminarMateria(id) {
-      if (!confirm('¿Estás seguro de eliminar esta materia?')) return;
-      fetch(`${API}/${id}`, {
+   async function eliminarMateria(id) {
+  // Mostrar el modal
+  const confirmModal = document.getElementById('confirmModal');
+  const confirmBtn = document.getElementById('confirmBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+
+  confirmModal.style.display = 'flex';  // Mostrar el modal
+
+  // Confirmar la eliminación cuando el usuario hace clic en el botón de eliminar
+  confirmBtn.onclick = async () => {  // Hacerlo async
+    try {
+      const res = await fetch(`${API}/${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders()
-      })
-        .then(res => res.ok ? fetchMateriasByDocente() : mostrarAlerta('No se pudo eliminar', 'error'))
-        .catch(err => {
-          mostrarAlerta('Error de conexión', 'error');
-          console.error(err);
-        });
+      });
+
+      if (res.ok) {
+        mostrarAlerta('Materia eliminada correctamente ✅');
+        fetchMateriasByDocente();  // Recargar las materias después de eliminar
+        // Aquí, puedes realizar una acción adicional si necesitas recargar o actualizar algo en la página
+      } else {
+        mostrarAlerta('Error al eliminar Materia ❌', 'error');
+      }
+
+      // Cerrar el modal después de realizar la acción
+      confirmModal.style.display = 'none';
+
+    } catch (err) {
+      // Manejo de errores si la solicitud falla
+      console.error('Error al eliminar la materia', err);
+      mostrarAlerta('Error en la conexión o al realizar la acción', 'error');
+      confirmModal.style.display = 'none';
     }
+  };
+
+  // Cancelar la eliminación cuando el usuario hace clic en el botón de cancelar
+  cancelBtn.onclick = () => {
+    confirmModal.style.display = 'none';  // Cerrar el modal
+  };
+}
 
     function agregarTemas(materiaId) {
       window.location.href = `agregar-temas.html?materiaId=${materiaId}`;

@@ -67,7 +67,7 @@ const ActividadesScreen: React.FC<Props> = ({ navigation }) => {
         }
 
         const res = await fetch(
-          `https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/academic-support/${userId}`,
+          `http://localhost:3000/academic-support/${userId}`,
           {
             method: 'GET',
             headers: {

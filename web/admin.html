@@ -23,7 +23,7 @@
     }
 
     nav {
-      background-color: #0c407a;
+      background-color: #07376C;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -49,7 +49,6 @@
       font-size: 18px;
     }
 
-
     main {
       padding: 30px;
       max-width: 100%;
@@ -70,7 +69,7 @@
       border-radius: 6px;
       font-weight: bold;
       cursor: pointer;
-      margin: 20px auto 0 auto;
+      margin: auto auto 0 auto;
       display: block;
       align-items: center;
     }
@@ -86,11 +85,11 @@
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       margin-bottom: 20px;
-      display: flex;
+      display: none; /* Formulario oculto inicialmente */
       flex-direction: column;
       gap: 12px;
       align-items: center;
-    margin: 0 auto;
+      margin: 0 auto;
     }
 
     form input {
@@ -108,7 +107,7 @@
       padding: 10px 16px;
       font-size: 14px;
       cursor: pointer;
-      margin-top: 15px ;
+      margin-top: 15px;
     }
 
     form button:hover {
@@ -139,7 +138,7 @@
       justify-content: center;
       align-items: center;
       align-content: center;
-      margin-top: 20px
+      margin-top: 20px;
     }
 
     table {
@@ -299,7 +298,6 @@
       }
     }
 
-
     @media (max-width: 510px) {
 
       /* Ajustar el tamaño de la tabla */
@@ -384,6 +382,47 @@
         align-items: center;
       }
     }
+ #confirmDocenteModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+#confirmDocenteModal div {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#confirmDocenteModal button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#confirmDocenteBtn {
+  background-color: #f44336;
+  color: white;
+}
+
+#cancelDocenteBtn {
+  background-color: #ccc;
+  color: white;
+  margin-left: 10px;
+}
+
+
   </style>
 </head>
 
@@ -394,35 +433,53 @@
   <nav>
     <div class="logo">Panel</div>
     <ul>
+      <li><a href="alumnosagregaradmin.html">Alumnos</a></li>
       <li><a href="perfil.html">Perfil</a></li>
     </ul>
   </nav>
 
   <main>
    <h2 id="tituloForm">Docentes</h2>
-    <div class="buscarContainer">
-      <input type="text" id="buscadorDocente" placeholder="Buscar docente por nombre...">
-    </div>
-    <div id="docentesContainer"></div>
-     
     <button id="btnMostrarForm">➕ Agregar Docente</button>
-
-    <form id="formDocente">
+     <form id="formDocente" style="display: none;">
       <input type="text" id="nombreDocente" placeholder="Nombre completo" required>
       <input type="email" id="emailDocente" placeholder="Correo electrónico" required>
       <input type="text" id="telefonoDocente" placeholder="+593 968144760" required />
       <div class="botones-form">
         <button type="submit" id="btnGuardar">Guardar Docente</button>
-        <button type="button" id="btnCancelar" style="background-color: gray; display: none;">Cancelar</button>
+        <button type="button" id="cancelarBtn" style="background-color: gray; display: none;">Cancelar</button>
       </div>
     </form>
-  </main>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.6/inputmask.min.js"></script>
-  <script>
-    const API_USERS = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/users';
-    let todosLosDocentes = [];
-    let editandoId = null;
+    <div class="buscarContainer">
+      <input type="text" id="buscadorDocente" placeholder="Buscar docente por nombre...">
+    </div>
+    <div id="docentesContainer"></div>
+<!-- Modal de Confirmación para eliminar docente -->
+<div id="confirmDocenteModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; z-index: 1000;">
+  <div style="background-color: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <h3>¿Estás seguro de eliminar este docente?</h3>
+    <div>
+      <button id="confirmDocenteBtn" style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">Eliminar</button>
+      <button id="cancelDocenteBtn" style="background-color: #ccc; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer;">Cancelar</button>
+    </div>
+  </div>
+</div>
 
+   
+  </main>
+
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.6/inputmask.min.js"></script>
+  <script>
+    const API_USERS = 'http://localhost:3000/users';
+    let todosLosDocentes = [];
+    let editandoId = null;  // Este id servirá para verificar si estamos editando o creando un docente
+
+    const cancelarBtn = document.getElementById('cancelarBtn');
+    const btnMostrarForm = document.getElementById('btnMostrarForm');
+    const form = document.getElementById('formDocente');
+    const btnGuardar = document.getElementById('btnGuardar');
+
+    // Mostrar alerta
     function mostrarAlerta(mensaje, tipo = 'success') {
       const alertaContainer = document.getElementById('alertaContainer');
       const alerta = document.createElement('div');
@@ -450,11 +507,13 @@
       }, 100);
     }
 
+    // Get Authorization Headers
     function getAuthHeaders() {
       const token = localStorage.getItem('accessToken');
       return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
     }
 
+    // Fetch docentes
     async function fetchDocentes() {
       const res = await fetch(API_USERS, { method: 'GET', headers: getAuthHeaders() });
       const data = await res.json();
@@ -462,6 +521,7 @@
       renderTablaDocentes(todosLosDocentes);
     }
 
+    // Render tabla de docentes
     function renderTablaDocentes(docentes) {
       const container = document.getElementById('docentesContainer');
       if (!docentes.length) {
@@ -477,7 +537,7 @@
         <button class="action" onclick="verMateriasDocente('${doc._id}', '${doc.name}')">📘 Ver Materias</button>
         <button class="action" onclick="editarDocente('${doc._id}')">✏️ Editar</button>
         <button class="action" onclick="eliminarDocente('${doc._id}')">🗑️ Eliminar</button>
-        <button onclick="restablecerContrasenaDocente('${doc._id}')" classs= "action"style="background-color:#F4A261; color:white; border:none; padding:6px 12px; border-radius:6px;">🔑 Restablecer Contraseña</button>
+        <button onclick="restablecerContrasenaDocente('${doc._id}')" class="action" style="background-color:#F4A261; color:white; border:none; padding:6px 12px; border-radius:6px;">🔑 Restablecer Contraseña</button>
       </td>
     </tr>`;
       });
@@ -485,52 +545,82 @@
       container.innerHTML = html;
     }
 
+    // Ver materias de docente
     function verMateriasDocente(id, nombre) {
       window.location.href = `materias-docentes.html?docenteId=${id}&nombre=${encodeURIComponent(nombre)}`;
     }
 
-    async function eliminarDocente(id) {
-      if (!confirm('¿Seguro que quieres eliminar este docente?')) return;
-      const res = await fetch(`${API_USERS}/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
-      if (res.ok) {
-        mostrarAlerta('Docente eliminado correctamente ✅');
-        fetchDocentes();
-      } else {
-        mostrarAlerta('Error al eliminar docente ❌', 'error');
-      }
+    // Eliminar docente
+  async function eliminarDocente(id) {
+  // Mostrar el modal
+  const confirmModal = document.getElementById('confirmDocenteModal');
+  const confirmBtn = document.getElementById('confirmDocenteBtn');
+  const cancelBtn = document.getElementById('cancelDocenteBtn');
+
+  confirmModal.style.display = 'flex';  // Mostrar el modal
+
+  // Confirmar la eliminación cuando el usuario hace clic en el botón de eliminar
+  confirmBtn.onclick = async () => {
+    const res = await fetch(`${API_USERS}/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+
+    if (res.ok) {
+      mostrarAlerta('Docente eliminado correctamente ✅');
+      fetchDocentes();
+    } else {
+      mostrarAlerta('Error al eliminar docente ❌', 'error');
     }
 
+    // Cerrar el modal después de realizar la acción
+    confirmModal.style.display = 'none';
+  };
+
+  // Cancelar la eliminación cuando el usuario hace clic en el botón de cancelar
+  cancelBtn.onclick = () => {
+    confirmModal.style.display = 'none';  // Cerrar el modal
+  };
+}
+
+    // Editar docente
     async function editarDocente(id) {
       const res = await fetch(`${API_USERS}/${id}`, { method: 'GET', headers: getAuthHeaders() });
       if (res.ok) {
         const docente = await res.json();
+        // Rellenar el formulario con los datos del docente
         document.getElementById('nombreDocente').value = docente.name;
         document.getElementById('emailDocente').value = docente.email;
         document.getElementById('telefonoDocente').value = docente.telefono;
-        editandoId = docente._id;
-        mostrarFormulario(true);
+
+        // Mostrar el formulario y cambiar el botón
+        form.style.display = 'flex';
+        btnMostrarForm.style.display = 'none';
+        cancelarBtn.style.display = 'inline-block';
+         btnMostrarForm.style.margin = '20px auto 0 auto'; 
+
+        // Cambiar el texto del botón
+        btnGuardar.textContent = 'Actualizar Docente';
+        editandoId = docente._id;  // Guardar el ID del docente que estamos editando
       }
     }
 
-    function mostrarFormulario(editando = false) {
-      document.getElementById('formDocente').style.display = 'flex';
-      document.getElementById('btnMostrarForm').style.display = 'none';
-      document.getElementById('btnCancelar').style.display = 'inline-block';
-      document.getElementById('btnGuardar').textContent = editando ? 'Actualizar ' : 'Guardar ';
-    }
 
-    function ocultarFormulario() {
-      document.getElementById('formDocente').reset();
-      document.getElementById('formDocente').style.display = 'none';
-      document.getElementById('btnMostrarForm').style.display = 'inline-block';
-      document.getElementById('btnCancelar').style.display = 'none';
+    // Mostrar formulario
+    btnMostrarForm.onclick = () => {
+      form.style.display = 'flex';
+      btnMostrarForm.style.display = 'none';
+      cancelarBtn.style.display = 'inline-block';
+    };
+
+    // Cancelar formulario
+    cancelarBtn.addEventListener('click', () => {
+      form.style.display = 'none';
+      btnMostrarForm.style.display = 'block';
+      cancelarBtn.style.display = 'none';
       editandoId = null;
-    }
+      btnMostrarForm.style.margin = '20px auto 0 auto';
+    });
 
-    document.getElementById('btnMostrarForm').onclick = () => mostrarFormulario(false);
-    document.getElementById('btnCancelar').onclick = () => ocultarFormulario();
-
-    document.getElementById('formDocente').onsubmit = async (e) => {
+    // Guardar o actualizar docente
+    form.onsubmit = async (e) => {
       e.preventDefault();
       const telefono = document.getElementById('telefonoDocente').value;
 
@@ -540,6 +630,7 @@
         mostrarAlerta('El número de teléfono no es válido. Debe comenzar con +593  seguido de 9 dígitos.', 'error');
         return;
       }
+
       const nuevoDocente = {
         name: document.getElementById('nombreDocente').value,
         email: document.getElementById('emailDocente').value,
@@ -553,16 +644,21 @@
 
       if (res.ok) {
         const createdDocente = await res.json();  // Aquí obtenemos la respuesta del servidor
-
         mostrarAlerta(editandoId ? 'Docente actualizado correctamente ✅' : 'Docente registrado exitosamente ✅');
-        ocultarFormulario();
+        form.reset();
+        form.style.display = 'none';
+        btnMostrarForm.style.display = 'inline-block';
+         editandoId = null;  // Reseteamos el ID de edición
+         btnGuardar.textContent = 'Guardar Docente';  // Reseteamos el texto del botón
+        cancelarBtn.style.display = 'none';
+         btnMostrarForm.style.margin = '20px auto 0 auto'; 
         fetchDocentes();
 
         // Verificamos si la respuesta contiene un enlace para WhatsApp
         if (createdDocente.link) {
           mostrarPopupWhatsapp(createdDocente.link);  // Si hay un enlace, mostramos el popup
         } else {
-          mostrarAlerta('Usuario creado sin teléfono o enlace de WhatsApp', 'warning');
+          /* mostrarAlerta('Usuario creado sin teléfono o enlace de WhatsApp', 'warning'); */
         }
 
       } else {
@@ -571,12 +667,13 @@
       }
     };
 
-
+    // Buscar docente
     document.getElementById('buscadorDocente').addEventListener('input', function () {
       const termino = this.value.toLowerCase();
       const filtrados = todosLosDocentes.filter(docente => docente.name.toLowerCase().includes(termino));
       renderTablaDocentes(filtrados);
     });
+
     async function restablecerContrasenaDocente(id) {
       if (!confirm("¿Seguro que deseas restablecer la contraseña? Se generará una nueva automáticamente.")) return;
 
@@ -588,9 +685,7 @@
 
         if (res.ok) {
           const data = await res.json();
-
           if (data.link) {
-
             mostrarPopupWhatsapp(data.link);
           } else {
             mostrarAlerta('Contraseña restablecida correctamente ✅');
@@ -609,17 +704,19 @@
       const mensaje = `Hola, mi nombre de usuario es: ${nombreUsuario} y mi nueva contraseña es: ${password}`;
       return `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
     }
+
     function mostrarPopupWhatsapp(link) {
       const popup = document.getElementById('popupWhatsapp');
       const popupBtn = document.getElementById('popupWhatsappBtn');
-      popupBtn.href = link; // Asigna el enlace al botón del popup
-      popup.style.display = 'flex'; // Muestra el popup
+      popupBtn.href = link;
+      popup.style.display = 'flex';  // Muestra el popup
 
       popupBtn.onclick = () => {
-        popup.style.display = 'none'; // Oculta el popup al hacer clic en el enlace
-        return true; // Permite que el enlace abra en una nueva pestaña
+        popup.style.display = 'none';  // Oculta el popup al hacer clic en el enlace
+        return true;  // Permite que el enlace abra en una nueva pestaña
       };
     }
+
     // Aplicando máscara de entrada
     window.onload = function () {
       const input = document.getElementById('telefonoDocente');
@@ -629,8 +726,10 @@
       });
       im.mask(input);
     };
+
     fetchDocentes();
   </script>
+
   <div id="popupWhatsapp"
     style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:10000;">
     <div
@@ -645,5 +744,4 @@
   </div>
 
 </body>
-
 </html>
