@@ -468,7 +468,7 @@
    
   </main>
 
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.6/inputmask.min.js"></script>
+  <script src="https://unpkg.com/imask"></script>
   <script>
     const API_USERS = 'http://localhost:3000/users';
     let todosLosDocentes = [];
@@ -718,14 +718,35 @@
     }
 
     // Aplicando máscara de entrada
-    window.onload = function () {
-      const input = document.getElementById('telefonoDocente');
-      const im = new Inputmask({
-        "mask": "+593 9{8}",
-        "numericInput": true
-      });
-      im.mask(input);
-    };
+      document.addEventListener('DOMContentLoaded', function () {
+
+            // 3. Seleccionar el elemento
+            const elementoTelefono = document.getElementById('telefonoDocente');
+
+            // 4. Definir las opciones de la máscara de forma muy intuitiva
+            const opcionesMascara = {
+                mask: '+{593}900000000', // El '0' es un comodín para un dígito
+                lazy: false // La máscara se muestra desde el inicio
+            };
+            
+            // 5. Aplicar la máscara
+            const mascara = IMask(elementoTelefono, opcionesMascara);
+
+            // --- Cómo validar usando IMask.js ---
+            function validarTelefono() {
+                // El método 'isComplete' te dice si todos los caracteres fueron ingresados
+                if (mascara.masked.isComplete) {
+                    // El valor sin máscara se obtiene con 'unmaskedValue'
+                    console.log('Número completo y válido:', mascara.value);
+                    console.log('Valor sin máscara:', mascara.unmaskedValue);
+                    // Aquí iría tu lógica si el teléfono es válido
+                } else {
+                    console.log('Número incompleto.');
+                     // Aquí muestras tu alerta de error
+                }
+            }
+             // Puedes llamar a la función validarTelefono() cuando envíes el formulario
+        });
 
     fetchDocentes();
   </script>

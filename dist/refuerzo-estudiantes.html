@@ -188,7 +188,8 @@
   <nav>
     <div class="logo">Calificaciones</div>
     <ul>
-      <li><a href="javascript:history.back()">← Volver</a></li>
+      <li><a href="javascript:history.back()">Volver</a></li>
+       <li><a href="perfil.html">Perfil</a></li>
     </ul>
   </nav>
 
@@ -226,6 +227,7 @@
     <div style="text-align: center; margin-top: 20px;">
       <button id="enviarBtn">Enviar Calificaciones</button>
        <button id="refuerzoBtn">Generar Refuerzo</button>
+      
     </div>
   </main>
   <script>
@@ -263,6 +265,7 @@
 
         if (res.ok) {
           const materias = await res.json(); // Obtenemos las materias
+          console.log('Materias cargadas:', materias); // Para depuración
           renderMaterias(materias); // Aquí renderizamos las materias en el select
         } else {
           throw new Error('No se pudieron cargar las materias.');
@@ -302,6 +305,7 @@
       try {
         const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` };
         const res = await fetch(`${API_TOPICS}/materia/${materiaId}`, { headers });
+        console.log('Cargando temas para la materia:', materiaId); // Para depuración
         listaTopics = await res.json();
         const topicSelect = document.getElementById('topicSelect');
 
@@ -483,12 +487,13 @@
           if (response.ok) {
             const responseData = await response.json();
             console.log('Calificaciones enviadas:', responseData);
+            mostrarAlerta(`Calificaciones enviadas correctamente` );
           } else {
             throw new Error('Error al enviar las calificaciones para el estudiante ' + alumnoId);
           }
         } catch (error) {
           console.error('Error:', error);
-          alert(`Hubo un error al enviar las calificaciones para el estudiante ${alumnoId}`);
+          mostrarAlerta(`Hubo un error al enviar las calificaciones para el estudiante ${alumnoId}`);
         }
       });
     }
@@ -512,12 +517,12 @@
     console.log('Respuesta del servidor:', data);
 
     // Aquí puedes actualizar la UI con los datos recibidos
-    alert('Refuerzo académico generado correctamente');
+    mostrarAlerta('Refuerzo académico generado correctamente');
     // Por ejemplo mostrar data.data en algún lugar de la página
 
   } catch (error) {
     console.error('Error al generar refuerzo académico:', error);
-    alert('Hubo un error al generar el refuerzo académico');
+    mostrarAlerta('Hubo un error al generar el refuerzo académico');
   }
 }
 
@@ -526,6 +531,7 @@
     document.getElementById('enviarBtn').addEventListener('click', sendGrades);
     // Asociamos el evento al botón de enviar Refuerzo
     document.getElementById('refuerzoBtn').addEventListener('click', sendRefuerzo);
+      
 
 
     // Cargar materias al inicio

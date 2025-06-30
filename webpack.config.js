@@ -101,12 +101,17 @@ module.exports = {
           to: 'recursosgenerador.html',
         },
           {
+      from: path.resolve(__dirname, 'web/recursosasignadosestudiante.html'),  // carpeta con tus imágenes
+      to: 'recursosasignadosestudiante.html',                                // destino en la carpeta dist
+    },
+    {
       from: path.resolve(__dirname, 'web/img'),  // carpeta con tus imágenes
       to: 'img',                                // destino en la carpeta dist
     },
       ],
     }),
   ],
+  
  devServer: {
     static: {
       directory: path.join(__dirname, 'dist'),

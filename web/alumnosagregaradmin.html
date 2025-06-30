@@ -7,70 +7,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Registrar Alumno</title>
     <style>
-      * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
 
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: white;
-      color: #333;
-    }
-
-   
-    nav {
-      background-color: #07376C;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 24px;
-    }
-
-    nav .logo {
-      color: white;
-      font-size: 22px;
-      font-weight: bold;
-    }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-    }
-
-    nav ul li a {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 18px;
-    }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: white;
+            color: #333;
+        }
 
 
-    main {
-      padding: 30px;
-      max-width: 100%;
-      margin: auto;
-      align-items: center;
-    }
- #estiloCheckboxes {
-            display: flex; /* 1. Convierte el div en un contenedor flexible */
-            flex-direction: column; /* 2. Apila los elementos verticalmente */
-            gap: 12px; /* 3. Añade espacio entre cada línea (reemplaza a <br>) */
-            font-family: sans-serif; /* Estilo opcional para que se vea mejor */
+        nav {
+            background-color: #07376C;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 24px;
+        }
+
+        nav .logo {
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+
+        main {
+            padding: 30px;
+            max-width: 100%;
+            margin: auto;
+            align-items: center;
+        }
+
+        #estiloCheckboxes {
+            display: flex;
+            /* 1. Convierte el div en un contenedor flexible */
+            flex-direction: column;
+            /* 2. Apila los elementos verticalmente */
+            gap: 12px;
+            /* 3. Añade espacio entre cada línea (reemplaza a <br>) */
+            font-family: sans-serif;
+            /* Estilo opcional para que se vea mejor */
             font-size: 16px;
             margin-left: 35%;
-          
+
         }
 
         /* Estilo para cada etiqueta que contiene un checkbox */
         #estiloCheckboxes label {
-            display: flex; /* 4. Convierte cada label en un contenedor flexible */
-            align-items: center; /* 5. ¡Esta es la clave! ALINEA VERTICALMENTE el checkbox y el texto */
-            gap: 8px; /* 6. Crea un espacio entre el checkbox y su texto */
-            cursor: pointer; /* Mejora la experiencia de usuario */
+            display: flex;
+            /* 4. Convierte cada label en un contenedor flexible */
+            align-items: center;
+            /* 5. ¡Esta es la clave! ALINEA VERTICALMENTE el checkbox y el texto */
+            gap: 8px;
+            /* 6. Crea un espacio entre el checkbox y su texto */
+            cursor: pointer;
+            /* Mejora la experiencia de usuario */
         }
 
         /* Opcional: Aumenta ligeramente el tamaño del checkbox */
@@ -78,6 +87,8 @@
             width: 18px;
             height: 18px;
         }
+
+     
         h2 {
             color: #07376c;
             margin-bottom: 20px;
@@ -138,18 +149,18 @@
             background-color: #07376c;
         }
 
-       table {
-      width: 100%;
-      margin: 0 auto;
-      border-collapse: collapse;
-      background-color: white;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      overflow: hidden;
-      table-layout: fixed;
-      align-items: center;
-      /* Hace que las celdas de la tabla tengan un ancho fijo */
-    }
+        table {
+            width: 100%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            table-layout: fixed;
+            align-items: center;
+            /* Hace que las celdas de la tabla tengan un ancho fijo */
+        }
 
         th,
         td {
@@ -220,9 +231,48 @@
             form,
             .table-container {
                 width: 100%;
-                
+
             }
         }
+            #confirmModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    #confirmModal div {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #confirmModal button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #confirmBtn {
+      background-color: #f44336;
+      color: white;
+    }
+
+    #cancelBtn {
+      background-color: #ccc;
+      color: white;
+      margin-left: 10px;
+    }
     </style>
 </head>
 
@@ -232,10 +282,10 @@
 
     <nav>
         <div class="logo">Panel</div>
-           <ul>
-      <li><a href="admin.html">Docentes</a></li>
-      <li><a href="perfil.html">Perfil</a></li>
-    </ul>
+        <ul>
+            <li><a href="admin.html">Docentes</a></li>
+            <li><a href="perfil.html">Perfil</a></li>
+        </ul>
     </nav>
     <main>
         <h2 id="tituloFormulario">Alumnos</h2>
@@ -252,7 +302,8 @@
                 <label><input type="checkbox" name="estilo" value="activo" /> Activo</label><br />
                 <label><input type="checkbox" name="estilo" value="reflexivo" /> Reflexivo</label><br />
                 <label><input type="checkbox" name="estilo" value="teorico" /> Teórico</label><br />
-                <label><input type="checkbox" name="estilo" value="pragmatico" /> Pragmático</label>
+                <label><input type="checkbox" name="estilo" value="pragmatico" /> Pragmático</label><br />
+                <label><input type="checkbox" name="estilo1" value="NEE" id="checkboxNEE"> NEE</label>
             </div>
             <input type="hidden" id="createbysubject" />
             <div class="form-buttons">
@@ -260,6 +311,16 @@
                 <button type="button" id="cancelarBtn" style="background-color:gray;">Cancelar</button>
             </div>
         </form>
+         <div class="cards-container" id="materiasContainer"></div>
+    <div id="confirmModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; z-index: 1000;">
+      <div style="background-color: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <h3>¿Estás seguro de eliminar esta materia?</h3>
+        <div>
+          <button id="confirmBtn" style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">Eliminar</button>
+          <button id="cancelBtn" style="background-color: #ccc; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer;">Cancelar</button>
+        </div>
+      </div>
+    </div>
         <input type="text" id="buscadorAlumno" placeholder="Buscar alumno por nombre..."
             style="width:100%; padding:10px; margin-bottom:20px; border:1px solid #ccc; border-radius:6px;" />
         <div class="table-container">
@@ -280,7 +341,7 @@
     </main>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.6/inputmask.min.js"></script>
+    <script src="https://unpkg.com/imask"></script>
     <script>
         const API = 'http://localhost:3000/users';
         const form = document.getElementById('alumnoForm');
@@ -319,7 +380,13 @@
             }, 4000);
         }
 
+ let isChecked = false; // Cambia esto según lo que desees (true o false)
 
+// Obtenemos el checkbox
+const checkbox = document.getElementById('checkboxNEE');
+
+// Asignamos el estado del checkbox según el valor del booleano
+checkbox.checked = isChecked;
         const params = new URLSearchParams(window.location.search);
         const docenteId = params.get('docenteId');
         const nombreDocente = params.get('nombre');
@@ -362,6 +429,7 @@
                 telefono: document.getElementById('telefono').value,
                 telefonorepresentante: document.getElementById('telefonorepresentante').value,
                 estilo: estilosSeleccionados,
+                var: checkbox.checked ? true : false,
                 role: 'alumno'
             };
 
@@ -557,9 +625,15 @@
         }
         async function eliminarAlumno(id) {
 
+const confirmModal = document.getElementById('confirmModal');
+      const confirmBtn = document.getElementById('confirmBtn');
+      const cancelBtn = document.getElementById('cancelBtn');
 
-            try {
-                const res = await fetch(`${API}/${id}`, {
+      confirmModal.style.display = 'flex';
+
+      confirmBtn.onclick = async () => {
+        try {
+            const res = await fetch(`${API}/${id}`, {
                     method: 'DELETE',
                     headers: getAuthHeaders()
                 });
@@ -571,22 +645,50 @@
                     const error = await res.json();
                     mostrarAlerta(error.message || 'Error al eliminar alumno', 'error');
                 }
-            } catch (error) {
-                console.error('Error al eliminar alumno:', error);
-                mostrarAlerta('Error de conexión', 'error');
-            }
+
+          confirmModal.style.display = 'none';
+
+        } catch (err) {
+          console.error('Error al eliminar la materia', err);
+          mostrarAlerta('Error en la conexión o al realizar la acción', 'error');
+          confirmModal.style.display = 'none';
         }
+      };
 
+      cancelBtn.onclick = () => {
+        confirmModal.style.display = 'none';
+      };
+    }
 
-        window.onload = function () {
-            const input = document.getElementById('telefono');
-            const inputRepresentante = document.getElementById('telefonorepresentante');
-            const im = new Inputmask({
-                "mask": "+593 9{8}",
-                "numericInput": true
-            });
-            im.mask(input);
-        };
+    document.addEventListener('DOMContentLoaded', function () {
+
+            // 3. Seleccionar el elemento
+            const elementoTelefono = document.getElementById('telefono');
+
+            // 4. Definir las opciones de la máscara de forma muy intuitiva
+            const opcionesMascara = {
+                mask: '+{593}900000000', // El '0' es un comodín para un dígito
+                lazy: false // La máscara se muestra desde el inicio
+            };
+            
+            // 5. Aplicar la máscara
+            const mascara = IMask(elementoTelefono, opcionesMascara);
+
+            // --- Cómo validar usando IMask.js ---
+            function validarTelefono() {
+                // El método 'isComplete' te dice si todos los caracteres fueron ingresados
+                if (mascara.masked.isComplete) {
+                    // El valor sin máscara se obtiene con 'unmaskedValue'
+                    console.log('Número completo y válido:', mascara.value);
+                    console.log('Valor sin máscara:', mascara.unmaskedValue);
+                    // Aquí iría tu lógica si el teléfono es válido
+                } else {
+                    console.log('Número incompleto.');
+                     // Aquí muestras tu alerta de error
+                }
+            }
+             // Puedes llamar a la función validarTelefono() cuando envíes el formulario
+        });
 
 
         cargarAlumnos();

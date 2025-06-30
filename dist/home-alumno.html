@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Refuerzos Académicos</title>
   <style>
+    /* ... (tus estilos CSS se mantienen igual) ... */
     * {
       box-sizing: border-box;
     }
@@ -105,38 +106,14 @@
       width: 100%;
     }
 
-    /* Colores para los headers según materia */
-    .header-rojo {
-      background: linear-gradient(135deg, #f44336, #e53935);
-    }
+    .header-rojo { background: linear-gradient(135deg, #f44336, #e53935); }
+    .header-amarillo { background: linear-gradient(135deg, #ffeb3b, #fbc02d); color: #333; }
+    .header-verde { background: linear-gradient(135deg, #4caf50, #43a047); }
+    .header-azul { background: linear-gradient(135deg, #07376c, #07376c); color: white; }
+    .header-naranja { background: linear-gradient(135deg, #ff9800, #f57c00); }
+    .header-morado { background: linear-gradient(135deg, #9c27b0, #7b1fa2); }
+    .header-cian { background: linear-gradient(135deg, #00bcd4, #0097a7); }
 
-    .header-amarillo {
-      background: linear-gradient(135deg, #ffeb3b, #fbc02d);
-      color: #333;
-    }
-
-    .header-verde {
-      background: linear-gradient(135deg, #4caf50, #43a047);
-    }
-
-    .header-azul {
-      background: linear-gradient(135deg, #07376c, #07376c);
-      color: white;
-    }
-
-    .header-naranja {
-      background: linear-gradient(135deg, #ff9800, #f57c00);
-    }
-
-    .header-morado {
-      background: linear-gradient(135deg, #9c27b0, #7b1fa2);
-    }
-
-    .header-cian {
-      background: linear-gradient(135deg, #00bcd4, #0097a7);
-    }
-
-    /* Estilo para el gif dentro de la tarjeta */
     .card-gif {
       width: 160px;
       height: 160px;
@@ -145,55 +122,13 @@
       margin-bottom: 12px;
     }
 
-    .card-content {
-      flex: 1;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align: center;
-      font-size: 13px;
-      color: #444;
-    }
-
-    .card-content p {
-      margin: 6px 0;
-    }
-
-    .card-buttons {
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-      padding: 8px;
-      background-color: #f0f4ff;
-      border-top: 1px solid #e0e0e0;
-    }
-
-    .card-buttons button {
-      flex: 1 1 80px;
-      background-color: #07376c;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 6px;
-      font-size: 13px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-
-    .card-buttons button:hover {
-      background-color: #07376c;
-    }
-
-    /* Drawer y Modal */
     #drawer {
       position: fixed;
       top: 0;
       left: -260px;
       width: 260px;
       height: 100%;
-  background-color: #D6E6F2;
+      background-color: #D6E6F2;
       padding: 50px 20px 30px;
       box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
       transition: left 0.3s ease;
@@ -202,39 +137,11 @@
       flex-direction: column;
       justify-content: space-between;
     }
-
-    .drawer-item {
-      font-size: 18px;
-      padding: 15px 0;
-      border-bottom: 1px solid #A7C7E7;
-      color: #2F4F6E;
-      cursor: pointer;
-      font-weight: 500;
-    }
-
-    .logout {
-      color: #C62828;
-      border-bottom-color: #C62828;
-    }
-
-    #drawer-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.3);
-      display: none;
-      z-index: 1000;
-    }
-
-    #drawer-overlay.show {
-      display: block;
-    }
-
-    #drawer.show {
-      left: 0;
-    }
+    .drawer-item { font-size: 18px; padding: 15px 0; border-bottom: 1px solid #A7C7E7; color: #2F4F6E; cursor: pointer; font-weight: 500; }
+    .logout { color: #C62828; border-bottom-color: #C62828; }
+    #drawer-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.3); display: none; z-index: 1000; }
+    #drawer-overlay.show, #drawer.show { display: block; }
+    #drawer.show { left: 0; }
   </style>
 </head>
 
@@ -289,48 +196,38 @@
         window.location.href = 'index.html';
         return;
       }
-
       try {
         const res = await fetch(`http://localhost:3000/users/${userId}/materia`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+          headers: { 'Authorization': `Bearer ${token}` }
         });
-
         if (!res.ok) throw new Error('Error al obtener materias');
-
         const materias = await res.json();
-
         const container = document.getElementById('refuerzos-container');
         container.innerHTML = '';
-
         if (!Array.isArray(materias) || materias.length === 0) {
           container.innerHTML = '<p>No se encontraron materias para este usuario.</p>';
           return;
         }
-
         materias.forEach(materiaData => {
           const nombreMateria = materiaData.name || materiaData.materia || 'Materia sin nombre';
-
+          const materiaId = materiaData._id; // Obtenemos el ID de la materia
           const card = document.createElement('div');
           card.className = 'card';
-          card.onclick = () => abrirActividades(nombreMateria);
+          
+          // --- CAMBIO CLAVE 1 ---
+          // Al hacer clic, llamamos a la función con el ID y el nombre.
+          card.onclick = () => abrirActividades(materiaId, nombreMateria);
 
           const header = document.createElement('div');
           header.className = 'card-header ' + obtenerClaseColor(nombreMateria);
           header.textContent = nombreMateria;
-
           card.appendChild(header);
 
           const gif = document.createElement('img');
-          gif.src = './img/leer.gif';  // ruta correcta según estructura
+          gif.src = './img/leer.gif';
           gif.alt = 'Leer';
           gif.className = 'card-gif';
           card.appendChild(gif);
-
-
-          card.appendChild(gif);
-
           container.appendChild(card);
         });
       } catch (error) {
@@ -338,42 +235,23 @@
         alert('Error cargando materias.');
       }
     }
-
-    function abrirActividades(materia) {
-      window.location.href = `actividades.html?materia=${encodeURIComponent(materia)}`;
+    
+    // --- CAMBIO CLAVE 2 ---
+    // La función ahora acepta el ID y lo pasa en la URL como un parámetro de búsqueda.
+    function abrirActividades(subjectId, materiaNombre) {
+      window.location.href = `actividades.html?subjectId=${subjectId}&materia=${encodeURIComponent(materiaNombre)}`;
     }
 
+    // El resto de tu JavaScript (menú lateral, logout, etc.) se mantiene igual
     const drawer = document.getElementById('drawer');
     const overlay = document.getElementById('drawer-overlay');
     const menuBtn = document.getElementById('menu-btn');
-    menuBtn.onclick = () => {
-      drawer.classList.add('show');
-      overlay.classList.add('show');
-    };
-    overlay.onclick = () => {
-      drawer.classList.remove('show');
-      overlay.classList.remove('show');
-    };
-
-    function navigateTo(path) {
-      drawer.classList.remove('show');
-      overlay.classList.remove('show');
-      setTimeout(() => {
-        window.location.href = path;
-      }, 300);
-    }
-
-    function logout() {
-      localStorage.clear();
-      window.location.href = 'index.html';
-    }
-
-    document.getElementById('user-section').onclick = () => {
-      window.location.href = 'perfil.html';
-    };
-
+    menuBtn.onclick = () => { drawer.classList.add('show'); overlay.classList.add('show'); };
+    overlay.onclick = () => { drawer.classList.remove('show'); overlay.classList.remove('show'); };
+    function navigateTo(path) { drawer.classList.remove('show'); overlay.classList.remove('show'); setTimeout(() => { window.location.href = path; }, 300); }
+    function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+    document.getElementById('user-section').onclick = () => { window.location.href = 'perfil.html'; };
     document.addEventListener('DOMContentLoaded', async () => {
-      // Puedes cargar el nombre usuario aquí si tienes API o token con info
       const token = localStorage.getItem('accessToken');
       if (token) {
         try {
@@ -387,17 +265,10 @@
       } else {
         document.getElementById('nombre-usuario-text').textContent = 'Invitado';
       }
-
       const userId = getUserIdFromToken(token);
-      if (!userId) {
-        alert('Usuario no autenticado');
-        window.location.href = 'index.html';
-        return;
-      }
-
+      if (!userId) { alert('Usuario no autenticado'); window.location.href = 'index.html'; return; }
       cargarMateriasPorUsuario(userId);
     });
   </script>
 </body>
-
 </html>

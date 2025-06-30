@@ -14,7 +14,7 @@
 
     body {
       font-family: 'Segoe UI', sans-serif;
-     background-color: white;
+      background-color: white;
       color: #333;
     }
 
@@ -22,7 +22,6 @@
       background-color: #07376c;
       display: flex;
       justify-content: space-between;
-      /* Cambié esto para alinear a la izquierda */
       align-items: center;
       padding: 12px 24px;
     }
@@ -131,7 +130,7 @@
     }
 
     .boton-accion {
-      background-color: #07376c;
+      background-color: #6c0715;
       color: white;
       font-weight: bold;
       padding: 8px 14px;
@@ -143,7 +142,7 @@
     }
 
     .boton-accion:hover {
-      background-color: #07376c;
+      background-color: #6c0722;
     }
 
     nav .logo {
@@ -152,7 +151,69 @@
       font-weight: bold;
       justify-content: flex-start;
     }
+
+    #confirmModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    #confirmModal div {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #confirmModal button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #confirmBtn {
+      background-color: #f44336;
+      color: white;
+    }
+
+    #cancelBtn {
+      background-color: #ccc;
+      color: white;
+      margin-left: 10px;
+    }
+
+    #estiloCheckboxes {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-family: sans-serif;
+      font-size: 16px;
+      margin-left: 35%;
+    }
+
+    #estiloCheckboxes label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    #estiloCheckboxes input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+    }
   </style>
+
 </head>
 
 <body>
@@ -185,10 +246,15 @@
       <label for="descripcion">Descripción</label>
       <textarea id="descripcion" rows="4" required></textarea>
 
+      <div id="estiloCheckboxes">
+        <label><input type="checkbox" name="estilo1" value="NEE" id="checkboxNEE"> NEE</label>
+      </div>
+
       <label for="archivo">Seleccionar archivo</label>
       <input type="file" id="archivo" required>
 
-      <button type="submit">Subir Recurso</button>
+      <button type="submit" id="submitBtn">Subir Recurso</button>
+      <button type="button" id="cancelarBtn" style="display: none; background-color: gray;">Cancelar</button>
     </form>
 
     <div id="mensaje"></div>
@@ -208,24 +274,41 @@
       </thead>
       <tbody></tbody>
     </table>
+    <div class="cards-container" id="materiasContainer"></div>
+    <div id="confirmModal"
+      style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; z-index: 1000;">
+      <div
+        style="background-color: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <h3>¿Estás seguro de eliminar este recurso?</h3>
+        <div>
+          <button id="confirmBtn"
+            style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">Eliminar</button>
+          <button id="cancelBtn"
+            style="background-color: #ccc; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer;">Cancelar</button>
+        </div>
+      </div>
+    </div>
   </main>
 
   <script>
     const API_UPLOAD = 'http://localhost:3000/dropbox/upload';
     const API_TOPICS = 'http://localhost:3000/topics';
-    const API_UPLOADS = 'http://localhost:3000/dropbox/resources';  // Cambié este endpoint según lo que mencionaste
+    const API_UPLOADS = 'http://localhost:3000/dropbox/resources';
     const API_SUBJECTS = 'http://localhost:3000/subjects';
+    const API_DELETE = 'http://localhost:3000/dropbox/delete';  // Endpoint para eliminar recurso
 
     const params = new URLSearchParams(window.location.search);
     const materiaId = params.get('materiaId');
-
     let listaTopics = [];
+    let editandoRecursoId = null;
+    const checkbox = document.getElementById('checkboxNEE');
 
     if (!materiaId) {
       alert("Falta el ID de materia.");
       window.location.href = "home.html";  // Redirigir si no existe el ID
     }
 
+    // Cargar información de la materia
     async function cargarMateria() {
       try {
         const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` };
@@ -237,13 +320,13 @@
       }
     }
 
+    // Cargar temas
     async function cargarTemas() {
       try {
         const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` };
         const res = await fetch(`${API_TOPICS}/materia/${materiaId}`, { headers });
         listaTopics = await res.json();
         const topicSelect = document.getElementById('topicSelect');
-
         listaTopics.forEach(topic => {
           const option = document.createElement('option');
           option.value = topic._id;
@@ -260,7 +343,6 @@
       const subtopics = JSON.parse(this.selectedOptions[0].dataset.subtopics || '[]');
       const subtopicSelect = document.getElementById('subtopicSelect');
       subtopicSelect.innerHTML = '<option value="">Seleccionar Subtema...</option>';
-
       subtopics.forEach(sub => {
         const option = document.createElement('option');
         option.value = sub._id;
@@ -273,12 +355,59 @@
       }
     });
 
+    // Mostrar el formulario para agregar recurso
+    document.getElementById('btnMostrarFormulario').addEventListener('click', () => {
+      const form = document.getElementById('recursoForm');
+      if (form.style.display === 'none') {
+        form.style.display = 'block';
+        document.getElementById('btnMostrarFormulario').innerText = '➖ Cancelar';
+      } else {
+        form.style.display = 'none';
+        document.getElementById('btnMostrarFormulario').innerText = '➕ Agregar Recurso';
+      }
+    });
+
+    // Cargar el formulario con los datos del recurso para edición
+    async function editarRecurso(id) {
+      try {
+        const res = await fetch(`${API_UPLOADS}?subjectId=${materiaId}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
+        });
+        const recursos = await res.json();
+
+        const recurso = recursos.find(r => r._id === id); // Encontrar el recurso por ID
+
+        if (recurso) {
+          // Llenar el formulario con los datos del recurso
+          document.getElementById('titulo').value = recurso.title;
+          document.getElementById('descripcion').value = recurso.description;
+          document.getElementById('topicSelect').value = recurso.topicId;
+          document.getElementById('subtopicSelect').value = recurso.subtopicId;
+          checkbox.checked = recurso.resourcemode || false;  // Cargar el valor del checkbox "NEE"
+
+          // Mostrar el formulario y cambiar el texto de los botones
+          document.getElementById('recursoForm').style.display = 'block';
+          document.getElementById('btnMostrarFormulario').innerText = '➖ Cancelar';
+
+          // Cambiar el texto del botón de submit
+          document.getElementById('submitBtn').innerText = 'Actualizar Recurso';
+
+          editandoRecursoId = id;
+        }
+      } catch (error) {
+        console.error('Error cargando recurso:', error);
+      }
+    }
+
+    // Evento para actualizar o agregar un recurso
     document.getElementById('recursoForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const topicId = document.getElementById('topicSelect').value;
       const subtopicId = document.getElementById('subtopicSelect').value;
       const archivo = document.getElementById('archivo').files[0];
+      const varNEE = checkbox.checked ? true : false;
 
       if (!topicId || !subtopicId || subtopicId === "undefined") {
         alert('Por favor selecciona un tema y subtema válido.');
@@ -295,24 +424,28 @@
 
       const formData = new FormData();
       formData.append('topicId', topicId);
-
       formData.append('subjectId', materiaId);
-
-      if (subtopicId && subtopicId !== "undefined") {
-        formData.append('subtopicId', subtopicId);
-      }
-
+      formData.append('subtopicId', subtopicId);
       formData.append('title', document.getElementById('titulo').value);
       formData.append('description', document.getElementById('descripcion').value);
       formData.append('file', archivo);
       formData.append('fileType', fileType);
+      formData.append('resourcemode', varNEE);  // Agregar el estado del checkbox
 
       try {
-        const res = await fetch(API_UPLOAD, { method: 'POST', body: formData });
+        let res;
+        if (editandoRecursoId) {
+          // Actualizar el recurso existente
+          res = await fetch(`${API_UPLOADS}/update/${editandoRecursoId}`, { method: 'PUT', body: formData });
+        } else {
+          // Crear un nuevo recurso
+          res = await fetch(API_UPLOAD, { method: 'POST', body: formData });
+        }
+
         if (!res.ok) throw new Error('Error al subir recurso');
 
-        document.getElementById('recursoForm').reset();
-        document.getElementById('mensaje').innerHTML = `<span style="color:green;">✅ Recurso subido exitosamente</span>`;
+        resetForm();
+        document.getElementById('mensaje').innerHTML = `<span style="color:green;">✅ Recurso ${editandoRecursoId ? 'actualizado' : 'subido'} exitosamente</span>`;
 
         cargarRecursos();
       } catch (err) {
@@ -320,12 +453,43 @@
       }
     });
 
+    // Función para eliminar un recurso
+    async function eliminarRecurso(id) {
+      const confirmModal = document.getElementById('confirmModal');
+      const confirmBtn = document.getElementById('confirmBtn');
+      const cancelBtn = document.getElementById('cancelBtn');
+
+      confirmModal.style.display = 'flex';
+
+      confirmBtn.onclick = async () => {
+        try {
+          const res = await fetch(`${API_DELETE}/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+          if (res.ok) {
+            document.getElementById('mensaje').innerHTML = `<span style="color:red;">✅ Recurso eliminado</span>`;
+            cargarRecursos();
+            confirmModal.style.display = 'none';  // Cerrar el modal
+          } else {
+            const error = await res.json();
+            document.getElementById('mensaje').textContent = `⛔ ${error.message}`;
+          }
+        } catch (error) {
+          console.error('Error al eliminar recurso:', error);
+          document.getElementById('mensaje').textContent = `⛔ Error de conexión`;
+        }
+      };
+
+      cancelBtn.onclick = () => {
+        confirmModal.style.display = 'none';  // Cerrar el modal si se cancela
+      };
+    }
+
+    // Función para cargar los recursos en la tabla
     async function cargarRecursos() {
       try {
-        const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` };
-
-        // Ahora pasamos el subjectId (materiaId) en la URL para filtrar los recursos
-        const res = await fetch(`${API_UPLOADS}?subjectId=${materiaId}`, { headers });
+        const res = await fetch(`${API_UPLOADS}?subjectId=${materiaId}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
+        });
         const recursos = await res.json();
 
         const tablaRecursosBody = document.querySelector('#tablaRecursos tbody');
@@ -349,7 +513,7 @@
             <td>${rec.fileType}</td>
             <td>
               <div class="acciones">
-                <button class="boton-accion" onclick="editarRecurso('${rec._id}')">✏️ Editar</button>
+                
                 <button class="boton-accion" onclick="eliminarRecurso('${rec._id}')">🗑️ Eliminar</button>
               </div>
             </td>
@@ -361,16 +525,22 @@
       }
     }
 
-    document.getElementById('btnMostrarFormulario').addEventListener('click', () => {
-      const form = document.getElementById('recursoForm');
-      if (form.style.display === 'none') {
-        form.style.display = 'block';
-        document.getElementById('btnMostrarFormulario').innerText = '➖ Cancelar';
-      } else {
-        form.style.display = 'none';
-        document.getElementById('btnMostrarFormulario').innerText = '➕ Agregar Recurso';
-      }
-    });
+    // Función para resetear el formulario
+    function resetForm() {
+      document.getElementById('recursoForm').reset();
+      document.getElementById('recursoForm').style.display = 'none';
+      document.getElementById('btnMostrarFormulario').innerText = '➕ Agregar Recurso';
+      document.getElementById('submitBtn').innerText = 'Subir Recurso';
+      editandoRecursoId = null;
+    }
+
+    // Función para obtener el token de autenticación
+    function getAuthHeaders() {
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+      };
+    }
 
     cargarMateria();
     cargarTemas();

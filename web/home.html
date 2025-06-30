@@ -245,7 +245,14 @@
   align-items: center;
   z-index: 1000;
 }
-
+  #materiaForm input[type="text"],
+    #materiaForm select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
 #confirmModal div {
   background-color: white;
   padding: 20px;
@@ -272,6 +279,17 @@
   color: white;
   margin-left: 10px;
 }
+  /* --- NUEVO ESTILO PARA LOS SELECTS --- */
+    .select-group {
+        display: flex;
+        gap: 10px;
+    }
+
+    .select-group select {
+        flex-grow: 1;
+        margin-bottom: 0;
+    }
+    /* --- FIN NUEVO ESTILO --- */
   </style>
 </head>
 
@@ -280,36 +298,61 @@
   <nav>
     <div class="logo">Panel</div>
     <ul>
+      <li><a href="recursosgenerador.html">Ver Refuerzo</a></li>
       <li><a href="refuerzo-estudiantes.html">Calificaciones</a></li>
       <li><a href="perfil.html">Perfil</a></li>
     </ul>
   </nav>
 
   <main>
-    <h2>Registro de Materias</h2>
+    <h2 id="tituloDocente">Materias del Docente</h2>
 
     <button id="btnMostrarFormMateria">➕ Agregar Materia</button>
 
     <form id="materiaForm">
-      <input type="text" id="nombreMateria" placeholder="Nombre de la materia" required />
-      <input type="text" id="cursoMateria" placeholder="Curso" required />
-      <div class="botones-form">
-        <button type="submit" id="btnGuardarMateria">Guardar Materia</button>
-        <button type="button" id="btnCancelarMateria">Cancelar</button>
-      </div>
-    </form>
+        <input type="text" id="nombreMateria" placeholder="Nombre de la materia" required />
+        
+        <div class="select-group">
+            <select id="selectCurso" required>
+                <option value="">Seleccione Curso</option>
+                <option value="8">Octavo EGB</option>
+                <option value="9">Noveno EGB</option>
+                <option value="10">Décimo EGB</option>
+                <option value="1">Primero BGU</option>
+                <option value="2">Segundo BGU</option>
+                <option value="3">Tercero BGU</option>
+            </select>
+            <select id="selectParalelo" required>
+                <option value="">Seleccione Paralelo</option>
+                <option value="A">"A"</option>
+                <option value="B">"B"</option>
+                <option value="C">"C"</option>
+                <option value="D">"D"</option>
+                <option value="E">"E"</option>
+                <option value="F">"F"</option>
+                <option value="G">"G"</option>
+                <option value="H">"H"</option>
+                <option value="I">"I"</option>
+              </select>
+        </div>
 
+        <input type="hidden" id="idCursoMateria" name="idCursoMateria">
+
+        <div class="botones-form">
+            <button type="submit" id="btnGuardarMateria">Guardar Materia</button>
+            <button type="button" id="btnCancelarMateria">Cancelar</button>
+        </div>
+    </form>
     <div class="cards-container" id="materiasContainer"></div>
-      <div class="cards-container" id="materiasContainer"></div>
     <div id="confirmModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; z-index: 1000;">
-  <div style="background-color: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-    <h3>¿Estás seguro de eliminar esta materia?</h3>
-    <div>
-      <button id="confirmBtn" style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">Eliminar</button>
-      <button id="cancelBtn" style="background-color: #ccc; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer;">Cancelar</button>
+      <div style="background-color: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <h3>¿Estás seguro de eliminar esta materia?</h3>
+        <div>
+          <button id="confirmBtn" style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">Eliminar</button>
+          <button id="cancelBtn" style="background-color: #ccc; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer;">Cancelar</button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
   </main>
 
   <script>
@@ -321,6 +364,11 @@
     const formMateria = document.getElementById('materiaForm');
     const nombreInput = document.getElementById('nombreMateria');
     const cursoInput = document.getElementById('cursoMateria');
+    // --- NUEVAS CONSTANTES PARA LOS SELECTS ---
+    const selectCurso = document.getElementById('selectCurso');
+    const selectParalelo = document.getElementById('selectParalelo');
+    const idCursoMateriaInput = document.getElementById('idCursoMateria');
+    
     let editandoId = null;
 
     btnMostrarFormMateria.onclick = () => {
@@ -330,11 +378,31 @@
 
     btnCancelarMateria.onclick = () => {
       formMateria.reset();
+      idCursoMateriaInput.value = ''; // Limpiar el campo oculto también
       formMateria.style.display = 'none';
       btnMostrarFormMateria.style.display = 'inline-block';
       editandoId = null;
       document.getElementById('btnGuardarMateria').textContent = 'Guardar Materia';
     };
+
+    // --- NUEVA FUNCIÓN PARA ACTUALIZAR EL ID COMBINADO ---
+    function actualizarIdCursoMateria() {
+        const cursoId = selectCurso.value;
+        const paraleloId = selectParalelo.value;
+
+        if (cursoId && paraleloId) {
+            // Une los valores para crear un ID único. Ejemplo: "1-A"
+            const idCombinado = `${cursoId}-${paraleloId}`;
+            idCursoMateriaInput.value = idCombinado;
+        } else {
+            idCursoMateriaInput.value = ''; // Limpiar si falta alguna selección
+        }
+    }
+
+    // --- AÑADIR LISTENERS A LOS SELECTS ---
+    selectCurso.addEventListener('change', actualizarIdCursoMateria);
+    selectParalelo.addEventListener('change', actualizarIdCursoMateria);
+
 
     function mostrarAlerta(mensaje, tipo = 'success') {
       const alertaContainer = document.getElementById('alertaContainer');
@@ -370,8 +438,26 @@
     }
 
     function getDocenteIdFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      let docenteId = params.get('docenteId');
+
+      if (!docenteId) {
         docenteId = localStorage.getItem('userId');
+
+      }
+
       return docenteId;
+
+    }
+
+
+    function mostrarNombreDocente() {
+      const params = new URLSearchParams(window.location.search);
+      const nombre = params.get('nombre');
+      const titulo = document.getElementById('tituloDocente');
+      if (nombre) {
+        titulo.textContent = `Materias del Docente: ${decodeURIComponent(nombre)}`;
+      }
     }
 
     async function fetchMateriasByDocente() {
@@ -405,38 +491,49 @@
         const card = document.createElement('div');
         card.className = 'card';
 
+        // Modificamos el onclick de editar para pasar el valor correcto de `m.curso`
         card.innerHTML = `
-          <div class="card-header">${m.name}</div>
-          <div class="card-content">
-            <p><strong>📘 Curso:</strong> ${m.curso || 'Sin curso'}</p>
-            <div class="card-buttons">
-                <div class="card-row">
-                <button onclick="agregarTemas('${m._id}')">📚 Temas</button>
-                <button onclick="agregarRecursos('${m._id}')">🔗 Recursos</button>
-              </div>
-                <div class="card-row single">
-                <button onclick="verEstudiantes('${m._id}')">👥 Estudiantes</button>
-              </div>
-              <div class="card-row">
-                <button onclick="editarMateria('${m._id}', '${m.name}', '${m.curso || ''}')">✏️ Editar</button>
-                <button onclick="eliminarMateria('${m._id}')">🗑️ Eliminar</button>
-              </div>
-            
-            
-            </div>
+      <div class="card-header">${m.name}</div>
+      <div class="card-content">
+        <p><strong>📘 Curso:</strong> ${m.curso || 'Sin curso'}</p>
+        <div class="card-buttons">
+          <div class="card-row">
+            <button onclick="agregarTemas('${m._id}')">📚 Temas</button>
+            <button onclick="agregarRecursos('${m._id}')">🔗 Recursos</button>
           </div>
-        `;
+          <div class="card-row single">
+            <button onclick="verEstudiantes('${m._id}')">👥 Estudiantes</button>
+          </div>
+          <div class="card-row">
+            <button onclick="editarMateria('${m._id}', '${m.name}', '${m.curso || ''}')">✏️ Editar</button>
+            <button onclick="eliminarMateria('${m._id}')">🗑️ Eliminar</button>
+          </div>
+        </div>
+      </div>
+    `;
         container.appendChild(card);
       });
     }
 
+
     formMateria.onsubmit = async (e) => {
       e.preventDefault();
+      
+      // --- VALIDACIÓN Y USO DEL NUEVO ID ---
+      if (!idCursoMateriaInput.value) {
+          mostrarAlerta('Por favor, seleccione un curso y un paralelo.', 'error');
+          return;
+      }
+
       const docenteId = getDocenteIdFromURL();
       const materia = {
         name: nombreInput.value,
-        curso: cursoInput.value,
+        curso: idCursoMateriaInput.value, // Usamos el valor del campo oculto
         createdBy: docenteId
+      };
+      const materia1 = {
+        name: nombreInput.value,
+        curso: idCursoMateriaInput.value, // Usamos el valor del campo oculto
       };
 
       try {
@@ -445,7 +542,7 @@
           res = await fetch(`${API}/${editandoId}`, {
             method: 'PUT',
             headers: getAuthHeaders(),
-            body: JSON.stringify(materia)
+            body: JSON.stringify(materia1)
           });
         } else {
           res = await fetch(`${API}`, {
@@ -457,10 +554,7 @@
 
         if (res.ok) {
           mostrarAlerta(editandoId ? 'Materia actualizada correctamente ✅' : 'Materia registrada correctamente ✅');
-          formMateria.reset();
-          formMateria.style.display = 'none';
-          btnMostrarFormMateria.style.display = 'inline-block';
-          editandoId = null;
+          btnCancelarMateria.onclick(); // Llama a la función de cancelar para limpiar y ocultar
           fetchMateriasByDocente();
         } else {
           const error = await res.json();
@@ -472,56 +566,66 @@
       }
     };
 
+    // --- FUNCIÓN EDITAR MODIFICADA ---
     function editarMateria(id, nombre, curso) {
-      nombreInput.value = nombre;
-      cursoInput.value = curso;
-      editandoId = id;
-      formMateria.style.display = 'flex';
-      btnMostrarFormMateria.style.display = 'none';
-      document.getElementById('btnGuardarMateria').textContent = 'Actualizar Materia';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+        nombreInput.value = nombre;
+        editandoId = id;
+        
+        // Separar el ID combinado (ej: "1-A") y seleccionar las opciones correctas
+        if (curso && curso.includes('-')) {
+            const [cursoVal, paraleloVal] = curso.split('-');
+            selectCurso.value = cursoVal;
+            selectParalelo.value = paraleloVal;
+        } else {
+            // Si no hay curso o no tiene el formato esperado, limpiar selects
+            selectCurso.value = '';
+            selectParalelo.value = '';
+        }
+        
+        // Actualizar el valor del input oculto
+        actualizarIdCursoMateria();
+
+        formMateria.style.display = 'flex';
+        btnMostrarFormMateria.style.display = 'none';
+        document.getElementById('btnGuardarMateria').textContent = 'Actualizar Materia';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-   async function eliminarMateria(id) {
-  // Mostrar el modal
-  const confirmModal = document.getElementById('confirmModal');
-  const confirmBtn = document.getElementById('confirmBtn');
-  const cancelBtn = document.getElementById('cancelBtn');
+    async function eliminarMateria(id) {
+      const confirmModal = document.getElementById('confirmModal');
+      const confirmBtn = document.getElementById('confirmBtn');
+      const cancelBtn = document.getElementById('cancelBtn');
 
-  confirmModal.style.display = 'flex';  // Mostrar el modal
+      confirmModal.style.display = 'flex';
 
-  // Confirmar la eliminación cuando el usuario hace clic en el botón de eliminar
-  confirmBtn.onclick = async () => {  // Hacerlo async
-    try {
-      const res = await fetch(`${API}/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders()
-      });
+      confirmBtn.onclick = async () => {
+        try {
+          const res = await fetch(`${API}/admin/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+          });
 
-      if (res.ok) {
-        mostrarAlerta('Materia eliminada correctamente ✅');
-        fetchMateriasByDocente();  // Recargar las materias después de eliminar
-        // Aquí, puedes realizar una acción adicional si necesitas recargar o actualizar algo en la página
-      } else {
-        mostrarAlerta('Error al eliminar Materia ❌', 'error');
-      }
+          if (res.ok) {
+            mostrarAlerta('Materia eliminada correctamente ✅');
+            fetchMateriasByDocente();
+          } else {
+            mostrarAlerta('Error al eliminar Materia ❌', 'error');
+          }
 
-      // Cerrar el modal después de realizar la acción
-      confirmModal.style.display = 'none';
+          confirmModal.style.display = 'none';
 
-    } catch (err) {
-      // Manejo de errores si la solicitud falla
-      console.error('Error al eliminar la materia', err);
-      mostrarAlerta('Error en la conexión o al realizar la acción', 'error');
-      confirmModal.style.display = 'none';
+        } catch (err) {
+          console.error('Error al eliminar la materia', err);
+          mostrarAlerta('Error en la conexión o al realizar la acción', 'error');
+          confirmModal.style.display = 'none';
+        }
+      };
+
+      cancelBtn.onclick = () => {
+        confirmModal.style.display = 'none';
+      };
     }
-  };
 
-  // Cancelar la eliminación cuando el usuario hace clic en el botón de cancelar
-  cancelBtn.onclick = () => {
-    confirmModal.style.display = 'none';  // Cerrar el modal
-  };
-}
 
     function agregarTemas(materiaId) {
       window.location.href = `agregar-temas.html?materiaId=${materiaId}`;
@@ -534,21 +638,31 @@
 
       if (!docenteId || !nombre) {
         docenteId = localStorage.getItem('userId');
-        nombre = localStorage.getItem('userEmail');
+        nombre = localStorage.getItem('userEmail'); 
       }
 
       if (docenteId && nombre) {
         window.location.href = `agregar-recursos.html?materiaId=${materiaId}&docenteId=${docenteId}&nombre=${encodeURIComponent(nombre)}`;
       } else {
         alert('No se encontró información del docente.');
-        window.location.href = 'home.html';
+        window.location.href = 'home.html'; 
       }
     }
 
+
+
     function verEstudiantes(materiaId) {
-      window.location.href = `ver-estudiantes.html?materiaId=${materiaId}`;
+      const params = new URLSearchParams(window.location.search);
+      const docenteId = params.get('docenteId');
+      const nombre = params.get('nombre');
+      if (docenteId && nombre) {
+        window.location.href = `ver-estudiantes.html?materiaId=${materiaId}&docenteId=${docenteId}&nombre=${encodeURIComponent(nombre)}`;
+      } else {
+        window.location.href = `ver-estudiantes.html?materiaId=${materiaId}`;
+      }
     }
 
+    mostrarNombreDocente();
     fetchMateriasByDocente();
   </script>
 
