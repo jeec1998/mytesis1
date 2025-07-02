@@ -79,7 +79,7 @@
     tr:hover {
       background-color: #f1f1f1;
     }
-    
+
     .table-container {
       margin-top: 40px;
     }
@@ -104,25 +104,41 @@
       transition: opacity 0.5s;
     }
 
-    .alerta-success { background-color: #d4edda; color: #155724; }
-    .alerta-error { background-color: #f8d7da; color: #721c24; }
-    .alerta .icono { font-size: 20px; }
+    .alerta-success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .alerta-error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    .alerta .icono {
+      font-size: 20px;
+    }
 
     .action-button {
-        border: none;
-        padding: 8px 14px;
-        border-radius: 6px;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-        transition: transform 0.2s;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
     }
-    .action-button:hover {
-        transform: scale(1.05);
-    }
-    .btn-agregar { background-color: #28a745; }
-    .btn-quitar { background-color: #dc3545; }
 
+    .action-button:hover {
+      transform: scale(1.05);
+    }
+
+    .btn-agregar {
+      background-color: #28a745;
+    }
+
+    .btn-quitar {
+      background-color: #dc3545;
+    }
   </style>
 </head>
 
@@ -136,177 +152,203 @@
   </nav>
 
   <main>
-     <div class="table-container">
-        <h2>Estudiantes Agregados a esta Materia</h2>
-        <table id="tablaAgregados">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Teléfono</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-             </tbody>
-        </table>
+    <div class="table-container">
+      <h2>Estudiantes Agregados a esta Materia</h2>
+      <div class="buscarContainer">
+        <input type="text" id="buscadorAgregado" placeholder="Buscar alumno por nombre..."
+          style="width:100%; padding:10px; margin-bottom:20px; border:1px solid #ccc; border-radius:6px;" />
+      </div>
+      <table id="tablaAgregados">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
     </div>
     <div class="table-container">
-        <h2>Estudiantes Disponibles para Asignar</h2>
-        <table id="tablaDisponibles">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Teléfono</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+      <h2>Estudiantes Disponibles para Asignar</h2>
+      <div class="buscarContainer">
+        <input type="text" id="buscadorAlumno" placeholder="Buscar alumno por nombre..."
+          style="width:100%; padding:10px; margin-bottom:20px; border:1px solid #ccc; border-radius:6px; " />
+      </div>
+      <table id="tablaDisponibles">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
     </div>
   </main>
 
-<script>
+  <script>
     const API_BASE = 'http://localhost:3000/users';
     const tablaDisponiblesBody = document.querySelector('#tablaDisponibles tbody');
     const tablaAgregadosBody = document.querySelector('#tablaAgregados tbody');
-    
+
     const params = new URLSearchParams(window.location.search);
     const materiaId = params.get('materiaId');
 
+    const buscadorAlumno = document.getElementById('buscadorAlumno');
+    const buscadorAgregado = document.getElementById('buscadorAgregado'); // Nuevo buscador
+    let alumnosDisponiblesGlobal = [];
+    let alumnosAgregadosGlobal = []; // Nueva variable global para alumnos agregados
+
+    // Event listener para el buscador de alumnos disponibles
+    buscadorAlumno.addEventListener('input', () => {
+      buscadorAlumno.value = buscadorAlumno.value.toUpperCase();
+      const termino = buscadorAlumno.value.toLowerCase();
+      const filtrados = alumnosDisponiblesGlobal.filter(a => a.name.toLowerCase().includes(termino));
+      renderTabla(tablaDisponiblesBody, filtrados, 'disponible');
+    });
+
+    // Nuevo event listener para el buscador de alumnos agregados
+    buscadorAgregado.addEventListener('input', () => {
+
+      buscadorAgregado.value = buscadorAgregado.value.toUpperCase();
+      const termino = buscadorAgregado.value.toLowerCase();
+      const filtrados = alumnosAgregadosGlobal.filter(a => a.name.toLowerCase().includes(termino));
+      renderTabla(tablaAgregadosBody, filtrados, 'agregado');
+    });
+
     // --- LÓGICA DE LA API ---
-    
+
     async function cargarYDistribuirEstudiantes() {
-        if (!materiaId) {
-            mostrarAlerta('ID de materia no encontrado en la URL.', 'error');
-            return;
+      if (!materiaId) {
+        mostrarAlerta('ID de materia no encontrado en la URL.', 'error');
+        return;
+      }
+      try {
+        const resAgregados = await fetch(`${API_BASE}/materia/${materiaId}`, { headers: getAuthHeaders() });
+        const resTodos = await fetch(`${API_BASE}`, { headers: getAuthHeaders() });
+
+        if (!resAgregados.ok || !resTodos.ok) {
+          const errorData = await (resAgregados.ok ? resTodos.json() : resAgregados.json());
+          throw new Error(errorData.message || 'No se pudo obtener la lista de estudiantes.');
         }
-        try {
-            // Se usa el endpoint que creaste para buscar alumnos por materia.
-            const resAgregados = await fetch(`${API_BASE}/materia/${materiaId}`, { headers: getAuthHeaders() });
-            
-            // Aquí hay un cambio de lógica: vamos a traer a TODOS los alumnos.
-            // La API de `users?role=alumno` ya no es necesaria si hacemos el filtro en el frontend.
-            const resTodos = await fetch(`${API_BASE}`, { headers: getAuthHeaders() });
 
+        const agregados = await resAgregados.json();
+        const todosLosAlumnos = (await resTodos.json()).filter(u => u.role === 'alumno');
 
-            if (!resAgregados.ok || !resTodos.ok) {
-                const errorData = await (resAgregados.ok ? resTodos.json() : resAgregados.json());
-                throw new Error(errorData.message || 'No se pudo obtener la lista de estudiantes.');
-            }
-            
-            const agregados = await resAgregados.json();
-            const todosLosAlumnos = (await resTodos.json()).filter(u => u.role === 'alumno');
-            
-            const idsAgregados = new Set(agregados.map(a => a._id));
-            const disponibles = todosLosAlumnos.filter(a => !idsAgregados.has(a._id));
+        const idsAgregados = new Set(agregados.map(a => a._id));
+        const disponibles = todosLosAlumnos.filter(a => !idsAgregados.has(a._id));
 
-            renderTabla(tablaAgregadosBody, agregados, 'agregado');
-            renderTabla(tablaDisponiblesBody, disponibles, 'disponible');
+        // Almacenar en las variables globales
+        alumnosAgregadosGlobal = agregados;
+        alumnosDisponiblesGlobal = disponibles;
 
-        } catch (error) {
-            console.error('Error al cargar estudiantes:', error);
-            mostrarAlerta(error.message, 'error');
-        }
+        // Renderizar las tablas con las listas completas inicialmente
+        renderTabla(tablaAgregadosBody, alumnosAgregadosGlobal, 'agregado');
+        renderTabla(tablaDisponiblesBody, alumnosDisponiblesGlobal, 'disponible');
+
+      } catch (error) {
+        console.error('Error al cargar estudiantes:', error);
+        mostrarAlerta(error.message, 'error');
+      }
     }
 
     function renderTabla(tbody, estudiantes, tipo) {
-        tbody.innerHTML = '';
-        const esAgregado = tipo === 'agregado';
-        
-        if (estudiantes.length === 0) {
-            const mensaje = esAgregado ? 'Aún no se han agregado estudiantes a esta materia.' : 'No hay estudiantes disponibles para agregar.';
-            tbody.innerHTML = `<tr><td colspan="4">${mensaje}</td></tr>`;
-            return;
-        }
+      tbody.innerHTML = '';
+      const esAgregado = tipo === 'agregado';
 
-        estudiantes.forEach(estudiante => {
-            const row = tbody.insertRow();
-            row.id = `${tipo}-${estudiante._id}`;
-            row.innerHTML = `
-                <td>${estudiante.name}</td>
-                <td>${estudiante.email}</td>
-                <td>${estudiante.telefono || '-'}</td>
-                <td>
-                    <button 
-                        class="action-button ${esAgregado ? 'btn-quitar' : 'btn-agregar'}" 
-                        onclick="${esAgregado ? `quitarEstudiante('${estudiante._id}')` : `agregarEstudiante('${estudiante._id}')`}">
-                        ${esAgregado ? '❌ Quitar' : '➕ Agregar'}
-                    </button>
-                </td>
-            `;
-        });
+      if (estudiantes.length === 0) {
+        const mensaje = esAgregado ? 'Aún no se han agregado estudiantes a esta materia.' : 'No hay estudiantes disponibles para agregar.';
+        tbody.innerHTML = `<tr><td colspan="4">${mensaje}</td></tr>`;
+        return;
+      }
+
+      estudiantes.forEach(estudiante => {
+        const row = tbody.insertRow();
+        row.id = `${tipo}-${estudiante._id}`;
+        row.innerHTML = `
+                    <td>${estudiante.name.toUpperCase()}</td>
+                    <td>${estudiante.email}</td>
+                    <td>${estudiante.telefono || '-'}</td>
+                    <td>
+                        <button 
+                            class="action-button ${esAgregado ? 'btn-quitar' : 'btn-agregar'}" 
+                            onclick="${esAgregado ? `quitarEstudiante('${estudiante._id}')` : `agregarEstudiante('${estudiante._id}')`}">
+                            ${esAgregado ? '❌ Quitar' : '➕ Agregar'}
+                        </button>
+                    </td>
+                `;
+      });
     }
 
     async function agregarEstudiante(estudianteId) {
-        try {
-            const res = await fetch(`${API_BASE}/${estudianteId}/add-subjects`, {
-                method: 'PUT',
-                headers: getAuthHeaders(),
-                // --- CORRECCIÓN CLAVE ---
-                // El backend espera un objeto con la clave "subjectIds" y que el valor sea un array.
-                body: JSON.stringify({ subjectIds: [materiaId] })
-            });
+      try {
+        const res = await fetch(`${API_BASE}/${estudianteId}/add-subjects`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ subjectIds: [materiaId] })
+        });
 
-            if (res.ok) {
-                mostrarAlerta('Estudiante agregado correctamente ✅');
-                cargarYDistribuirEstudiantes();
-            } else {
-                const error = await res.json();
-                throw new Error(error.message || 'Error al agregar al estudiante.');
-            }
-        } catch (error) {
-            console.error('Error en agregarEstudiante:', error);
-            mostrarAlerta(error.message, 'error');
+        if (res.ok) {
+          mostrarAlerta('Estudiante agregado correctamente ✅');
+          cargarYDistribuirEstudiantes(); // Recargar y redistribuir
+        } else {
+          const error = await res.json();
+          throw new Error(error.message || 'Error al agregar al estudiante.');
         }
+      } catch (error) {
+        console.error('Error en agregarEstudiante:', error);
+        mostrarAlerta(error.message, 'error');
+      }
     }
 
     async function quitarEstudiante(estudianteId) {
-        try {
-            // --- CORRECCIÓN CLAVE ---
-            // Se usa el nuevo endpoint DELETE que creamos, con el ID del estudiante y el ID de la materia.
-            const res = await fetch(`${API_BASE}/${estudianteId}/remove-subject/${materiaId}`, {
-                method: 'DELETE', // El método correcto es DELETE
-                headers: getAuthHeaders()
-                // No se necesita body para esta petición DELETE
-            });
+      try {
+        const res = await fetch(`${API_BASE}/${estudianteId}/remove-subject/${materiaId}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
 
-            if (res.ok) {
-                mostrarAlerta('Estudiante quitado de la materia.');
-                cargarYDistribuirEstudiantes();
-            } else {
-                const error = await res.json();
-                throw new Error(error.message || 'Error al quitar al estudiante.');
-            }
-        } catch (error) {
-            console.error('Error en quitarEstudiante:', error);
-            mostrarAlerta(error.message, 'error');
+        if (res.ok) {
+          mostrarAlerta('Estudiante quitado de la materia.');
+          cargarYDistribuirEstudiantes(); // Recargar y redistribuir
+        } else {
+          const error = await res.json();
+          throw new Error(error.message || 'Error al quitar al estudiante.');
         }
+      } catch (error) {
+        console.error('Error en quitarEstudiante:', error);
+        mostrarAlerta(error.message, 'error');
+      }
     }
 
     // --- FUNCIONES AUXILIARES ---
 
     function getAuthHeaders() {
-        const token = localStorage.getItem('accessToken');
-        return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
+      const token = localStorage.getItem('accessToken');
+      return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
     }
 
     function mostrarAlerta(mensaje, tipo = 'success') {
-        const alertaContainer = document.getElementById('alertaContainer');
-        const alerta = document.createElement('div');
-        alerta.className = `alerta alerta-${tipo}`;
-        alerta.innerHTML = `<span class="icono">${tipo === 'success' ? '✅' : '❌'}</span><span>${mensaje}</span>`;
-        alertaContainer.appendChild(alerta);
-        setTimeout(() => {
-            alerta.style.opacity = '0';
-            setTimeout(() => alerta.remove(), 500);
-        }, 3000);
+      const alertaContainer = document.getElementById('alertaContainer');
+      const alerta = document.createElement('div');
+      alerta.className = `alerta alerta-${tipo}`;
+      alerta.innerHTML = `<span class="icono">${tipo === 'success' ? '✅' : '❌'}</span><span>${mensaje}</span>`;
+      alertaContainer.appendChild(alerta);
+      setTimeout(() => {
+        alerta.style.opacity = '0';
+        setTimeout(() => alerta.remove(), 500);
+      }, 3000);
     }
-    
+
     // --- INICIALIZACIÓN ---
     window.onload = cargarYDistribuirEstudiantes;
-</script>
+  </script>
 </body>
+
 </html>

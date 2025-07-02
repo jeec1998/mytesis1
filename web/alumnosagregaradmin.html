@@ -88,7 +88,7 @@
             height: 18px;
         }
 
-     
+
         h2 {
             color: #07376c;
             margin-bottom: 20px;
@@ -234,45 +234,46 @@
 
             }
         }
-            #confirmModal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
 
-    #confirmModal div {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      text-align: center;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+        #confirmModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
 
-    #confirmModal button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-    }
+        #confirmModal div {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-    #confirmBtn {
-      background-color: #f44336;
-      color: white;
-    }
+        #confirmModal button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
 
-    #cancelBtn {
-      background-color: #ccc;
-      color: white;
-      margin-left: 10px;
-    }
+        #confirmBtn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        #cancelBtn {
+            background-color: #ccc;
+            color: white;
+            margin-left: 10px;
+        }
     </style>
 </head>
 
@@ -311,16 +312,20 @@
                 <button type="button" id="cancelarBtn" style="background-color:gray;">Cancelar</button>
             </div>
         </form>
-         <div class="cards-container" id="materiasContainer"></div>
-    <div id="confirmModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; z-index: 1000;">
-      <div style="background-color: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-        <h3>¿Estás seguro de eliminar esta materia?</h3>
-        <div>
-          <button id="confirmBtn" style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">Eliminar</button>
-          <button id="cancelBtn" style="background-color: #ccc; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer;">Cancelar</button>
+        <div class="cards-container" id="materiasContainer"></div>
+        <div id="confirmModal"
+            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; z-index: 1000;">
+            <div
+                style="background-color: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <h3>¿Estás seguro de eliminar esta materia?</h3>
+                <div>
+                    <button id="confirmBtn"
+                        style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">Eliminar</button>
+                    <button id="cancelBtn"
+                        style="background-color: #ccc; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer;">Cancelar</button>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
         <input type="text" id="buscadorAlumno" placeholder="Buscar alumno por nombre..."
             style="width:100%; padding:10px; margin-bottom:20px; border:1px solid #ccc; border-radius:6px;" />
         <div class="table-container">
@@ -337,7 +342,19 @@
                 <tbody></tbody>
             </table>
         </div>
-
+        <div id="confirmcontraModal"
+            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; z-index: 1000;">
+            <div
+                style="background-color: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <h3>¿Estás seguro de restablecer la contraseña?</h3>
+                <div>
+                    <button id="confirmBtnReset"
+                        style="background-color: #07376c; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">Restablecer</button>
+                    <button id="cancelBtnReset"
+                        style="background-color: #ccc; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer;">Cancelar</button>
+                </div>
+            </div>
+        </div>
     </main>
 
 
@@ -351,6 +368,11 @@
         const tituloFormulario = document.getElementById('tituloFormulario');
         const btnMostrarForm = document.getElementById('btnMostrarForm');
         let editandoAlumnoId = null;
+
+        // Referencia a las instancias de IMask para los inputs de teléfono
+        let telefonoMaskInstance;
+        let telefonoRepresentanteMaskInstance;
+
 
         function mostrarAlerta(mensaje, tipo = 'success') {
             const alertaContainer = document.getElementById('alertaContainer');
@@ -380,13 +402,11 @@
             }, 4000);
         }
 
- let isChecked = false; // Cambia esto según lo que desees (true o false)
+        let isChecked = false; // Cambia esto según lo que desees (true o false)
 
-// Obtenemos el checkbox
-const checkbox = document.getElementById('checkboxNEE');
+        const checkbox = document.getElementById('checkboxNEE');
+        checkbox.checked = isChecked;
 
-// Asignamos el estado del checkbox según el valor del booleano
-checkbox.checked = isChecked;
         const params = new URLSearchParams(window.location.search);
         const docenteId = params.get('docenteId');
         const nombreDocente = params.get('nombre');
@@ -414,8 +434,8 @@ checkbox.checked = isChecked;
         cancelarBtn.addEventListener('click', resetFormulario);
 
         form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const estilosSeleccionados = Array.from(document.querySelectorAll('input[name="estilo"]:checked')).map(cb => cb.value);
+              e.preventDefault();
+    const estilosSeleccionados = Array.from(document.querySelectorAll('input[name="estilo"]:checked')).map(cb => cb.value);
             const telefono = document.getElementById('telefono').value;
             const telefonorepresentante = document.getElementById('telefonorepresentante').value;
             const regexTelefono = /^\+5939\d{8}$/; // Debe ser +593 seguido de un 9 y 8 dígitos
@@ -423,15 +443,15 @@ checkbox.checked = isChecked;
                 mostrarAlerta('El número de teléfono no es válido. Debe comenzar con +593  seguido de 9 dígitos.', 'error');
                 return;
             }
-            const alumno = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
+    const alumno = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
                 telefono: document.getElementById('telefono').value,
                 telefonorepresentante: document.getElementById('telefonorepresentante').value,
-                estilo: estilosSeleccionados,
-                var: checkbox.checked ? true : false,
-                role: 'alumno'
-            };
+        estilo: estilosSeleccionados,
+        var: checkbox.checked ? true : false,
+        role: 'alumno'
+    };
 
             try {
                 const url = editandoAlumnoId ? `${API}/${editandoAlumnoId}` : API;
@@ -465,53 +485,79 @@ checkbox.checked = isChecked;
         });
 
 
-
-
+        // Función para restablecer contraseña de un alumno
         async function restablecerContrasena(id) {
-            if (!confirm("¿Seguro que deseas restablecer la contraseña? Se generará una nueva automáticamente.")) return;
+            const confirmModal1 = document.getElementById('confirmcontraModal');
+            const confirmBtnReset = document.getElementById('confirmBtnReset');
+            const cancelBtnReset = document.getElementById('cancelBtnReset');
 
-            try {
-                const res = await fetch(`${API}/${id}/reset-password`, {
-                    method: 'PUT',
-                    headers: getAuthHeaders()
-                });
+            // Mostrar el modal de confirmación
+            confirmModal1.style.display = 'flex';
 
-                if (res.ok) {
-                    const data = await res.json();
+            // Eliminar listeners previos para evitar ejecuciones múltiples
+            confirmBtnReset.onclick = null;
+            cancelBtnReset.onclick = null;
 
-                    if (data.link) {
+            // Configurar el listener para el botón de confirmar
+            confirmBtnReset.onclick = async () => {
+                try {
+                    const res = await fetch(`${API}/${id}/reset-password`, {
+                        method: 'PUT',
+                        headers: getAuthHeaders()
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        // Aquí, el 'data.link' que viene del backend ya debería tener el teléfono limpio
+                   
+if (data.link) {
                         // Si hay un enlace de WhatsApp, mostrar el popup
-                        mostrarPopupWhatsapp(data.link);
+    mostrarPopupWhatsapp(data.link);
+}else {
+                            mostrarAlerta('Contraseña restablecida correctamente ✅');
+                        }
                     } else {
-                        mostrarAlerta('Contraseña restablecida correctamente ✅');
+                        const error = await res.json();
+                        mostrarAlerta(error.message || 'Error al restablecer contraseña', 'error');
                     }
-                } else {
-                    const error = await res.json();
-                    mostrarAlerta(error.message || 'Error al restablecer contraseña', 'error');
+                } catch (error) {
+                    console.error('Error al restablecer contraseña:', error);
+                    mostrarAlerta('Error de conexión', 'error');
+                } finally {
+                    // Ocultar el modal después de intentar la acción
+                    confirmModal1.style.display = 'none';
                 }
-            } catch (error) {
-                console.error('Error al restablecer contraseña:', error);
-                mostrarAlerta('Error de conexión', 'error');
-            }
+            };
+
+            // Configurar el listener para el botón de cancelar
+            cancelBtnReset.onclick = () => {
+                confirmModal1.style.display = 'none'; // Solo ocultar el modal si se cancela
+            };
         }
+
+        // Función para generar el enlace de WhatsApp
+        // Esta función debe recibir el teléfono YA SIN ESPACIOS
         function generateWhatsappLink(telefono, nombreUsuario, password) {
             const mensaje = `Hola, mi nombre de usuario es: ${nombreUsuario} y mi nueva contraseña es: ${password}`;
-            return `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+            return `https://wa.me/${telefonoSinEspacios}?text=${encodeURIComponent(mensaje)}`;
         }
 
         function mostrarPopupWhatsapp(link) {
             const popup = document.getElementById('popupWhatsapp');
             const popupBtn = document.getElementById('popupWhatsappBtn');
-            popupBtn.href = link; // Asigna el enlace al botón del popup
-            popup.style.display = 'flex'; // Muestra el popup
+            if (popup && popupBtn) {
+                popupBtn.href = link;
+                popup.style.display = 'flex';
 
-            popupBtn.onclick = () => {
-                popup.style.display = 'none'; // Oculta el popup al hacer clic en el enlace
-                return true; // Permite que el enlace abra en una nueva pestaña
-            };
+                popupBtn.onclick = () => {
+                    popup.style.display = 'none';
+                    return true;
+                };
+            } else {
+                console.error("Elementos del popup de WhatsApp (popupWhatsapp o popupWhatsappBtn) no encontrados!");
+                window.open(link, '_blank');
+            }
         }
-
-
 
         function resetFormulario() {
             form.reset();
@@ -553,7 +599,7 @@ checkbox.checked = isChecked;
             }
         }
         const buscadorAlumno = document.getElementById('buscadorAlumno');
-        let alumnosCargados = [];
+        let alumnosCargados = []; // Variable para guardar todos los alumnos para la búsqueda
 
         async function cargarAlumnos() {
             try {
@@ -580,20 +626,22 @@ checkbox.checked = isChecked;
             alumnos.forEach(alumno => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-      <td>${alumno.name}</td>
-      <td>${alumno.telefonorepresentante || '-'}</td>
-      <td>${Array.isArray(alumno.estilo) ? alumno.estilo.join(', ') : alumno.estilo || '-'}</td>
-      <td>
-        <button onclick="editarAlumno('${alumno._id}')" style="background-color:#07376c; color:white; border:none; padding:6px 12px; border-radius:6px; margin-right:6px;">✏️ Editar</button>
-        <button onclick="eliminarAlumno('${alumno._id}')" style="background-color:#E94E77; color:white; border:none; padding:6px 12px; border-radius:6px; margin-right:6px;">🗑️ Eliminar</button>
-        <button onclick="restablecerContrasena('${alumno._id}')" style="background-color:#F4A261; color:white; border:none; padding:6px 12px; border-radius:6px;">🔑 Restablecer Contraseña</button>
-      </td>
-    `;
+                    <td>${alumno.name.toUpperCase()}</td>
+                    <td>${alumno.telefonorepresentante || '-'}</td>
+                    <td>${Array.isArray(alumno.estilo) ? alumno.estilo.join(', ') : alumno.estilo || '-'}</td>
+                    <td>
+                        <button onclick="editarAlumno('${alumno._id}')" style="background-color:#07376c; color:white; border:none; padding:6px 12px; border-radius:6px; margin-right:6px;">✏️ Editar</button>
+                        <button onclick="eliminarAlumno('${alumno._id}')" style="background-color:#E94E77; color:white; border:none; padding:6px 12px; border-radius:6px; margin-right:6px;">🗑️ Eliminar</button>
+                        <button onclick="restablecerContrasena('${alumno._id}')" style="background-color:#F4A261; color:white; border:none; padding:6px 12px; border-radius:6px;">🔑 Restablecer Contraseña</button>
+                    </td>
+                `;
                 tablaAlumnosBody.appendChild(row);
             });
         }
 
+        // Evento para el buscador de alumnos (ya estaba correcto con .toUpperCase())
         buscadorAlumno.addEventListener('input', () => {
+            buscadorAlumno.value = buscadorAlumno.value.toUpperCase();
             const termino = buscadorAlumno.value.toLowerCase();
             const filtrados = alumnosCargados.filter(a => a.name.toLowerCase().includes(termino));
             renderTablaAlumnos(filtrados);
@@ -625,52 +673,52 @@ checkbox.checked = isChecked;
         }
         async function eliminarAlumno(id) {
 
-const confirmModal = document.getElementById('confirmModal');
-      const confirmBtn = document.getElementById('confirmBtn');
-      const cancelBtn = document.getElementById('cancelBtn');
+            const confirmModal = document.getElementById('confirmModal');
+            const confirmBtn = document.getElementById('confirmBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
 
-      confirmModal.style.display = 'flex';
+            confirmModal.style.display = 'flex';
 
-      confirmBtn.onclick = async () => {
-        try {
-            const res = await fetch(`${API}/${id}`, {
-                    method: 'DELETE',
-                    headers: getAuthHeaders()
-                });
+            confirmBtn.onclick = async () => {
+                try {
+                    const res = await fetch(`${API}/${id}`, {
+                        method: 'DELETE',
+                        headers: getAuthHeaders()
+                    });
 
-                if (res.ok) {
-                    mostrarAlerta('Alumno eliminado correctamente ✅');
-                    cargarAlumnos();
-                } else {
-                    const error = await res.json();
-                    mostrarAlerta(error.message || 'Error al eliminar alumno', 'error');
+                    if (res.ok) {
+                        mostrarAlerta('Alumno eliminado correctamente ✅');
+                        cargarAlumnos();
+                    } else {
+                        const error = await res.json();
+                        mostrarAlerta(error.message || 'Error al eliminar alumno', 'error');
+                    }
+
+                    confirmModal.style.display = 'none';
+
+                } catch (err) {
+                    console.error('Error al eliminar la materia', err);
+                    mostrarAlerta('Error en la conexión o al realizar la acción', 'error');
+                    confirmModal.style.display = 'none';
                 }
+            };
 
-          confirmModal.style.display = 'none';
-
-        } catch (err) {
-          console.error('Error al eliminar la materia', err);
-          mostrarAlerta('Error en la conexión o al realizar la acción', 'error');
-          confirmModal.style.display = 'none';
+            cancelBtn.onclick = () => {
+                confirmModal.style.display = 'none';
+            };
         }
-      };
 
-      cancelBtn.onclick = () => {
-        confirmModal.style.display = 'none';
-      };
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function () {
 
             // 3. Seleccionar el elemento
             const elementoTelefono = document.getElementById('telefono');
 
             // 4. Definir las opciones de la máscara de forma muy intuitiva
             const opcionesMascara = {
-                mask: '+{593}900000000', // El '0' es un comodín para un dígito
-                lazy: false // La máscara se muestra desde el inicio
+                mask: '+{593}000000000', // Máscara para el formato +593 96 814 4760
+                lazy: false // false: la máscara se muestra incluso si el input está vacío
             };
-            
+
             // 5. Aplicar la máscara
             const mascara = IMask(elementoTelefono, opcionesMascara);
 
@@ -691,7 +739,7 @@ const confirmModal = document.getElementById('confirmModal');
         });
 
 
-        cargarAlumnos();
+        cargarAlumnos(); // Cargar alumnos al inicio
     </script>
 
     <div id="popupWhatsapp"

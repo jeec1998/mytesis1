@@ -310,7 +310,23 @@
     <button id="btnMostrarFormMateria">➕ Agregar Materia</button>
 
     <form id="materiaForm">
-        <input type="text" id="nombreMateria" placeholder="Nombre de la materia" required />
+         <select id="nombreMateriaSelect" required>
+                <option value="">Seleccione la materia</option>
+                <option value="Matemáticas">Matemáticas</option>
+                <option value="Lengua y Literatura">Lengua y Literatura</option>
+                <option value="Ciencias Naturales">Ciencias Naturales</option>
+                <option value="Estudios Sociales">Estudios Sociales</option>
+                <option value="Inglés">Inglés</option>
+                <option value="Educación Física">Educación Física</option>
+                <option value="Educación Cultural y Artística">Educación Cultural y Artística</option>
+                <option value="Emprendimiento y Gestión">Emprendimiento y Gestión</option>
+                <option value="Física">Física</option>
+                <option value="Química">Química</option>
+                <option value="Biología">Biología</option>
+                <option value="Historia">Historia</option>
+                <option value="Filosofía">Filosofía</option>
+                <option value="Educación para la Ciudadanía">Educación para la Ciudadanía</option>
+            </select>
         
         <div class="select-group">
             <select id="selectCurso" required>
@@ -362,7 +378,7 @@
     const btnMostrarFormMateria = document.getElementById('btnMostrarFormMateria');
     const btnCancelarMateria = document.getElementById('btnCancelarMateria');
     const formMateria = document.getElementById('materiaForm');
-    const nombreInput = document.getElementById('nombreMateria');
+    const nombreInput = document.getElementById('nombreMateriaSelect');
     const cursoInput = document.getElementById('cursoMateria');
     // --- NUEVAS CONSTANTES PARA LOS SELECTS ---
     const selectCurso = document.getElementById('selectCurso');
@@ -428,7 +444,22 @@
         setTimeout(() => alerta.remove(), 500);
       }, 3000);
     }
-
+ const materiaColores = {
+            "Matemáticas": "#E74C3C", // Rojo
+            "Lengua y Literatura": "#3498DB", // Azul
+            "Ciencias Naturales": "#2ECC71", // Verde
+            "Estudios Sociales": "#F1C40F", // Amarillo
+            "Inglés": "#9B59B6", // Púrpura
+            "Educación Física": "#1ABC9C", // Turquesa
+            "Educación Cultural y Artística": "#E67E22", // Naranja
+            "Emprendimiento y Gestión": "#34495E", // Gris oscuro
+            "Física": "#D35400", // Naranja fuerte
+            "Química": "#C0392B", // Rojo ladrillo
+            "Biología": "#27AE60", // Verde esmeralda oscuro
+            "Historia": "#8E44AD", // Morado oscuro
+            "Filosofía": "#7F8C8D", // Gris azulado
+            "Educación para la Ciudadanía": "#2C3E50" // Azul muy oscuro
+        };
     function getAuthHeaders() {
       const token = localStorage.getItem('accessToken');
       return {
@@ -479,41 +510,51 @@
         container.innerHTML = '<p>Error al cargar materias.</p>';
       }
     }
+  //el color de las materias 
+    function getMateriaColor(materiaName) {
+            return materiaColores[materiaName] || '#07376c'; // Color por defecto si no se encuentra
+        }
 
-    function renderMaterias(materias) {
-      container.innerHTML = '';
-      if (materias.length === 0) {
+   function renderMaterias(materias) {
+    container.innerHTML = '';
+    if (materias.length === 0) {
         container.innerHTML = '<p>No hay materias registradas para este docente.</p>';
         return;
-      }
+    }
 
-      materias.forEach(m => {
+    materias.forEach(m => {
         const card = document.createElement('div');
         card.className = 'card';
 
-        // Modificamos el onclick de editar para pasar el valor correcto de `m.curso`
+        // Obtener el color del encabezado usando el mapeo
+        const headerColor = getMateriaColor(m.name);
+
+        // --- LÍNEA CORREGIDA ---
+        // Cambiamos "background-color" por "background"
         card.innerHTML = `
-      <div class="card-header">${m.name}</div>
-      <div class="card-content">
-        <p><strong>📘 Curso:</strong> ${m.curso || 'Sin curso'}</p>
-        <div class="card-buttons">
-          <div class="card-row">
-            <button onclick="agregarTemas('${m._id}')">📚 Temas</button>
-            <button onclick="agregarRecursos('${m._id}')">🔗 Recursos</button>
-          </div>
-          <div class="card-row single">
-            <button onclick="verEstudiantes('${m._id}')">👥 Estudiantes</button>
-          </div>
-          <div class="card-row">
-            <button onclick="editarMateria('${m._id}', '${m.name}', '${m.curso || ''}')">✏️ Editar</button>
-            <button onclick="eliminarMateria('${m._id}')">🗑️ Eliminar</button>
-          </div>
+        <div class="card-header" style="background: ${headerColor};"> 
+            ${m.name}
         </div>
-      </div>
-    `;
+        <div class="card-content">
+            <p><strong>📘 Curso:</strong> ${m.curso || 'Sin curso'}</p>
+            <div class="card-buttons">
+                <div class="card-row">
+                    <button onclick="agregarTemas('${m._id}')">📚 Temas</button>
+                    <button onclick="agregarRecursos('${m._id}')">🔗 Recursos</button>
+                </div>
+                <div class="card-row single">
+                    <button onclick="verEstudiantes('${m._id}')">👥 Estudiantes</button>
+                </div>
+                <div class="card-row">
+                    <button onclick="editarMateria('${m._id}', '${m.name}', '${m.curso || ''}')">✏️ Editar</button>
+                    <button onclick="eliminarMateria('${m._id}')">🗑️ Eliminar</button>
+                </div>
+            </div>
+        </div>
+        `;
         container.appendChild(card);
-      });
-    }
+    });
+}
 
 
     formMateria.onsubmit = async (e) => {
@@ -600,7 +641,7 @@
 
       confirmBtn.onclick = async () => {
         try {
-          const res = await fetch(`${API}/admin/${id}`, {
+          const res = await fetch(`${API}/${id}`, {
             method: 'DELETE',
             headers: getAuthHeaders()
           });
@@ -647,8 +688,11 @@
         alert('No se encontró información del docente.');
         window.location.href = 'home.html'; 
       }
-    }
-
+    } 
+    //el color de las materias 
+    function getMateriaColor(materiaName) {
+            return materiaColores[materiaName] || '#555555'; // Color por defecto si no se encuentra
+        }
 
 
     function verEstudiantes(materiaId) {
