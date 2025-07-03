@@ -291,11 +291,11 @@
   </main>
 
   <script>
-    const API_UPLOAD = 'http://localhost:3000/dropbox/upload';
-    const API_TOPICS = 'http://localhost:3000/topics';
-    const API_UPLOADS = 'http://localhost:3000/dropbox/resources';
-    const API_SUBJECTS = 'http://localhost:3000/subjects';
-    const API_DELETE = 'http://localhost:3000/dropbox/delete';  // Endpoint para eliminar recurso
+    const API_UPLOAD = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/dropbox/upload';
+    const API_TOPICS = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/topics';
+    const API_UPLOADS = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/dropbox/resources';
+    const API_SUBJECTS = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/subjects';
+    const API_DELETE = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/dropbox/delete';  // Endpoint para eliminar recurso
 
     const params = new URLSearchParams(window.location.search);
     const materiaId = params.get('materiaId');

@@ -61,7 +61,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           return;
         }
 
-        const res = await fetch(`http://localhost:3000/users/${userId}/materia`, {
+        const res = await fetch(`https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/users/${userId}/materia`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,

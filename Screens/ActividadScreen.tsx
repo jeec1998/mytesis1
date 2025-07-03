@@ -97,7 +97,7 @@ const ActividadScreen: React.FC = () => {
         }
         setNombreUsuario(userData.nombre);
         const res = await fetch(
-          `http://localhost:3000/academic-support/user/${userData.userId}/topic/${topicId}`,
+          `https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/academic-support/user/${userData.userId}/topic/${topicId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

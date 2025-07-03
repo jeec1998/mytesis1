@@ -128,17 +128,20 @@
 
         table th:nth-child(1),
         table td:nth-child(1) {
-            width: 40%; /* Ajustado para dar espacio al nuevo botón */
+            width: 40%;
+            /* Ajustado para dar espacio al nuevo botón */
         }
 
         table th:nth-child(2),
         table td:nth-child(2) {
-            width: 30%; /* Ajustado para dar espacio al nuevo botón */
+            width: 30%;
+            /* Ajustado para dar espacio al nuevo botón */
         }
 
         table th:nth-child(3),
         table td:nth-child(3) {
-            width: 30%; /* Nuevo ancho para el botón de WhatsApp */
+            width: 30%;
+            /* Nuevo ancho para el botón de WhatsApp */
         }
 
 
@@ -178,8 +181,10 @@
 
             table th,
             table td {
-                padding: 8px; /* Reducir padding en pantallas pequeñas */
-                font-size: 14px; /* Reducir tamaño de fuente */
+                padding: 8px;
+                /* Reducir padding en pantallas pequeñas */
+                font-size: 14px;
+                /* Reducir tamaño de fuente */
             }
         }
     </style>
@@ -221,16 +226,17 @@
                 <tr>
                     <th>Alumno</th>
                     <th>Ver Refuerzo</th>
-                    <th>Enviar Nota por WhatsApp</th> </tr>
+                    <th>Enviar Nota por WhatsApp</th>
+                </tr>
             </thead>
             <tbody></tbody>
         </table>
     </main>
-  <script>
-        const API = 'http://localhost:3000/Subjects';
-        const API_TOPICS = 'http://localhost:3000/topics';
-        const API_ALUMNOS = 'http://localhost:3000/users';
-        const API_GRADES = 'http://localhost:3000/grades';
+    <script>
+        const API = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/Subjects';
+        const API_TOPICS = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/topics';
+        const API_ALUMNOS = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/users';
+        const API_GRADES = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/grades';
         const tablaAlumnosBody = document.querySelector('#tablaAlumnos tbody');
         let materiaId;
         let listaTopics = [];
@@ -331,21 +337,21 @@
                     const fila = document.createElement('tr');
 
                     fila.innerHTML = `
-                        <td>${alumno.name}</td>
-                        <td style="text-align: center;">
-                            <button
-                                style="background-color:#07376c; color:white; padding: 8px 18px; border:none; border-radius:6px; cursor:pointer;"
-                                onclick="window.location.href='recursosasignadosestudiante.html?estudianteId=${alumno._id}'">
-                                VER
-                            </button>
-                        </td>
-                        <td style="text-align: center;">
-                            <button
-                                style="background-color:#25d366; color:white; padding: 8px 18px; border:none; border-radius:6px; cursor:pointer;"
-                                onclick="enviarNotaPorWhatsapp('${alumno._id}', '${nombreTema}')">
-                                WhatsApp
-                            </button>
-                        </td>
+                    <td>${alumno.name}</td>
+                    <td style="text-align: center;">
+                        <button
+                            style="background-color:#07376c; color:white; padding: 8px 18px; border:none; border-radius:6px; cursor:pointer;"
+                            onclick="window.location.href='recursosasignadosestudiante.html?estudianteId=${alumno._id}'">
+                            VER
+                        </button>
+                    </td>
+                    <td style="text-align: center;">
+                        <button
+                            style="background-color:#25d366; color:white; padding: 8px 18px; border:none; border-radius:6px; cursor:pointer;"
+                            onclick="enviarNotaPorWhatsapp('${alumno._id}', '${nombreTema}')">
+                            WhatsApp
+                        </button>
+                    </td>
                     `;
                     tablaAlumnosBody.appendChild(fila);
                 });
@@ -369,7 +375,6 @@
 
 
         async function enviarNotaPorWhatsapp(estudianteId, nombreTema) {
-            // Busca los datos completos del alumno en la lista cargada
             const alumno = alumnosCargados.find(a => a._id === estudianteId);
 
             if (!alumno || !alumno.telefonorepresentante) {
@@ -389,19 +394,15 @@
                 const resGrades = await fetch(`${API_GRADES}/user/${estudianteId}/topic/${selectedTopicId}`, { headers });
                 if (!resGrades.ok) {
                     const errorText = await resGrades.text();
-                    // Si no hay notas registradas, el backend podría devolver un 404 o un array vacío.
-                    // Adaptamos el mensaje de error para ese caso.
                     if (resGrades.status === 404) {
                         mostrarAlerta(`No hay calificaciones registradas para ${nombreAlumno} en el tema "${nombreTema}".`, 'info');
                         return;
                     }
                     throw new Error(`No se pudo obtener la calificación del alumno: ${errorText}`);
                 }
-                // La API debería devolver un array de objetos Grade para ese user y topic.
                 const gradesParaAlumnoYTema = await resGrades.json();
 
                 // Obtener los nombres de los subtemas para el mensaje de WhatsApp
-                // Buscamos el objeto de tema completo para obtener los nombres de los subtemas
                 const temaSeleccionado = listaTopics.find(t => t._id === selectedTopicId);
                 let subtopicsData = {}; // Objeto para mapear subTopicId a su nombre
                 if (temaSeleccionado && temaSeleccionado.subtopics) {
@@ -414,7 +415,7 @@
                 const mensajeNotas = generarMensajeNotas(gradesParaAlumnoYTema, nombreTema, subtopicsData);
 
 
-                // Personalizar el mensaje completo
+                // *** CORRECCIÓN CLAVE AQUÍ: Construir mensajeCompleto correctamente ***
                 const mensajeCompleto = `¡Hola! Soy el/la docente de ${nombreMateriaSeleccionada()}. Le informo sobre las calificaciones de ${nombreAlumno} en el tema *"${nombreTema}"*:\n\n${mensajeNotas}\n\nPor favor, revise con su representado/a. ¡Saludos!`;
 
 
@@ -439,15 +440,10 @@
             let mensaje = '';
 
             if (!grades || grades.length === 0) {
-                // Si la respuesta de la API es un array vacío o null
                 return `El alumno aún no tiene calificaciones registradas para el tema *"${nombreTema}"*.`;
             }
 
-            // Asumiendo que `grades` es un *array* de documentos `Grade` que coinciden con el `userId` y `topicId`.
-            // En tu esquema, `subTopics` es un array dentro de cada documento `Grade`.
-            // Puede que solo haya un documento `Grade` por alumno/tema, o varios si modelas así.
-            // Aquí asumimos que obtenemos UN documento Grade, o el primero si hay varios (ajusta si tu lógica es diferente).
-            const gradeDocument = grades[0]; // Tomamos el primer (o único) documento de calificación
+            const gradeDocument = grades[0]; // Asumimos que es un solo documento de calificación por alumno/tema
 
             if (!gradeDocument || !gradeDocument.subTopics || gradeDocument.subTopics.length === 0) {
                 mensaje += `No se encontraron detalles de subtemas calificados para el tema *"${nombreTema}"*.`;
@@ -480,13 +476,17 @@
 
         function mostrarAlerta(message, type) {
             const alertaContainer = document.getElementById('alertaContainer');
-            alertaContainer.innerHTML = `
-                <div style="background-color: ${type === 'error' ? '#f8d7da' : '#d4edda'}; color: ${type === 'error' ? '#721c24' : '#155724'}; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                    ${message}
-                </div>
-            `;
+            // Limpiar alertas previas
+            alertaContainer.innerHTML = '';
+
+            const alerta = document.createElement('div');
+            alerta.className = `alerta alerta-${type}`;
+            alerta.innerHTML = `<span class="icono">${type === 'success' ? '✅' : (type === 'error' ? '❌' : 'ℹ️')}</span><span>${message}</span>`;
+            alertaContainer.appendChild(alerta);
+
             setTimeout(() => {
-                alertaContainer.innerHTML = '';
+                alerta.style.opacity = '0';
+                setTimeout(() => alerta.remove(), 500);
             }, 3000);
         }
 
