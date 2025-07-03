@@ -336,7 +336,7 @@
                 }
 
                 // Ahora, obtenemos todos los temas para esta materia
-                const resTopics = await fetch(`http://localhost:3000/topics/materia/${subjectId}`, {
+                const resTopics = await fetch(`https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/topics/materia/${subjectId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (!resTopics.ok) throw new Error('Error al obtener temas de la materia.');
@@ -357,7 +357,7 @@
 
                     try {
                         // Endpoint para obtener la calificación de un usuario en un tema específico
-                        const resGrades = await fetch(`http://localhost:3000/grades/user/${userId}/topic/${temaData._id}`, {
+                        const resGrades = await fetch(`https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/grades/user/${userId}/topic/${temaData._id}`, {
                             headers: { 'Authorization': `Bearer ${token}` }
                         });
 
