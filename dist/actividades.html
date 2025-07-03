@@ -2,380 +2,486 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Actividades de Refuerzo</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Actividades de Refuerzo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: white;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
 
-    header {
-      background-color: #07376c;
-      color: white;
-      padding: 12px 20px;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
+        header {
+            background-color: #07376c;
+            color: white;
+            padding: 12px 20px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            position: fixed; /* Asegúrate de que el header esté fijo */
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
 
-    .left-section {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+        .left-section {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
 
-    .menu-icon {
-      font-size: 26px;
-      background: none;
-      border: none;
-      color: white;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 8px;
-      transition: background-color 0.2s;
-    }
+        .menu-icon {
+            font-size: 26px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
 
-    .menu-icon:hover {
-      background-color: rgba(255, 255, 255, 0.2);
-    }
+        .menu-icon:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
 
-    .header-title {
-      font-weight: bold;
-      font-size: 20px;
-      letter-spacing: 0.5px;
-    }
+        .header-title {
+            font-weight: bold;
+            font-size: 20px;
+            letter-spacing: 0.5px;
+        }
 
-    main {
-      flex: 1;
-      padding: 30px 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-      overflow-y: auto;
-    }
+        main {
+            flex: 1;
+            padding: 30px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            overflow-y: auto;
+            margin-top: 70px; /* Ajuste para evitar solapamiento con el header fijo */
+        }
 
-    .card {
-      width: 220px;
-      min-height: 110px;
-      background: white;
-      border-radius: 14px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      transition: transform 0.2s;
-    }
+        .card {
+            width: 220px;
+            min-height: 110px;
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
 
-    .card:hover {
-      transform: translateY(-5px);
-    }
+        .card:hover {
+            transform: translateY(-5px);
+        }
 
-    .card-header {
-      padding: 14px;
-      font-size: 16px;
-      font-weight: bold;
-      text-align: center;
-      color: white;
-    }
+        .card-header {
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+        }
 
-    .header-rojo {
-      background: linear-gradient(135deg, #f44336, #e53935);
-    }
+        .header-rojo {
+            background: linear-gradient(135deg, #f44336, #e53935);
+        }
 
-    .header-amarillo {
-      background: linear-gradient(135deg, #ffeb3b, #fbc02d);
-      color: #333;
-    }
+        .header-amarillo {
+            background: linear-gradient(135deg, #ffeb3b, #fbc02d);
+            color: #333;
+        }
 
-    .header-verde {
-      background: linear-gradient(135deg, #4caf50, #43a047);
-    }
+        .header-verde {
+            background: linear-gradient(135deg, #4caf50, #43a047);
+        }
 
-    #refuerzos-container {
-      flex: 1 1 100%;
-      max-width: 300px;
-      max-height: 400px;
-      margin-bottom: 30px;
-    }
+      
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+        #refuerzos-container {
+            margin-bottom: 30px;
+            display: flex; /* Asegura que el contenedor interno de las cards se comporte como flex */
+            flex-wrap: wrap; /* Permite que las cards salten de línea */
+            gap: 20px; /* Espacio entre las cards */
+            justify-content: center; /* Centra las cards */
+            width: 100%; /* Ocupa todo el ancho disponible en el main */
+        }
 
-    th, td {
-      padding: 6px 8px;
-      border-bottom: 1px solid #eee;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-    th {
-      background-color: #4caf50;
-      color: white;
-      text-align: left;
-    }
+        th,
+        td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #eee;
+        }
 
-    #drawer {
-      position: fixed;
-      top: 0;
-      left: -260px;
-      width: 260px;
-      height: 100%;
-      background-color: #07376c;
-      padding: 50px 20px 30px;
-      box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
-      transition: left 0.3s ease;
-      z-index: 1001;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+        th {
+           /*  background-color: #ffffff;
+            color: white; */
+            text-align: left;
+        }
 
-    #drawer.show {
-      left: 0;
-    }
+        #drawer {
+            position: fixed;
+            top: 0;
+            left: -260px;
+            width: 260px;
+            height: 100%;
+            background-color: #07376c;
+            padding: 50px 20px 30px;
+            box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
+            transition: left 0.3s ease;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
 
-    #drawer-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.3);
-      display: none;
-      z-index: 1000;
-    }
+        #drawer.show {
+            left: 0;
+        }
 
-    #drawer-overlay.show {
-      display: block;
-    }
+        #drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 1000;
+        }
 
-    .drawer-item {
-      font-size: 18px;
-      padding: 15px 0;
-      border-bottom: 1px solid #A7C7E7;
-      color: #2F4F6E;
-      cursor: pointer;
-      font-weight: 500;
-    }
+        #drawer-overlay.show {
+            display: block;
+        }
 
-    .logout {
-      color: #C62828;
-      border-bottom-color: #C62828;
-    }
-      .user-section {
+        .drawer-item {
+            font-size: 18px;
+            padding: 15px 0;
+            border-bottom: 1px solid #A7C7E7;
+            color: white; /* Cambiado a blanco para que se vea en el nav oscuro */
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .logout {
+            color: #C62828;
+            border-bottom-color: #C62828;
+        }
+
+        .user-section {
             display: flex;
             align-items: center;
             gap: 8px;
             font-weight: bold;
             font-size: 16px;
             cursor: pointer;
+            color: white; /* Asegura que el texto del usuario sea blanco */
         }
-  </style>
+    </style>
 </head>
 
 <body>
-  <header>
-    <div class="left-section">
-      <button id="menu-btn" class="menu-icon" aria-label="Abrir menú">☰</button>
-      <span class="header-title">Actividades de Refuerzo</span>
-    </div>
-     <div class="user-section" id="user-section">
-      <span>👤</span> <span id="nombre-usuario"></span>
-    </div>
-  </header>
+    <header>
+        <div class="left-section">
+            <button id="menu-btn" class="menu-icon" aria-label="Abrir menú">☰</button>
+            <span class="header-title">Actividades de Refuerzo</span>
+        </div>
+        <div class="user-section" id="user-section">
+            <span>👤</span> <span id="nombre-usuario"></span>
+        </div>
+    </header>
 
-  <main id="refuerzos-container" aria-label="Subtemas y notas"></main>
+    <main id="refuerzos-container" aria-label="Subtemas y notas"></main>
 
-  <main id="actividades-container" aria-label="Actividades estáticas"></main>
+    <div id="drawer-overlay"></div>
+    <nav id="drawer" role="navigation" aria-label="Menú lateral">
+        <div>
+            <div class="drawer-item" tabindex="0" onclick="navigateTo('home-alumno.html')">🏠 Materias</div>
+            <div class="drawer-item" tabindex="0" onclick="navigateTo('perfil.html')">👤 Perfil</div>
+        </div>
+        <div class="drawer-item logout" tabindex="0" onclick="logout()">📤 Cerrar sesión</div>
+    </nav>
 
-  <div id="drawer-overlay"></div>
-  <nav id="drawer" role="navigation" aria-label="Menú lateral">
-    <div>
-      <div class="drawer-item" tabindex="0" onclick="navigateTo('home-alumno.html')">🏠 Materias</div>
-      <div class="drawer-item" tabindex="0" onclick="navigateTo('perfil.html')">👤 Perfil</div>
-    </div>
-    <div class="drawer-item logout" tabindex="0" onclick="logout()">📤 Cerrar sesión</div>
-  </nav>
-
-  <script>
-    function getUserIdFromToken(token) {
-      if (!token) return null;
-      try {
-        const payload = token.split('.')[1];
-        const decoded = atob(payload);
-        const obj = JSON.parse(decoded);
-        const userId = obj._id || obj.id || null;
-
-        if (userId) {
-          localStorage.setItem('userId', userId);
+    <script>
+        // Función para obtener la clase de color según la calificación
+        function obtenerClaseColorPorCalificacion(totalGrade) {
+            if (totalGrade < 4) {
+                return 'header-rojo';
+            } else if (totalGrade >= 4 && totalGrade < 7) {
+                return 'header-amarillo';
+            } else { // totalGrade >= 7
+                return 'header-verde';
+            }
         }
 
-        return userId;
-      } catch {
-        return null;
-      }
-    }
+        function getUserIdFromToken(token) {
+            if (!token) return null;
+            try {
+                const payload = token.split('.')[1];
+                const decoded = atob(payload);
+                const obj = JSON.parse(decoded);
+                const userId = obj._id || obj.id || null;
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const drawer = document.getElementById('drawer');
-      const overlay = document.getElementById('drawer-overlay');
-      const menuBtn = document.getElementById('menu-btn');
+                if (userId) {
+                    localStorage.setItem('userId', userId);
+                }
 
-      menuBtn.addEventListener('click', () => {
-        drawer.classList.add('show');
-        overlay.classList.add('show');
-      });
-
-      overlay.addEventListener('click', () => {
-        drawer.classList.remove('show');
-        overlay.classList.remove('show');
-      });
-
-      window.navigateTo = function (path) {
-        drawer.classList.remove('show');
-        overlay.classList.remove('show');
-        setTimeout(() => {
-          window.location.href = path;
-        }, 300);
-      };
-
-      window.logout = function () {
-        localStorage.clear();
-        window.location.href = 'index.html';
-      };
-
-      // Aquí puedes poner tu código para cargar datos, por ejemplo:
-      const token = localStorage.getItem('accessToken');
-      const userId = getUserIdFromToken(token);
-
-      cargarRefuerzoPorUsuario(userId);
-    });
-
-    async function cargarRefuerzoPorUsuario(userId) {
-      const token = localStorage.getItem('accessToken');
-      if (!token || !userId) {
-        window.location.href = 'index.html';
-        return;
-      }
-
-      try {
-        const res = await fetch(`https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/academic-support/${userId}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (!res.ok) throw new Error('Error al obtener datos');
-
-        const data = await res.json();
-
-        const container = document.getElementById('refuerzos-container');
-        container.innerHTML = '';
-
-        if (!data.topic || !data.subtopics || !Array.isArray(data.subtopics) || data.subtopics.length === 0) {
-          container.innerHTML = '<p>No hay subtemas disponibles.</p>';
-          return;
+                return userId;
+            } catch {
+                return null;
+            }
         }
 
-        const card = document.createElement('div');
-        card.className = 'card';
+        document.addEventListener('DOMContentLoaded', async () => {
+            const drawer = document.getElementById('drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            const menuBtn = document.getElementById('menu-btn');
+            const nombreUsuarioSpan = document.getElementById('nombre-usuario');
 
-        const header = document.createElement('div');
-        header.className = 'card-header header-verde';
-        header.textContent = data.topic.titulo || 'Sin título de tema';
+            menuBtn.addEventListener('click', () => {
+                drawer.classList.add('show');
+                overlay.classList.add('show');
+            });
 
-        const content = document.createElement('div');
-        content.className = 'card-content';
+            overlay.addEventListener('click', () => {
+                drawer.classList.remove('show');
+                overlay.classList.remove('show');
+            });
 
-        const tabla = document.createElement('table');
+            window.navigateTo = function(path) {
+                drawer.classList.remove('show');
+                overlay.classList.remove('show');
+                setTimeout(() => {
+                    window.location.href = path;
+                }, 300);
+            };
 
-        const thead = document.createElement('thead');
-        thead.innerHTML = `
-          <tr>
-            <th>Subtema</th>
-            <th>Calif</th>
-            <th>Max</th>
-          </tr>
-        `;
-        tabla.appendChild(thead);
+            window.logout = function() {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            };
 
-        const tbody = document.createElement('tbody');
-        data.subtopics.forEach(s => {
-          const tr = document.createElement('tr');
+            document.getElementById('user-section').onclick = () => {
+                window.location.href = 'perfil.html';
+            };
 
-          const tdTitulo = document.createElement('td');
-          tdTitulo.textContent = s.titulo;
-          tdTitulo.style.padding = '6px 8px';
 
-          const tdNota = document.createElement('td');
-          tdNota.textContent = s.nota ?? 'N/A';
-          tdNota.style.padding = '6px 8px';
+            const token = localStorage.getItem('accessToken');
+            const userId = getUserIdFromToken(token);
 
-          const tdNotaMax = document.createElement('td');
-          tdNotaMax.textContent = s.notaMaxima ?? 'N/A';
-          tdNotaMax.style.padding = '6px 8px';
+            if (token) {
+                try {
+                    const payload = token.split('.')[1];
+                    const decoded = atob(payload);
+                    const obj = JSON.parse(decoded);
+                    // Asumiendo que el nombre de usuario está en 'nombre' o 'name'
+                    nombreUsuarioSpan.textContent = obj.nombre || obj.name || 'Usuario';
+                } catch (error) {
+                    console.error("Error al decodificar token:", error);
+                    nombreUsuarioSpan.textContent = 'Usuario';
+                }
+            } else {
+                nombreUsuarioSpan.textContent = 'Invitado';
+            }
 
-          tr.appendChild(tdTitulo);
-          tr.appendChild(tdNota);
-          tr.appendChild(tdNotaMax);
-          tbody.appendChild(tr);
+
+            if (!userId) {
+                alert('Usuario no autenticado');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Aquí cargamos las calificaciones de cada tema para el usuario
+            cargarCalificacionesPorUsuarioYTemas(userId);
         });
 
-        tabla.appendChild(tbody);
-        content.appendChild(tabla);
+        // Esta función cargará las calificaciones de los temas y generará las tarjetas.
+        async function cargarCalificacionesPorUsuarioYTemas(userId) {
+            const token = localStorage.getItem('accessToken');
+            if (!token || !userId) {
+                window.location.href = 'index.html';
+                return;
+            }
 
-        // Botón Ver
-        const btnVer = document.createElement('button');
-        btnVer.textContent = 'Ver';
-        btnVer.className = 'btn-ver';
-        btnVer.style.margin = '10px auto 0 auto';
-        btnVer.style.padding = '8px 12px';
-        btnVer.style.backgroundColor = '#4caf50';
-        btnVer.style.border = 'none';
-        btnVer.style.borderRadius = '6px';
-        btnVer.style.color = 'white';
-        btnVer.style.fontWeight = 'bold';
-        btnVer.style.cursor = 'pointer';
-        btnVer.style.display = 'block';
-        btnVer.style.width = '90%';
+            try {
+                // Primero, obtenemos la materiaId y el nombre de la materia de la URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const subjectId = urlParams.get('subjectId');
+                const nombreMateria = urlParams.get('materia');
 
-        btnVer.onmouseenter = () => btnVer.style.backgroundColor = '#4caf50';
-        btnVer.onmouseleave = () => btnVer.style.backgroundColor = '#4caf50';
+                if (!subjectId) {
+                    document.getElementById('refuerzos-container').innerHTML = '<p>No se proporcionó un ID de materia.</p>';
+                    return;
+                }
 
-        btnVer.onclick = () => {
-          window.location.href = 'actividad.html';
-        };
+                // Ahora, obtenemos todos los temas para esta materia
+                const resTopics = await fetch(`http://localhost:3000/topics/materia/${subjectId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!resTopics.ok) throw new Error('Error al obtener temas de la materia.');
+                const temas = await resTopics.json();
 
-        content.appendChild(btnVer);
+                const container = document.getElementById('refuerzos-container');
+                container.innerHTML = ''; // Limpiar el contenedor
 
-        card.appendChild(header);
-        card.appendChild(content);
-        container.appendChild(card);
+                if (!Array.isArray(temas) || temas.length === 0) {
+                    container.innerHTML = '<p>No hay temas disponibles para esta materia.</p>';
+                    return;
+                }
 
-      } catch (error) {
-        console.error(error);
-        alert('Error cargando subtemas.');
-      }
-    }
-    document.getElementById('user-section').onclick = () => {
-      window.location.href = 'perfil.html';
-    };
-  </script>
+                // Para cada tema, intentaremos obtener la calificación del usuario
+                const temasConCalificaciones = await Promise.all(temas.map(async (temaData) => {
+                    let totalGradeForTopic = null; // Calificación por defecto
+                    let subtopicsForDisplay = []; // Subtemas con notas
+
+                    try {
+                        // Endpoint para obtener la calificación de un usuario en un tema específico
+                        const resGrades = await fetch(`http://localhost:3000/grades/user/${userId}/topic/${temaData._id}`, {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+
+                        if (resGrades.ok) {
+                            const gradesData = await resGrades.json();
+                            // Según tu esquema, gradesData es un array. Si hay una calificación para este tema:
+                            if (gradesData && gradesData.length > 0) {
+                                const gradeDoc = gradesData[0]; // Tomamos el primer documento de calificación
+                                totalGradeForTopic = gradeDoc.totalGrade; // Usamos el totalGrade
+                                // También podemos preparar los subtemas para mostrarlos en la tabla de la tarjeta
+                                subtopicsForDisplay = gradeDoc.subTopics.map(st => {
+                                    // Necesitamos el nombre del subtema del objeto 'temaData.subtopics'
+                                    const subtemaOriginal = temaData.subtopics.find(orig => orig._id === st.subTopicId);
+                                    return {
+                                        titulo: subtemaOriginal ? subtemaOriginal.name : `Subtema ${st.subTopicId}`,
+                                        nota: st.grade,
+                                        notaMaxima: subtemaOriginal ? subtemaOriginal.maxScore : 'N/A'
+                                    };
+                                });
+                            }
+                        }
+                    } catch (gradeError) {
+                        console.warn(`No se pudo obtener calificación para el tema ${temaData.name}:`, gradeError.message);
+                    }
+
+                    return {
+                        ...temaData,
+                        totalGrade: totalGradeForTopic,
+                        subtopicsWithGrades: subtopicsForDisplay // Añadimos los subtemas con sus notas
+                    };
+                }));
+
+                // Ahora, renderizamos las tarjetas con la calificación y el color
+                temasConCalificaciones.forEach(temaData => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+
+                    // --- Asignar color al header basado en totalGrade ---
+                    const header = document.createElement('div');
+                    let headerColorClass = obtenerClaseColorPorCalificacion(temaData.totalGrade);
+                    header.className = 'card-header ' + headerColorClass;
+                    header.textContent = `${temaData.name || 'Tema sin nombre'} ${temaData.totalGrade !== null ? `(${temaData.totalGrade})` : ''}`;
+                    card.appendChild(header);
+
+                    // --- Contenido de la tarjeta (tabla de subtemas) ---
+                    const content = document.createElement('div');
+                    content.className = 'card-content'; // Si tienes estilos para esto
+
+                    const tabla = document.createElement('table');
+                    const thead = document.createElement('thead');
+                    thead.innerHTML = `
+                        <tr>
+                            <th>Subtema</th>
+                            <th>Calif</th>
+                            <th>Max</th>
+                        </tr>
+                    `;
+                    tabla.appendChild(thead);
+
+                    const tbody = document.createElement('tbody');
+                    if (temaData.subtopicsWithGrades && temaData.subtopicsWithGrades.length > 0) {
+                        temaData.subtopicsWithGrades.forEach(s => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${s.titulo}</td>
+                                <td>${s.nota ?? 'N/A'}</td>
+                                <td>${s.notaMaxima ?? 'N/A'}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    } else {
+                        // Si no hay calificaciones de subtemas específicas, mostrar los subtemas del tema sin nota
+                        // Esto es útil si un tema aún no ha sido calificado
+                        if (temaData.subtopics && temaData.subtopics.length > 0) {
+                            temaData.subtopics.forEach(s => {
+                                const tr = document.createElement('tr');
+                                tr.innerHTML = `
+                                    <td>${s.name}</td>
+                                    <td>N/A</td>
+                                    <td>${s.maxScore ?? 'N/A'}</td>
+                                `;
+                                tbody.appendChild(tr);
+                            });
+                        } else {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `<td colspan="3">No hay subtemas o calificaciones.</td>`;
+                            tbody.appendChild(tr);
+                        }
+                    }
+                    tabla.appendChild(tbody);
+                    content.appendChild(tabla);
+
+                    
+                    const btnVer = document.createElement('button');
+                    btnVer.textContent = 'Ver Refuerzo';
+                    btnVer.style.margin = '10px auto 0 auto';
+                    btnVer.style.padding = '8px 12px';
+                    btnVer.style.backgroundColor = '#07376c'; /* Color del botón */
+                    btnVer.style.border = 'none';
+                    btnVer.style.borderRadius = '6px';
+                    btnVer.style.color = 'white';
+                    btnVer.style.fontWeight = 'bold';
+                    btnVer.style.cursor = 'pointer';
+                    btnVer.style.display = 'block';
+                    btnVer.style.width = '90%';
+                    btnVer.onmouseenter = () => btnVer.style.backgroundColor = '#052c52'; // Hover effect
+                    btnVer.onmouseleave = () => btnVer.style.backgroundColor = '#07376c'; // Hover effect
+                    btnVer.onclick = () => {
+                        // Redirigir a la página de refuerzo pasando el ID del tema y del usuario
+                        window.location.href = `recursosasignadosestudiante.html?estudianteId=${userId}&topicId=${temaData._id}`;
+                    };
+                    content.appendChild(btnVer);
+
+                    card.appendChild(header);
+                    card.appendChild(content);
+                    container.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error("Error al cargar calificaciones de temas:", error);
+                alert('Error al cargar actividades de refuerzo.');
+            }
+        }
+    </script>
 </body>
 
 </html>

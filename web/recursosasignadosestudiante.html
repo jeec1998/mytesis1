@@ -22,52 +22,59 @@
             flex-direction: column;
         }
 
-        header {
+        /* Styles for the new nav (combining previous header styles) */
+        nav {
             background-color: #07376c;
             color: white;
-            padding: 12px 20px;
-            font-size: 18px;
+            /* Added to ensure text inside nav is white */
+            padding: 12px 24px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            align-items: center;
+            width: 100%;
+            position: fixed;
+            /* Keep it fixed at the top */
+            top: 0;
+            left: 0;
+            z-index: 10;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .left-section {
+        nav .logo {
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            /* This might be redundant if header-title is used */
+        }
+
+        /* This is the left section that contains "Actividades" title */
+        nav .left-section {
             display: flex;
             align-items: center;
             gap: 14px;
         }
 
-        .menu-icon {
-            font-size: 26px;
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
-            transition: background-color 0.2s;
-        }
-
-        .menu-icon:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
+        /* This is the title "Actividades" */
         .header-title {
             font-weight: bold;
             font-size: 20px;
             letter-spacing: 0.5px;
+            color: white;
+            /* Ensure it's white */
         }
 
+        /* This is the user section on the right */
         .user-section {
             display: flex;
             align-items: center;
             gap: 8px;
             font-weight: bold;
             font-size: 16px;
+            cursor: pointer;
+            /* Add cursor pointer for clickability */
         }
 
+        /* Adjust main to prevent content from going under fixed nav */
         main {
             flex: 1;
             padding: 30px 20px;
@@ -78,8 +85,12 @@
             overflow-y: auto;
             flex-direction: column;
             align-items: center;
+            margin-top: 70px;
+            /* Adjusted for better spacing */
         }
 
+
+        /* The rest of your CSS for .card, .card-header, etc. remains the same */
         .card {
             width: 200px;
             height: 280px;
@@ -179,7 +190,7 @@
             background-color: #07376c;
         }
 
-        /* Drawer y Modal */
+        /* Drawer y Modal (if you plan to use them again) */
         #drawer {
             position: fixed;
             top: 0;
@@ -232,7 +243,7 @@
         /* Contenedor para generated */
         #generated-container {
             max-width: 900px;
-            margin: 30px auto;
+           margin-top: 310px;
             padding: 20px;
             background: white;
             border-radius: 10px;
@@ -292,7 +303,7 @@
             height: 90px;
             background-repeat: no-repeat;
             background-size: 100% 100%;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%2320744a' fill-rule='evenodd' d='M28.781 4.405h-10.13V2.018L2 4.588v22.527l16.651 2.868v-3.538h10.13A1.16 1.16 0 0 0 30 25.349V5.5a1.16 1.16 0 0 0-1.219-1.095m.16 21.126H18.617l-.017-1.889h2.487v-2.2h-2.506l-.012-1.3h2.518v-2.2H18.55l-.012-1.3h2.549v-2.2H18.53v-1.3h2.557v-2.2H18.53v-1.3h2.557v-2.2H18.53v-2h10.411Z'/%3E%3Cpath fill='%2320744a' d='M22.487 7.439h4.323v2.2h-4.323zm0 3.501h4.323v2.2h-4.323zm0 3.501h4.323v2.2h-4.323zm0 3.501h4.323v2.2h-4.323zm0 3.501h4.323v2.2h-4.323z'/%3E%3Cpath fill='%23fff' fill-rule='evenodd' d='m6.347 10.673l2.146-.123l1.349 3.709l1.594-3.862l2.146-.123l-2.606 5.266l2.606 5.279l-2.269-.153l-1.532-4.024l-1.533 3.871l-2.085-.184l2.422-4.663z'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%2320744a' fill-rule='evenodd' d='M28.781 4.405h-10.13V2.018L2 4.588v22.527l16.651 2.868v-3.538h10.13A1.16 1.16 0 0 0 30 25.349V5.5a1.16 1.16 0 0 0-1.219-1.095m.16 21.126H18.617l-.017-1.889h2.487v-2.2h-2.506l-.012-1.3h2.518v-2.2H18.55l-.012-1.3h2.549v-2.2H18.53v-1.3h2.557v-2.2H18.53v-2h10.411Z'/%3E%3Cpath fill='%2320744a' d='M22.487 7.439h4.323v2.2h-4.323zm0 3.501h4.323v2.2h-4.323zm0 3.501h4.323v2.2h-4.323zm0 3.501h4.323v2.2h-4.323zm0 3.501h4.323v2.2h-4.323z'/%3E%3Cpath fill='%23fff' fill-rule='evenodd' d='m6.347 10.673l2.146-.123l1.349 3.709l1.594-3.862l2.146-.123l-2.606 5.266l2.606 5.279l-2.269-.153l-1.532-4.024l-1.533 3.871l-2.085-.184l2.422-4.663z'/%3E%3C/svg%3E");
         }
 
         .logos--youtube-icon {
@@ -317,7 +328,9 @@
             display: inline-block;
             width: 90px;
             height: 90px;
-            --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none'%3E%3Cpath fill='%23000' fill-rule='evenodd' d='M3.172 3.172C2 4.343 2 6.229 2 10v4c0 3.771 0 5.657 1.172 6.828S6.229 22 10 22h4c3.771 0 5.657 0 6.828-1.172S22 17.771 22 14v-4c0-2.84 0-4.61-.5-5.811V17a3.62 3.62 0 0 1-2.56-1.06l-.752-.752c-.722-.722-1.082-1.082-1.491-1.234a2 2 0 0 0-1.394 0c-.409.152-.77.512-1.49 1.234l-.114.113c-.585.585-.878.878-1.189.932a1 1 0 0 1-.699-.134c-.268-.166-.431-.547-.758-1.308L11 14.667c-.75-1.75-1.124-2.624-1.778-2.952a2 2 0 0 0-1.065-.205c-.729.062-1.401.735-2.747 2.08L3.5 15.5V2.887q-.174.129-.328.285' clip-rule='evenodd'/%3E%3Cpath stroke='%23000' stroke-width='2' d='M3 10c0-1.914.002-3.249.138-4.256c.131-.978.372-1.496.74-1.865c.37-.37.888-.61 1.866-.741C6.751 3.002 8.086 3 10 3h4c1.914 0 3.249.002 4.256.138c.978.131 1.496.372 1.865.74c.37.37.61.888.742 1.866C20.998 6.751 21 8.086 21 10v4c0 1.914-.002 3.249-.137 4.256c-.132.978-.373 1.496-.742 1.865c-.369.37-.887.61-1.865.742c-1.007.135-2.342.137-4.256.137h-4c-1.914 0-3.249-.002-4.256-.137c-.978-.132-1.496-.373-1.865-.742c-.37-.369-.61-.887-.741-1.865C3.002 17.249 3 15.914 3 14z'/%3E%3Ccircle cx='15' cy='9' r='2' fill='%23000'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none'%3E%3Cpath fill='%23000' fill-rule='evenodd' d='M3.172 3.172C2 4.343 2 6.229 2 10v4c0 3.771 0 5.657 1.172 6.828S6.229 22 10 22h4c3.771 0 5.657 0 6.828-1.172S22 17.771 22 14v-4c0-2.84 0-4.61-.5-5.811V17a3.62 3.62 0 0 1-2.56-1.06l-.752-.752c-.722-.722-1.082-1.082-1.491-1.234a2 2 0 0 0-1.394 0c-.409.152-.77.512-1.49 1.234l-.114.113c-.585.585-.878.878-1.189.932a1 1 0 0 1-.699-.134c-.268-.166-.431-.547-.758-1.308L11 14.667c-.75-1.75-1.124-2.624-1.778-2.952a2 2 0 0 0-1.065-.205c-.729.062-1.401.735-2.747 2.08L3.5 15.5V2.887q-.174.129-.328.285' clip-rule='evenodd'/%3E%3Cpath stroke='%23000' stroke-width='2' d='M3 10c0-1.914.002-3.249.138-4.256c.131-.978.372-1.496.74-1.865c.37-.37.888-.61 1.866-.741C6.751 3.002 8.086 3 10 3h4c1.914 0 3.249.002 4.256.138c.978.131 1.496.372 1.865.74c.37.37.61.888.742 1.866C20.998 6.751 21 8.086 21 10v4c0 1.914-.002 3.249-.137 4.256c-.132.978-.373 1.496-.742 1.865c-.369.37-.887.61-1.865.742c-1.007.135-2.342.137-4.256.137h-4c-1.914 0-3.249-.002-4.256-.137c-.978-.132-1.496-.373-1.865-.742c-.37-.369-.61-.887-.741-1.865C3.002 17.249 3 15.914 3 14z'/%3E%3Ccircle cx='15' cy='9' r='2' fill='%23000'/%3E%3C/g%3E%3C/svg%3E");
             background-color: currentColor;
             -webkit-mask-image: var(--svg);
             mask-image: var(--svg);
@@ -411,7 +424,7 @@
             background-color: #3f51b5;
         }
 
-        /* Responsive */
+      
         @media (max-width: 520px) {
             #carousel-container {
                 gap: 10px;
@@ -427,57 +440,40 @@
                 gap: 10px;
             }
         }
+
+        a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 6px 10px;
+            transition: background 0.3s;
+        }
     </style>
 </head>
 
 <body>
-    <header>
+    <nav>
         <div class="left-section">
-            <button id="menu-btn" class="menu-icon">☰</button>
             <span class="header-title">Actividades</span>
         </div>
         <div class="user-section" id="user-section">
-            <span>👤</span> <span id="nombre-usuario"></span>
+            <span id="nombre"><a href="javascript:history.back()">Volver</a></span>
         </div>
-    </header>
+    </nav>
 
-    <div id="drawer-overlay"></div>
-    <div id="drawer">
-        <div>
-            <div class="drawer-item" onclick="navigateTo('perfil.html')">👤 Perfil</div>
-            <div class="drawer-item" onclick="navigateTo('home-alumno.html')">🏠 Materias</div>
+    <main>
+        <div id="generated-container">
         </div>
-        <div class="drawer-item logout" onclick="logout()">📤 Cerrar sesión</div>
-    </div>
-    <!-- Contenedor donde mostraremos generated -->
-    <section id="generated-container">
-        <!-- contenido generado dinámicamente -->
-    </section>
+    </main>
 
     <script>
-        // Función para extraer userId del token JWT guardado
-        function getUserIdFromToken(token) {
-            if (!token) return null;
-            try {
-                const payload = token.split('.')[1];
-                const decoded = atob(payload);
-                const obj = JSON.parse(decoded);
-                const userId = obj._id || obj.id || null;
-
-                if (userId) {
-                    localStorage.setItem('userId', userId);
-                }
-
-                return userId;
-            } catch {
-                return null;
-            }
-        }
-
         // Función para navegar entre páginas
         function navigateTo(path) {
-            drawer.classList.remove('show');
-            overlay.classList.remove('show');
+            // drawer y overlay no están definidos en este snippet,
+            // pero se asume que existen en el contexto completo de la aplicación.
+            // Para evitar errores en este snippet, los comentamos o asegúrate de definirlos.
+            // if (typeof drawer !== 'undefined') drawer.classList.remove('show');
+            // if (typeof overlay !== 'undefined') overlay.classList.remove('show');
             setTimeout(() => {
                 window.location.href = path;
             }, 300);
@@ -489,89 +485,76 @@
             window.location.href = 'index.html';
         }
 
-        // Abrir link en nueva pestaña
-        function openLink(url) {
-            window.open(url, '_blank');
-        }
-
-        // Variables drawer, overlay y menuBtn
-        const drawer = document.getElementById('drawer');
-        const overlay = document.getElementById('drawer-overlay');
-        const menuBtn = document.getElementById('menu-btn');
-
-        menuBtn.onclick = () => {
-            drawer.classList.add('show');
-            overlay.classList.add('show');
-        };
-        overlay.onclick = () => {
-            drawer.classList.remove('show');
-            overlay.classList.remove('show');
-        };
-
-        // Mostrar nombre usuario si está disponible
-        function mostrarNombreUsuario() {
-            const token = localStorage.getItem('accessToken');
-            if (!token) return;
-            try {
-                const payload = token.split('.')[1];
-                const decoded = atob(payload);
-                const obj = JSON.parse(decoded);
-                const nombre = obj.nombre || obj.name || '';
-                if (nombre) {
-                    document.getElementById('nombre-usuario').textContent = nombre;
-                }
-            } catch {
-                // no hacer nada
+        async function cargarRefuerzoPorUsuario(estudianteId) {
+            if (!estudianteId) {
+                alert('No se proporcionó el ID del estudiante.');
+                return;
             }
-        }
 
-        mostrarNombreUsuario();
-
-        async function cargarRefuerzoPorUsuario(userId) {
             const token = localStorage.getItem('accessToken');
-            if (!token || !userId) {
+            if (!token) {
+                alert('No se encontró el token de acceso.');
                 window.location.href = 'index.html';
                 return;
             }
 
             try {
-                const res = await fetch(`http://localhost:3000/academic-support/${userId}`, {
+                const res = await fetch(`http://localhost:3000/academic-support/${estudianteId}`, {
+                    method: 'GET',
                     headers: {
+                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     }
                 });
 
-                if (!res.ok) throw new Error('Error al obtener datos');
-
-                const data = await res.json();
-
-                if (!data.topic || !data.subtopics || !Array.isArray(data.subtopics) || data.subtopics.length === 0) {
-                    const container = document.getElementById('generated-container');
-                    container.innerHTML = '<p>No hay subtemas disponibles.</p>';
+                if (res.status === 401) {
+                    alert('Sesión expirada o no autorizada. Por favor, inicie sesión de nuevo.');
+                    localStorage.clear();
+                    window.location.href = 'index.html';
+                    return;
                 }
 
-                // Cargar sección generated
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error(`Error al obtener datos: ${res.status} ${res.statusText} - ${errorText}`);
+                }
+
+                const data = await res.json();
+                console.log('Datos obtenidos:', data);
+
+                if (typeof data.generated === 'string') {
+                    data.generated = JSON.parse(data.generated);
+                }
+
                 if (data.generated) {
                     mostrarGenerated(data.generated);
+                } else {
+                    const container = document.getElementById('generated-container');
+                    container.innerHTML = '<p>No hay información de refuerzo disponible para este estudiante.</p>';
                 }
 
             } catch (error) {
-                console.error(error);
-                alert('Error cargando subtemas.');
+                console.error('Error cargando refuerzos:', error);
+                alert(`Error cargando refuerzos: ${error.message}`);
             }
         }
 
         // Función para mostrar la info de generated con iconos y carrusel mejorado
-        function mostrarGenerated(generatedString) {
-            let generatedObj;
-            try {
-                generatedObj = JSON.parse(generatedString);
-            } catch (e) {
-                console.error('Error parseando generated:', e);
-                return;
-            }
+        function mostrarGenerated(generatedObj) {
             const container = document.getElementById('generated-container');
             container.innerHTML = '';
+
+            // Mostrar nombre del estudiante si está disponible
+            const nombreUsuario = localStorage.getItem('nombreUsuario');
+            const nombreUsuarioSpan = document.getElementById('nombre-usuario');
+            if (nombreUsuarioSpan) {
+                if (nombreUsuario) {
+                    nombreUsuarioSpan.textContent = nombreUsuario;
+                } else {
+                    nombreUsuarioSpan.textContent = 'Estudiante';
+                }
+            }
+
 
             if (generatedObj.recursos_recomendados && generatedObj.recursos_recomendados.length > 0) {
                 const recursosDiv = document.createElement('div');
@@ -584,7 +567,6 @@
                     recursoElem.style.alignItems = 'center';
                     recursoElem.style.gap = '12px';
 
-                    // Determinar clase icono según tipo
                     let iconClass = '';
                     const tipo = (recurso.tipo || '').toLowerCase();
                     if (tipo.includes('pdf')) iconClass = 'material-icon-theme--pdf';
@@ -608,9 +590,9 @@
 
                     const textDiv = document.createElement('div');
                     textDiv.innerHTML = `
-        <strong>${recurso.titulo}</strong> (${recurso.tipo})<br/>
-        <a href="${urlRecurso}" target="_blank" rel="noopener noreferrer">Abrir recurso</a>
-    `;
+                        <strong>${recurso.titulo}</strong> (${recurso.tipo})<br/>
+                        <a href="${urlRecurso}" target="_blank" rel="noopener noreferrer">Abrir recurso</a>
+                    `;
 
                     recursoElem.appendChild(iconSpan);
                     recursoElem.appendChild(textDiv);
@@ -618,6 +600,10 @@
                     recursosDiv.appendChild(recursoElem);
                 });
 
+                container.appendChild(recursosDiv);
+            } else {
+                const recursosDiv = document.createElement('div');
+                recursosDiv.innerHTML = `<h2>📘 Recursos Recomendados</h2><p>No hay recursos recomendados disponibles.</p>`;
                 container.appendChild(recursosDiv);
             }
 
@@ -644,10 +630,10 @@
 
                 const pasos = actividad.pasos || [];
                 let current = 0;
-                const stepDiv = document.getElementById('carousel-step');
-                const prevBtn = document.getElementById('carousel-prev');
-                const nextBtn = document.getElementById('carousel-next');
-                const indicatorsContainer = document.getElementById('carousel-indicators');
+                const stepDiv = actividadDiv.querySelector('#carousel-step');
+                const prevBtn = actividadDiv.querySelector('#carousel-prev');
+                const nextBtn = actividadDiv.querySelector('#carousel-next');
+                const indicatorsContainer = actividadDiv.querySelector('#carousel-indicators');
 
                 function renderStep() {
                     if (!pasos.length) {
@@ -658,7 +644,6 @@
                         return;
                     }
 
-                    // Animación suave de desvanecimiento
                     stepDiv.style.opacity = 0;
                     setTimeout(() => {
                         stepDiv.innerHTML = `<strong>Paso ${current + 1}:</strong> ${pasos[current]}`;
@@ -668,7 +653,6 @@
                     prevBtn.disabled = current === 0;
                     nextBtn.disabled = current === pasos.length - 1;
 
-                    // Actualizar indicadores
                     indicatorsContainer.innerHTML = '';
                     pasos.forEach((_, i) => {
                         const dot = document.createElement('div');
@@ -705,20 +689,33 @@
                 };
 
                 renderStep();
+            } else {
+                const actividadDiv = document.createElement('div');
+                actividadDiv.style.marginTop = '30px';
+                actividadDiv.innerHTML = `
+                    <h2 style="color:#07376c; font-weight: 700;">📗 Actividad de Refuerzo</h2>
+                    <p>No hay actividad de refuerzo disponible.</p>
+                `;
+                container.appendChild(actividadDiv);
             }
         }
 
         // Inicio
-        document.getElementById('user-section').onclick = () => {
-            window.location.href = 'perfil.html';
-        };
-        const token = localStorage.getItem('accessToken');
-        const userId = getUserIdFromToken(token);
-        if (userId) {
-            cargarRefuerzoPorUsuario(userId);
-        }
-    </script>
+        // Ensure this targets an element that actually exists in your nav
+        document.addEventListener('DOMContentLoaded', () => {
+            const userSectionElement = document.getElementById('user-section');
+            if (userSectionElement) {
+                userSectionElement.onclick = () => {
+                    window.location.href = 'perfil.html';
+                };
+            }
 
+            const params = new URLSearchParams(window.location.search);
+            const estudianteId = params.get("estudianteId");
+            console.log('Estudiante ID:', estudianteId);
+            cargarRefuerzoPorUsuario(estudianteId);
+        });
+    </script>
 </body>
 
 </html>

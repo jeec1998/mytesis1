@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Refuerzo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: white;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 10vh;
+            flex-direction: column;
+        }
+
+        nav {
+            background-color: #07376c;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        nav .logo {
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 6px 10px;
+            transition: background 0.3s;
+        }
+
+        nav ul li a:hover {
+            background-color: #07376c;
+            border-radius: 5px;
+        }
+
+        main {
+            padding: 30px;
+            width: 100%;
+            margin-top: 80px;
+        }
+
+        h2 {
+            color: #07376c;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .selector-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        select,
+        button {
+            padding: 10px 26px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            outline: none;
+            cursor: pointer;
+            width: 400px;
+        }
+
+        select:focus,
+        button:focus {
+            box-shadow: 0 0 8px rgba(66, 133, 244, 0.8);
+        }
+
+        button {
+            background-color: #29ff03;
+            color: white;
+            font-weight: bold;
+            border: none;
+            transition: background 0.3s;
+            width: 200px;
+        }
+
+        #topicSelect {
+            max-width: 300px;
+        }
+
+        /* Estilo para la tabla */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 40px;
+        }
+
+        table th,
+        table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        table th:nth-child(1),
+        table td:nth-child(1) {
+            width: 40%; /* Ajustado para dar espacio al nuevo botón */
+        }
+
+        table th:nth-child(2),
+        table td:nth-child(2) {
+            width: 30%; /* Ajustado para dar espacio al nuevo botón */
+        }
+
+        table th:nth-child(3),
+        table td:nth-child(3) {
+            width: 30%; /* Nuevo ancho para el botón de WhatsApp */
+        }
+
+
+        table th {
+            background-color: #07376c;
+            color: white;
+
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #f4f9ff;
+        }
+
+        table tbody tr:hover {
+            background-color: #e2e6f1;
+        }
+
+        #alertaContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        /* Responsive: Ajustar los selectores en pantallas pequeñas */
+        @media screen and (max-width: 768px) {
+            .selector-container {
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+            }
+
+            select,
+            button {
+                width: 90%;
+            }
+
+            table th,
+            table td {
+                padding: 8px; /* Reducir padding en pantallas pequeñas */
+                font-size: 14px; /* Reducir tamaño de fuente */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="alertaContainer"></div>
+
+    <nav>
+        <div class="logo">Calificaciones</div>
+        <ul>
+            <li><a href="javascript:history.back()">Volver</a></li>
+            <li><a href="perfil.html">Perfil</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Seleccione una Materia y un Tema</h2>
+        <div class="selector-container">
+            <div>
+                <label for="materiasContainer">Materia:</label>
+                <select id="materiasContainer">
+                    <option value="">Seleccione una materia</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="topicSelect">Tema:</label>
+                <select id="topicSelect">
+                    <option value="">Seleccione un tema</option>
+                </select>
+            </div>
+        </div>
+
+        <h2>Alumnos Registrados</h2>
+        <table id="tablaAlumnos">
+            <thead>
+                <tr>
+                    <th>Alumno</th>
+                    <th>Ver Refuerzo</th>
+                    <th>Enviar Nota por WhatsApp</th> </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </main>
+  <script>
+        const API = 'http://localhost:3000/Subjects';
+        const API_TOPICS = 'http://localhost:3000/topics';
+        const API_ALUMNOS = 'http://localhost:3000/users';
+        const API_GRADES = 'http://localhost:3000/grades';
+        const tablaAlumnosBody = document.querySelector('#tablaAlumnos tbody');
+        let materiaId;
+        let listaTopics = [];
+        let alumnosCargados = []; // Para almacenar los datos completos de los alumnos
+
+
+        function getAuthHeaders() {
+            const token = localStorage.getItem('accessToken');
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            };
+        }
+
+        async function cargarMaterias() {
+            const docenteId = localStorage.getItem('userId');
+            try {
+                const res = await fetch(`${API}/usuario/${docenteId}`, {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+
+                if (res.ok) {
+                    const materias = await res.json();
+                    renderMaterias(materias);
+                } else {
+                    throw new Error('No se pudieron cargar las materias.');
+                }
+            } catch (error) {
+                console.error('Error al cargar materias:', error);
+                mostrarAlerta('Error al cargar materias.', 'error');
+            }
+        }
+
+        function renderMaterias(materias) {
+            const materiasContainer = document.getElementById('materiasContainer');
+            materiasContainer.innerHTML = '<option value="">Seleccione una materia</option>';
+            materias.forEach(m => {
+                const option = document.createElement('option');
+                option.value = m._id;
+                option.textContent = m.name;
+                materiasContainer.appendChild(option);
+            });
+        }
+
+        document.getElementById('materiasContainer').addEventListener('change', (e) => {
+            materiaId = e.target.value;
+            const topicSelect = document.getElementById('topicSelect');
+            topicSelect.innerHTML = '<option value="">Seleccione un tema</option>';
+            if (materiaId) {
+                cargarTemas();
+                // Limpiar la tabla de alumnos cuando se cambia la materia
+                tablaAlumnosBody.innerHTML = '';
+            } else {
+                // Si no hay materia seleccionada, limpiar también los alumnos
+                tablaAlumnosBody.innerHTML = '';
+            }
+        });
+
+        async function cargarTemas() {
+            try {
+                const headers = getAuthHeaders();
+                const res = await fetch(`${API_TOPICS}/materia/${materiaId}`, { headers });
+                listaTopics = await res.json();
+                const topicSelect = document.getElementById('topicSelect');
+
+                topicSelect.innerHTML = '<option value="">Seleccione un tema</option>';
+                listaTopics.forEach(topic => {
+                    const option = document.createElement('option');
+                    option.value = topic._id;
+                    option.textContent = topic.name;
+                    option.dataset.subtopics = JSON.stringify(topic.subtopics);
+                    topicSelect.appendChild(option);
+                });
+
+            } catch (error) {
+                console.error('Error cargando temas:', error);
+                mostrarAlerta('Error cargando temas.', 'error');
+            }
+        }
+
+        async function cargarAlumnos(materiaId, topicId) {
+            try {
+                const headers = getAuthHeaders();
+
+                const resAlumnos = await fetch(`${API_ALUMNOS}/materia/${materiaId}`, { headers });
+                if (!resAlumnos.ok) throw new Error('Error al cargar alumnos.');
+                alumnosCargados = await resAlumnos.json(); // Almacenar los alumnos completos
+
+                // Obtener el nombre del tema seleccionado para el mensaje de WhatsApp
+                const temaSeleccionado = listaTopics.find(t => t._id === topicId);
+                const nombreTema = temaSeleccionado ? temaSeleccionado.name : 'Tema Desconocido';
+
+
+                tablaAlumnosBody.innerHTML = '';
+
+                alumnosCargados.forEach(alumno => {
+                    const fila = document.createElement('tr');
+
+                    fila.innerHTML = `
+                        <td>${alumno.name}</td>
+                        <td style="text-align: center;">
+                            <button
+                                style="background-color:#07376c; color:white; padding: 8px 18px; border:none; border-radius:6px; cursor:pointer;"
+                                onclick="window.location.href='recursosasignadosestudiante.html?estudianteId=${alumno._id}'">
+                                VER
+                            </button>
+                        </td>
+                        <td style="text-align: center;">
+                            <button
+                                style="background-color:#25d366; color:white; padding: 8px 18px; border:none; border-radius:6px; cursor:pointer;"
+                                onclick="enviarNotaPorWhatsapp('${alumno._id}', '${nombreTema}')">
+                                WhatsApp
+                            </button>
+                        </td>
+                    `;
+                    tablaAlumnosBody.appendChild(fila);
+                });
+
+            } catch (error) {
+                console.error('Error cargando alumnos:', error);
+                mostrarAlerta(`Error al cargar alumnos: ${error.message}`, 'error');
+            }
+        }
+
+        function generateWhatsappLink(telefono, mensaje) {
+            const telefonoLimpio = telefono.replace(/\D/g, '');
+            // Si el número de teléfono ya incluye el código de país (ej. 593...),
+            // no necesitas agregar '593' aquí. Si solo es el número local, agrégalo.
+            // Para Ecuador, si es número de 10 dígitos (09xxxxxxxxx), sería 5939xxxxxxxxx.
+            // Ajusta esto según cómo almacenes los números en tu DB.
+            const telefonoFinal = telefonoLimpio; // Asume que ya viene con código de país.
+
+            return `https://wa.me/${telefonoFinal}?text=${encodeURIComponent(mensaje)}`;
+        }
+
+
+        async function enviarNotaPorWhatsapp(estudianteId, nombreTema) {
+            // Busca los datos completos del alumno en la lista cargada
+            const alumno = alumnosCargados.find(a => a._id === estudianteId);
+
+            if (!alumno || !alumno.telefonorepresentante) {
+                mostrarAlerta('El número de teléfono del representante no está disponible para este alumno.', 'error');
+                return;
+            }
+
+            const telefonoRepresentante = alumno.telefonorepresentante;
+            const nombreAlumno = alumno.name; // Usar el nombre del alumno cargado
+
+            try {
+                const headers = getAuthHeaders();
+                const topicSelectElement = document.getElementById('topicSelect');
+                const selectedTopicId = topicSelectElement.value;
+
+                // Obtener las calificaciones específicas para el alumno y el tema
+                const resGrades = await fetch(`${API_GRADES}/user/${estudianteId}/topic/${selectedTopicId}`, { headers });
+                if (!resGrades.ok) {
+                    const errorText = await resGrades.text();
+                    // Si no hay notas registradas, el backend podría devolver un 404 o un array vacío.
+                    // Adaptamos el mensaje de error para ese caso.
+                    if (resGrades.status === 404) {
+                        mostrarAlerta(`No hay calificaciones registradas para ${nombreAlumno} en el tema "${nombreTema}".`, 'info');
+                        return;
+                    }
+                    throw new Error(`No se pudo obtener la calificación del alumno: ${errorText}`);
+                }
+                // La API debería devolver un array de objetos Grade para ese user y topic.
+                const gradesParaAlumnoYTema = await resGrades.json();
+
+                // Obtener los nombres de los subtemas para el mensaje de WhatsApp
+                // Buscamos el objeto de tema completo para obtener los nombres de los subtemas
+                const temaSeleccionado = listaTopics.find(t => t._id === selectedTopicId);
+                let subtopicsData = {}; // Objeto para mapear subTopicId a su nombre
+                if (temaSeleccionado && temaSeleccionado.subtopics) {
+                    temaSeleccionado.subtopics.forEach(sub => {
+                        subtopicsData[sub._id] = sub.name;
+                    });
+                }
+
+
+                const mensajeNotas = generarMensajeNotas(gradesParaAlumnoYTema, nombreTema, subtopicsData);
+
+
+                // Personalizar el mensaje completo
+                const mensajeCompleto = `¡Hola! Soy el/la docente de ${nombreMateriaSeleccionada()}. Le informo sobre las calificaciones de ${nombreAlumno} en el tema *"${nombreTema}"*:\n\n${mensajeNotas}\n\nPor favor, revise con su representado/a. ¡Saludos!`;
+
+
+                const whatsappLink = generateWhatsappLink(telefonoRepresentante, mensajeCompleto);
+                window.open(whatsappLink, '_blank');
+
+            } catch (error) {
+                console.error('Error al enviar nota por WhatsApp:', error);
+                mostrarAlerta(`Error al enviar nota: ${error.message}`, 'error');
+            }
+        }
+
+        // Función auxiliar para obtener el nombre de la materia seleccionada
+        function nombreMateriaSeleccionada() {
+            const materiasContainer = document.getElementById('materiasContainer');
+            const selectedOption = materiasContainer.options[materiasContainer.selectedIndex];
+            return selectedOption ? selectedOption.textContent : 'la materia';
+        }
+
+        // Función para formatear las notas en un mensaje de texto
+        function generarMensajeNotas(grades, nombreTema, subtopicsData) {
+            let mensaje = '';
+
+            if (!grades || grades.length === 0) {
+                // Si la respuesta de la API es un array vacío o null
+                return `El alumno aún no tiene calificaciones registradas para el tema *"${nombreTema}"*.`;
+            }
+
+            // Asumiendo que `grades` es un *array* de documentos `Grade` que coinciden con el `userId` y `topicId`.
+            // En tu esquema, `subTopics` es un array dentro de cada documento `Grade`.
+            // Puede que solo haya un documento `Grade` por alumno/tema, o varios si modelas así.
+            // Aquí asumimos que obtenemos UN documento Grade, o el primero si hay varios (ajusta si tu lógica es diferente).
+            const gradeDocument = grades[0]; // Tomamos el primer (o único) documento de calificación
+
+            if (!gradeDocument || !gradeDocument.subTopics || gradeDocument.subTopics.length === 0) {
+                mensaje += `No se encontraron detalles de subtemas calificados para el tema *"${nombreTema}"*.`;
+            } else {
+                mensaje += `*Desglose por subtema:*\n`;
+                gradeDocument.subTopics.forEach(subTopic => {
+                    const subtopicName = subtopicsData[subTopic.subTopicId] || `Subtema ${subTopic.subTopicId}`;
+                    mensaje += `  - ${subtopicName}: ${subTopic.grade !== undefined ? subTopic.grade : 'N/A'}`;
+                    if (subTopic.recoveryGrade !== undefined && subTopic.recoveryGrade !== null) {
+                        mensaje += ` (Recuperación: ${subTopic.recoveryGrade})`;
+                    }
+                    mensaje += `\n`;
+                });
+            }
+
+            // Agregar la calificación total si está disponible
+            if (gradeDocument && gradeDocument.totalGrade !== undefined) {
+                mensaje += `\n*Calificación Total del Tema:* ${gradeDocument.totalGrade}`;
+                if (gradeDocument.totalRecoveryGrade !== undefined && gradeDocument.totalRecoveryGrade !== null) {
+                    mensaje += ` (Recuperación Total: ${gradeDocument.totalRecoveryGrade})`;
+                }
+                mensaje += `\n`;
+            } else {
+                mensaje += `\n*Calificación Total del Tema:* No disponible\n`;
+            }
+
+            return mensaje;
+        }
+
+
+        function mostrarAlerta(message, type) {
+            const alertaContainer = document.getElementById('alertaContainer');
+            alertaContainer.innerHTML = `
+                <div style="background-color: ${type === 'error' ? '#f8d7da' : '#d4edda'}; color: ${type === 'error' ? '#721c24' : '#155724'}; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                    ${message}
+                </div>
+            `;
+            setTimeout(() => {
+                alertaContainer.innerHTML = '';
+            }, 3000);
+        }
+
+        document.getElementById('topicSelect').addEventListener('change', (e) => {
+            const topicId = e.target.value;
+            if (materiaId && topicId) {
+                cargarAlumnos(materiaId, topicId);
+            } else {
+                tablaAlumnosBody.innerHTML = ''; // Limpiar la tabla si no hay tema seleccionado
+            }
+        });
+
+        window.onload = () => {
+            cargarMaterias();
+        };
+    </script>
+</body>
+
+</html>

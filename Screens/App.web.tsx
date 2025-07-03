@@ -32,10 +32,11 @@ const App = () => {
   const [nombreUsuario, setNombreUsuario] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLoginWeb = async () => {
     try {
-      const res = await fetch('https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/users/login', {
+      const res = await fetch('http://localhost:3000/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombreUsuario, password }),
@@ -88,17 +89,28 @@ const App = () => {
         onChangeText={setNombreUsuario}
         autoCapitalize="none"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
+ <View style={styles.inputPasswordContainer}>
+        <TextInput
+          style={styles.inputPassword}
+          placeholder="Contraseña"
+          placeholderTextColor="#777b7f"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={!showPassword}
+        />
+        <TouchableOpacity
+          onPress={() => setShowPassword(!showPassword)}
+          style={styles.eyeIcon}
+          activeOpacity={0.7}
+        >
+          <Text style={{ fontSize: 24 }}>{showPassword ? '👁️' : '🙈'}</Text>
+        </TouchableOpacity>
+      </View>
 
       <TouchableOpacity style={styles.button} onPress={handleLoginWeb}>
         <Text style={styles.buttonText}>Ingresar</Text>
       </TouchableOpacity>
+      
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
     </View>
@@ -121,7 +133,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#4A90E2',
+    color: '#07376C',
     marginBottom: 24,
     textAlign: 'center',
   },
@@ -135,7 +147,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
   },
   button: {
-    backgroundColor: '#4A90E2',
+    backgroundColor: '#07376C',
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: 'center',
@@ -150,6 +162,30 @@ const styles = StyleSheet.create({
     color: 'red',
     marginTop: 14,
     textAlign: 'center',
+  },
+   eyeIcon: {
+    position: 'absolute',
+    right: 10,
+    top: 7,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 5,
+  },
+    inputPasswordContainer: {
+    width: '100%',
+    position: 'relative',
+    marginBottom: 15,
+   
+  },
+  inputPassword: {
+    height: 45,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingRight: 40, 
+    color: 'black',
   },
 });
 

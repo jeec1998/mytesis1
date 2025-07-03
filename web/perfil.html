@@ -18,7 +18,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1px 24px;
+      padding: 1px 22px;
     }
 
     nav .logo {
@@ -73,6 +73,11 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
+    buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
 
     button {
       margin-top: 20px;
@@ -83,6 +88,7 @@
       font-weight: bold;
       border-radius: 4px;
       cursor: pointer;
+      align-items: center;
     }
 
     button:hover {
@@ -128,6 +134,31 @@
       right: 20px;
       z-index: 9999;
     }
+    .inputPasswordContainer {
+    width: 100%;
+    position: relative;
+    margin-bottom: 15px;
+  }
+  
+  .inputPasswordContainer input {
+    height: 45px;
+    border-color: #ccc;
+    border-width: 1px;
+    border-radius: 6px;
+    padding-left: 10px;
+    padding-right: 40px;
+    color: black;
+  }
+  
+  .inputPasswordContainer button {
+    position: absolute;
+    right: 10px;
+    top: 7px;
+    height: 30px;
+    background: transparent;
+    border: none;
+    font-size: 18px;
+  }
   </style>
 </head>
 
@@ -154,41 +185,54 @@
       <input type="email" id="email" readonly>
 
       <label>Teléfono</label>
-      <input type="text" id="telefono" placeholder="+593 968144760" required />
+      <input type="text" id="telefono" placeholder="+593 99999999" required />
 
       <label>Rol</label>
       <input type="text" id="role" readonly required>
-
+      <div class="buttons">
       <button type="submit">Actualizar Perfil</button>
       <button type="button" onclick="cerrarSesion()">Cerrar sesión</button>
       <!-- Botón para cambiar la contraseña -->
       <button type="button" id="btnCambiarContrasena">Cambiar Contraseña</button>
+      </div>
     </form>
   </div>
 
   <!-- Popup para cambiar la contraseña -->
-  <div id="popupCambioContrasena">
-    <div class="popup-content">
-      <h3>Cambiar Contraseña</h3>
-      <label for="currentPassword">Contraseña Actual</label>
+<div id="popupCambioContrasena">
+  <div class="popup-content">
+    <h3>Cambiar Contraseña</h3>
+    
+    <label for="currentPassword">Contraseña Actual</label>
+    <div class="inputPasswordContainer">
       <input type="password" id="currentPassword" placeholder="Ingresa la contraseña actual" required>
-
-      <label for="newPassword">Nueva Contraseña</label>
-      <input type="password" id="newPassword" placeholder="Ingresa nueva contraseña" required>
-
-      <label for="confirmPassword">Confirmar Nueva Contraseña</label>
-      <input type="password" id="confirmPassword" placeholder="Confirma tu nueva contraseña" required>
-
-      <button onclick="cambiarContrasena()">Guardar Nueva Contraseña</button>
-      <button onclick="cerrarPopup()">Cancelar</button>
+      <button type="button" id="toggleCurrentPassword" onclick="togglePasswordVisibility('currentPassword', 'toggleCurrentPassword')">🙈</button>
     </div>
-  </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.6/inputmask.min.js"></script>
+    <label for="newPassword">Nueva Contraseña</label>
+    <div class="inputPasswordContainer">
+      <input type="password" id="newPassword" placeholder="Ingresa nueva contraseña" required>
+      <button type="button" id="toggleNewPassword" onclick="togglePasswordVisibility('newPassword', 'toggleNewPassword')">🙈</button>
+    </div>
+
+    <label for="confirmPassword">Confirmar Nueva Contraseña</label>
+    <div class="inputPasswordContainer">
+      <input type="password" id="confirmPassword" placeholder="Confirma tu nueva contraseña" required>
+      <button type="button" id="toggleConfirmPassword" onclick="togglePasswordVisibility('confirmPassword', 'toggleConfirmPassword')">🙈</button>
+    </div>
+
+    <button onclick="cambiarContrasena()">Guardar Nueva Contraseña</button>
+    <button onclick="cerrarPopup()">Cancelar</button>
+  </div>
+</div>
+
+<script src="https://unpkg.com/imask"></script>
+
+
   <script>
-    const API_GET = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/users/perfil';
-    const API_PUT = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/users/actualizar';
-    const API_CaCo = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/users/cambiar-contrasena';
+    const API_GET = 'http://localhost:3000/users/perfil';
+    const API_PUT = 'http://localhost:3000/users/actualizar';
+    const API_CaCo = 'http://localhost:3000/users/cambiar-contrasena';
 
     function mostrarAlerta(mensaje, tipo = 'success') {
       const alertaContainer = document.getElementById('alertaContainer');
@@ -235,6 +279,7 @@
         console.error('Token inválido:', e);
         return null;
       }
+      console.log('Role obtenido del token:', role);
     }
 
     function getInicioPorRol(role) {
@@ -367,15 +412,50 @@
       }
     }
 
-    window.onload = function () {
-      const input = document.getElementById('telefono');
-      const im = new Inputmask({
-        "mask": "+593 9{8}",
-        "numericInput": true
-      });
-      im.mask(input);
-    };
+       document.addEventListener('DOMContentLoaded', function () {
 
+            // 3. Seleccionar el elemento
+            const elementoTelefono = document.getElementById('telefono');
+
+            // 4. Definir las opciones de la máscara de forma muy intuitiva
+            const opcionesMascara = {
+                mask: '+{593}900000000', // El '0' es un comodín para un dígito
+                lazy: false // La máscara se muestra desde el inicio
+            };
+            
+            // 5. Aplicar la máscara
+            const mascara = IMask(elementoTelefono, opcionesMascara);
+
+            // --- Cómo validar usando IMask.js ---
+            function validarTelefono() {
+                // El método 'isComplete' te dice si todos los caracteres fueron ingresados
+                if (mascara.masked.isComplete) {
+                    // El valor sin máscara se obtiene con 'unmaskedValue'
+                    console.log('Número completo y válido:', mascara.value);
+                    console.log('Valor sin máscara:', mascara.unmaskedValue);
+                    // Aquí iría tu lógica si el teléfono es válido
+                } else {
+                    console.log('Número incompleto.');
+                     // Aquí muestras tu alerta de error
+                }
+            }
+             // Puedes llamar a la función validarTelefono() cuando envíes el formulario
+        });
+
+
+
+  function togglePasswordVisibility(inputId, buttonId) {
+    const inputField = document.getElementById(inputId);
+    const button = document.getElementById(buttonId);
+
+    if (inputField.type === "password") {
+      inputField.type = "text";
+      button.innerHTML = "👁️"; // Show as visible
+    } else {
+      inputField.type = "password";
+      button.innerHTML = "🙈"; // Show as hidden
+    }
+  }
     cargarPerfil();
   </script>
 </body>
