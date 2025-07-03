@@ -429,9 +429,6 @@
             form.style.display = 'flex';
             btnMostrarForm.style.display = 'none';
             cancelarBtn.style.display = 'inline-block';
-            // Al abrir el formulario para una nueva entrada, resetea los valores enmascarados
-            if (telefonoMaskInstance) telefonoMaskInstance.updateValue();
-            if (telefonoRepresentanteMaskInstance) telefonoRepresentanteMaskInstance.updateValue();
         };
 
         cancelarBtn.addEventListener('click', resetFormulario);
@@ -439,22 +436,18 @@
         form.addEventListener('submit', async (e) => {
               e.preventDefault();
     const estilosSeleccionados = Array.from(document.querySelectorAll('input[name="estilo"]:checked')).map(cb => cb.value);
-
-    // Obtener los valores sin máscara de las instancias de IMask
-    // Si IMask no está inicializado (ej. en desarrollo), usar el valor normal y limpiar espacios
-    const telefono = telefonoMaskInstance ? telefonoMaskInstance.unmaskedValue : document.getElementById('telefono').value.replace(/\s/g, '');
-    const telefonorepresentante = telefonoRepresentanteMaskInstance ? telefonoRepresentanteMaskInstance.unmaskedValue : document.getElementById('telefonorepresentante').value.replace(/\s/g, '');
-
-    console.log("Teléfono del alumno (unmasked) antes de enviar:", telefono); // <-- AÑADIR ESTA LÍNEA
-    console.log("Teléfono del representante (unmasked) antes de enviar:", telefonorepresentante); // <-- AÑADIR ESTA LÍNEA
-
-    // ... el resto de tu código de submit ...
-    // Asegúrate de que estás enviando 'telefono' y 'telefonorepresentante' (las variables limpias) a tu backend
+            const telefono = document.getElementById('telefono').value;
+            const telefonorepresentante = document.getElementById('telefonorepresentante').value;
+            const regexTelefono = /^\+5939\d{8}$/; // Debe ser +593 seguido de un 9 y 8 dígitos
+            if (!regexTelefono.test(telefono)) {
+                mostrarAlerta('El número de teléfono no es válido. Debe comenzar con +593  seguido de 9 dígitos.', 'error');
+                return;
+            }
     const alumno = {
         name: document.getElementById('name').value,
         email: document.getElementById('email').value,
-        telefono: telefono, // Usar el valor ya limpio
-        telefonorepresentante: telefonorepresentante, // Usar el valor ya limpio
+                telefono: document.getElementById('telefono').value,
+                telefonorepresentante: document.getElementById('telefonorepresentante').value,
         estilo: estilosSeleccionados,
         var: checkbox.checked ? true : false,
         role: 'alumno'
@@ -473,20 +466,13 @@
                 if (res.ok) {
                     mostrarAlerta(editandoAlumnoId ? 'Alumno actualizado correctamente ✅' : 'Alumno registrado exitosamente ✅');
                     resetFormulario();
-                    cargarAlumnos(); // Vuelve a cargar la tabla para ver los cambios
+                    cargarAlumnos();
 
                     const createdAlumno = await res.json();
 
                     // Verificar si el campo 'link' está presente en la respuesta
-                    // La API debería devolver el link ya procesado, incluyendo la limpieza del teléfono
                     if (createdAlumno.link) {
-                        // Dentro de form.addEventListener('submit') cuando recibes createdAlumno:
-if (createdAlumno.link) {
-    console.log("Enlace de WhatsApp recibido del backend (createdAlumno.link):", createdAlumno.link); // <-- AÑADIR ESTA LÍNEA
-    mostrarPopupWhatsapp(createdAlumno.link);
-}
-
-
+                        mostrarPopupWhatsapp(createdAlumno.link); // Abre el popup con el enlace de WhatsApp
                     }
                 } else {
                     const error = await res.json();
@@ -525,7 +511,7 @@ if (createdAlumno.link) {
                         // Aquí, el 'data.link' que viene del backend ya debería tener el teléfono limpio
                    
 if (data.link) {
-    console.log("Enlace de WhatsApp recibido del backend (data.link):", data.link); // <-- AÑADIR ESTA LÍNEA
+                        // Si hay un enlace de WhatsApp, mostrar el popup
     mostrarPopupWhatsapp(data.link);
 }else {
                             mostrarAlerta('Contraseña restablecida correctamente ✅');
@@ -552,12 +538,6 @@ if (data.link) {
         // Función para generar el enlace de WhatsApp
         // Esta función debe recibir el teléfono YA SIN ESPACIOS
         function generateWhatsappLink(telefono, nombreUsuario, password) {
-            // El .replace(/\s/g, '') aquí es una medida de seguridad extra,
-            // pero si el 'telefono' ya viene de unmaskedValue, no debería tener espacios.
-            const telefonoSinEspacios = telefono.replace(/\s/g, ''); 
-            
-            console.log("Número de teléfono (limpio) usado para enlace:", telefonoSinEspacios);
-
             const mensaje = `Hola, mi nombre de usuario es: ${nombreUsuario} y mi nueva contraseña es: ${password}`;
             return `https://wa.me/${telefonoSinEspacios}?text=${encodeURIComponent(mensaje)}`;
         }
@@ -586,14 +566,38 @@ if (data.link) {
             editandoAlumnoId = null;
             tituloFormulario.textContent = 'Registrar Alumno';
             submitBtn.textContent = 'Registrar Alumno';
-            // También resetea los inputs enmascarados
-            if (telefonoMaskInstance) telefonoMaskInstance.updateValue();
-            if (telefonoRepresentanteMaskInstance) telefonoRepresentanteMaskInstance.updateValue();
-            // Asegúrate de que el checkbox NEE se resetee correctamente si es necesario
-            document.getElementById('checkboxNEE').checked = false; // O el estado por defecto que desees
         }
 
-        // Función principal para cargar y renderizar la tabla de alumnos
+        async function cargarAlumnos() {
+            try {
+                const res = await fetch(`${API}/alumnos`, {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+                const alumnos = await res.json();
+                tablaAlumnosBody.innerHTML = '';
+
+                if (alumnos.length === 0) {
+                    tablaAlumnosBody.innerHTML = '<tr><td colspan="4">No hay alumnos registrados.</td></tr>';
+                    return;
+                }
+
+                alumnos.forEach(alumno => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+        <td>${alumno.name}</td>
+        <td>${alumno.telefonorepresentante || '-'}</td>
+        <td>${Array.isArray(alumno.estilo) ? alumno.estilo.join(', ') : alumno.estilo || '-'}</td>
+        <td>
+          <button onclick="editarAlumno('${alumno._id}')" style="background-color:#07376c; color:white; border:none; padding:6px 12px; border-radius:6px;">✏️ Editar</button>
+          <button onclick="eliminarAlumno('${alumno._id}')" style="background-color:#E94E77; color:white; border:none; padding:6px 12px; border-radius:6px;">🗑️ Eliminar</button>
+        </td>`;
+                    tablaAlumnosBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error al cargar alumnos:', error);
+            }
+        }
         const buscadorAlumno = document.getElementById('buscadorAlumno');
         let alumnosCargados = []; // Variable para guardar todos los alumnos para la búsqueda
 
@@ -604,8 +608,8 @@ if (data.link) {
                     headers: getAuthHeaders()
                 });
                 const alumnos = await res.json();
-                alumnosCargados = alumnos; // Guarda todos los alumnos para el buscador
-                renderTablaAlumnos(alumnosCargados); // Renderiza la tabla con todos
+                alumnosCargados = alumnos;
+                renderTablaAlumnos(alumnosCargados);
             } catch (error) {
                 console.error('Error al cargar alumnos:', error);
             }
@@ -650,20 +654,11 @@ if (data.link) {
                     const alumno = await res.json();
                     document.getElementById('name').value = alumno.name;
                     document.getElementById('email').value = alumno.email;
-
-                    // IMPORTANTE: Establecer los valores de los inputs enmascarados usando .typedValue
-                    if (telefonoMaskInstance) telefonoMaskInstance.typedValue = alumno.telefono || '';
-                    else document.getElementById('telefono').value = alumno.telefono || ''; // Fallback si IMask no está activo
-
-                    if (telefonoRepresentanteMaskInstance) telefonoRepresentanteMaskInstance.typedValue = alumno.telefonorepresentante || '';
-                    else document.getElementById('telefonorepresentante').value = alumno.telefonorepresentante || ''; // Fallback
+                    document.getElementById('telefono').value = alumno.telefono || '';
+                    document.getElementById('telefonorepresentante').value = alumno.telefonorepresentante || '';
 
                     const checkboxes = document.querySelectorAll('input[name="estilo"]');
                     checkboxes.forEach(cb => cb.checked = Array.isArray(alumno.estilo) && alumno.estilo.includes(cb.value));
-
-                    // Establecer el estado del checkbox NEE
-                    document.getElementById('checkboxNEE').checked = alumno.var === true;
-
                     editandoAlumnoId = alumno._id;
                     submitBtn.textContent = 'Actualizar Alumno';
                     form.style.display = 'flex';
@@ -714,26 +709,33 @@ if (data.link) {
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            // Inicializar IMask para ambos campos de teléfono
-            const elementoTelefono = document.getElementById('telefono');
-            const elementoTelefonoRepresentante = document.getElementById('telefonorepresentante');
 
+            // 3. Seleccionar el elemento
+            const elementoTelefono = document.getElementById('telefono');
+
+            // 4. Definir las opciones de la máscara de forma muy intuitiva
             const opcionesMascara = {
                 mask: '+{593}000000000', // Máscara para el formato +593 96 814 4760
                 lazy: false // false: la máscara se muestra incluso si el input está vacío
             };
 
-            telefonoMaskInstance = IMask(elementoTelefono, opcionesMascara);
-            telefonoRepresentanteMaskInstance = IMask(elementoTelefonoRepresentante, opcionesMascara);
+            // 5. Aplicar la máscara
+            const mascara = IMask(elementoTelefono, opcionesMascara);
 
-            // Puedes añadir validación visual o mensajes aquí si lo deseas
-            // Por ejemplo, escuchar el evento 'complete' o 'accept' de IMask
-            telefonoMaskInstance.on('complete', () => {
-                console.log('Teléfono principal completo:', telefonoMaskInstance.unmaskedValue);
-            });
-            telefonoRepresentanteMaskInstance.on('complete', () => {
-                console.log('Teléfono representante completo:', telefonoRepresentanteMaskInstance.unmaskedValue);
-            });
+            // --- Cómo validar usando IMask.js ---
+            function validarTelefono() {
+                // El método 'isComplete' te dice si todos los caracteres fueron ingresados
+                if (mascara.masked.isComplete) {
+                    // El valor sin máscara se obtiene con 'unmaskedValue'
+                    console.log('Número completo y válido:', mascara.value);
+                    console.log('Valor sin máscara:', mascara.unmaskedValue);
+                    // Aquí iría tu lógica si el teléfono es válido
+                } else {
+                    console.log('Número incompleto.');
+                     // Aquí muestras tu alerta de error
+                }
+            }
+             // Puedes llamar a la función validarTelefono() cuando envíes el formulario
         });
 
 
