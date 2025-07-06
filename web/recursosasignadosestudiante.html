@@ -243,29 +243,77 @@
         /* Contenedor para generated */
         #generated-container {
             max-width: 900px;
-           margin-top: 310px;
+            margin-top: 100px;
+            /* Ajustado para que el mensaje se vea bien */
             padding: 20px;
             background: white;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             color: #333;
+            /* text-align: center; */
+            /* Se comenta para controlarlo a nivel de recursoElem */
         }
 
         #generated-container h2 {
             color: #07376c;
             margin-bottom: 15px;
-            align-items: center;
             text-align: center;
         }
 
-        #generated-container a {
-            color: #07376c;
-            text-decoration: none;
+        /* Estilo para cada elemento de recurso para que se alinee */
+        .recurso-item {
+            display: flex;
+            align-items: center; /* Centra verticalmente el icono y el texto */
+            gap: 12px;
+            margin-bottom: 15px; /* Espacio entre cada recurso */
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: #fcfcfc;
+            text-align: left; /* Asegura que el contenido interno se alinee a la izquierda */
         }
 
-        #generated-container a:hover {
-            text-decoration: underline;
+        .recurso-item .icon-wrapper {
+            flex-shrink: 0; /* Evita que el icono se encoja */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Puedes ajustar el tamaño del wrapper si quieres que los iconos se vean más grandes */
+            /* width: 90px;
+            height: 90px; */
         }
+
+        .recurso-item .text-content {
+            flex-grow: 1; /* Permite que el contenido del texto ocupe el espacio restante */
+        }
+
+        .recurso-item .text-content strong {
+            display: block; /* Hace que el título ocupe su propia línea */
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        
+        .recurso-item .text-content span {
+             display: block; /* Hace que el tipo de archivo ocupe su propia línea */
+             font-size: 0.9em;
+             color: #666;
+        }
+
+        .recurso-item .text-content a {
+            color: #07376c; /* Color del enlace */
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95em;
+            display: inline-block; /* Para que margin-top funcione */
+            margin-top: 8px; /* Espacio entre el tipo y el enlace */
+            transition: color 0.2s;
+        }
+
+        .recurso-item .text-content a:hover {
+            text-decoration: underline;
+            color: #0056b3;
+        }
+
 
         #generated-container ul {
             list-style: inside disc;
@@ -278,11 +326,43 @@
             margin-bottom: 20px;
         }
 
+        /* Estilos para el mensaje "No tiene recursos asignados" */
+        .no-resources-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            /* Altura mínima para que se vea centrado y destacado */
+            color: #555;
+            font-size: 1.2em;
+            padding: 20px;
+            border: 1px dashed #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            margin: 20px auto;
+            /* Centrar y añadir margen */
+            max-width: 500px;
+        }
+
+        .no-resources-message .icon-placeholder {
+            font-size: 4em;
+            /* Tamaño grande para el ícono */
+            color: #ccc;
+            /* Color suave para el ícono */
+            margin-bottom: 15px;
+        }
+
+        .no-resources-message p {
+            margin: 0;
+            text-align: center;
+        }
+
         /* Iconos para tipos de archivo */
         .material-icon-theme--pdf {
             display: inline-block;
-            width: 90px;
-            height: 90px;
+            width: 50px; /* Tamaño más pequeño para alinear */
+            height: 50px; /* Tamaño más pequeño para alinear */
             background-repeat: no-repeat;
             background-size: 100% 100%;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ef5350' d='M13 9h5.5L13 3.5zM6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2m4.93 10.44c.41.9.93 1.64 1.53 2.15l.41.32c-.87.16-2.07.44-3.34.93l-.11.04l.5-1.04c.45-.87.78-1.66 1.01-2.4m6.48 3.81c.18-.18.27-.41.28-.66c.03-.2-.02-.39-.12-.55c-.29-.47-1.04-.69-2.28-.69l-1.29.07l-.87-.58c-.63-.52-1.2-1.43-1.6-2.56l.04-.14c.33-1.33.64-2.94-.02-3.6a.85.85 0 0 0-.61-.24h-.24c-.37 0-.7.39-.79.77c-.37 1.33-.15 2.06.22 3.27v.01c-.25.88-.57 1.9-1.08 2.93l-.96 1.8l-.89.49c-1.2.75-1.77 1.59-1.88 2.12c-.04.19-.02.36.05.54l.03.05l.48.31l.44.11c.81 0 1.73-.95 2.97-3.07l.18-.07c1.03-.33 2.31-.56 4.03-.75c1.03.51 2.24.74 3 .74c.44 0 .74-.11.91-.3m-.41-.71l.09.11c-.01.1-.04.11-.09.13h-.04l-.19.02c-.46 0-1.17-.19-1.9-.51c.09-.1.13-.1.23-.1c1.4 0 1.8.25 1.9.35M7.83 17c-.65 1.19-1.24 1.85-1.69 2c.05-.38.5-1.04 1.21-1.69zm3.02-6.91c-.23-.9-.24-1.63-.07-2.05l.07-.12l.15.05c.17.24.19.56.09 1.1l-.03.16l-.16.82z'/%3E%3C/svg%3E");
@@ -290,8 +370,8 @@
 
         .vscode-icons--file-type-word {
             display: inline-block;
-            width: 90px;
-            height: 90px;
+            width: 50px; /* Tamaño más pequeño para alinear */
+            height: 50px; /* Tamaño más pequeño para alinear */
             background-repeat: no-repeat;
             background-size: 100% 100%;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='vscodeIconsFileTypeWord0' x1='4.494' x2='13.832' y1='-1712.086' y2='-1695.914' gradientTransform='translate(0 1720)' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%232368c4'/%3E%3Cstop offset='.5' stop-color='%231a5dbe'/%3E%3Cstop offset='1' stop-color='%231146ac'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='%2341a5ee' d='M28.806 3H9.705a1.19 1.19 0 0 0-1.193 1.191V9.5l11.069 3.25L30 9.5V4.191A1.19 1.19 0 0 0 28.806 3'/%3E%3Cpath fill='%232b7cd3' d='M30 9.5H8.512V16l11.069 1.95L30 16Z'/%3E%3Cpath fill='%23185abd' d='M8.512 16v6.5l10.418 1.3L30 22.5V16Z'/%3E%3Cpath fill='%23103f91' d='M9.705 29h19.1A1.19 1.19 0 0 0 30 27.809V22.5H8.512v5.309A1.19 1.19 0 0 0 9.705 29'/%3E%3Cpath d='M16.434 8.2H8.512v16.25h7.922a1.2 1.2 0 0 0 1.194-1.191V9.391A1.2 1.2 0 0 0 16.434 8.2' opacity='0.1'/%3E%3Cpath d='M15.783 8.85H8.512V25.1h7.271a1.2 1.2 0 0 0 1.194-1.191V10.041a1.2 1.2 0 0 0-1.194-1.191' opacity='0.2'/%3E%3Cpath d='M15.783 8.85H8.512V23.8h7.271a1.2 1.2 0 0 0 1.194-1.191V10.041a1.2 1.2 0 0 0-1.194-1.191' opacity='0.2'/%3E%3Cpath d='M15.132 8.85h-6.62V23.8h6.62a1.2 1.2 0 0 0 1.194-1.191V10.041a1.2 1.2 0 0 0-1.194-1.191' opacity='0.2'/%3E%3Cpath fill='url(%23vscodeIconsFileTypeWord0)' d='M3.194 8.85h11.938a1.193 1.193 0 0 1 1.194 1.191v11.918a1.193 1.193 0 0 1-1.194 1.191H3.194A1.19 1.19 0 0 1 2 21.959V10.041A1.19 1.19 0 0 1 3.194 8.85'/%3E%3Cpath fill='%23fff' d='M6.9 17.988q.035.276.046.481h.028q.015-.195.065-.47c.05-.275.062-.338.089-.465l1.255-5.407h1.624l1.3 5.326a8 8 0 0 1 .162 1h.022a8 8 0 0 1 .135-.975l1.039-5.358h1.477l-1.824 7.748h-1.727l-1.237-5.126q-.054-.222-.122-.578t-.084-.52h-.021q-.021.189-.084.561t-.1.552L7.78 19.871H6.024L4.19 12.127h1.5l1.131 5.418a5 5 0 0 1 .079.443'/%3E%3C/svg%3E");
@@ -299,8 +379,8 @@
 
         .vscode-icons--file-type-excel2 {
             display: inline-block;
-            width: 90px;
-            height: 90px;
+            width: 50px; /* Tamaño más pequeño para alinear */
+            height: 50px; /* Tamaño más pequeño para alinear */
             background-repeat: no-repeat;
             background-size: 100% 100%;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%2320744a' fill-rule='evenodd' d='M28.781 4.405h-10.13V2.018L2 4.588v22.527l16.651 2.868v-3.538h10.13A1.16 1.16 0 0 0 30 25.349V5.5a1.16 1.16 0 0 0-1.219-1.095m.16 21.126H18.617l-.017-1.889h2.487v-2.2h-2.506l-.012-1.3h2.518v-2.2H18.55l-.012-1.3h2.549v-2.2H18.53v-1.3h2.557v-2.2H18.53v-2h10.411Z'/%3E%3Cpath fill='%2320744a' d='M22.487 7.439h4.323v2.2h-4.323zm0 3.501h4.323v2.2h-4.323zm0 3.501h4.323v2.2h-4.323zm0 3.501h4.323v2.2h-4.323zm0 3.501h4.323v2.2h-4.323z'/%3E%3Cpath fill='%23fff' fill-rule='evenodd' d='m6.347 10.673l2.146-.123l1.349 3.709l1.594-3.862l2.146-.123l-2.606 5.266l2.606 5.279l-2.269-.153l-1.532-4.024l-1.533 3.871l-2.085-.184l2.422-4.663z'/%3E%3C/svg%3E");
@@ -308,8 +388,8 @@
 
         .logos--youtube-icon {
             display: inline-block;
-            width: 105px;
-            height: 70px;
+            width: 70px; /* Tamaño más pequeño para alinear */
+            height: 45px; /* Tamaño más pequeño para alinear */
             background-repeat: no-repeat;
             background-size: 100% 100%;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 180'%3E%3Cpath fill='%23f00' d='M250.346 28.075A32.18 32.18 0 0 0 227.69 5.418C207.824 0 127.87 0 127.87 0S47.912.164 28.046 5.582A32.18 32.18 0 0 0 5.39 28.24c-6.009 35.298-8.34 89.084.165 122.97a32.18 32.18 0 0 0 22.656 22.657c19.866 5.418 99.822 5.418 99.822 5.418s79.955 0 99.82-5.418a32.18 32.18 0 0 0 22.657-22.657c6.338-35.348 8.291-89.1-.164-123.134'/%3E%3Cpath fill='%23fff' d='m102.421 128.06l66.328-38.418l-66.328-38.418z'/%3E%3C/svg%3E");
@@ -317,8 +397,8 @@
 
         .flat-color-icons--audio-file {
             display: inline-block;
-            width: 90px;
-            height: 90px;
+            width: 50px; /* Tamaño más pequeño para alinear */
+            height: 50px; /* Tamaño más pequeño para alinear */
             background-repeat: no-repeat;
             background-size: 100% 100%;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='none' d='M204 0h48v48h-48z'/%3E%3Cpath fill='%2390caf9' d='M244 45h-32V3h22l10 10z'/%3E%3Cpath fill='%23e1f5fe' d='M242.5 14H233V4.5z'/%3E%3Cg fill='%231976d2'%3E%3Ccircle cx='227' cy='30' r='4'/%3E%3Cpath d='m234 21l-5-2v11h2v-7.1l3 1.1z'/%3E%3C/g%3E%3Cpath fill='%2390caf9' d='M40 45H8V3h22l10 10z'/%3E%3Cpath fill='%23e1f5fe' d='M38.5 14H29V4.5z'/%3E%3Cg fill='%231976d2'%3E%3Ccircle cx='23' cy='30' r='4'/%3E%3Cpath d='m30 21l-5-2v11h2v-7.1l3 1.1z'/%3E%3C/g%3E%3C/svg%3E");
@@ -326,8 +406,8 @@
 
         .lets-icons--img-box-fill {
             display: inline-block;
-            width: 90px;
-            height: 90px;
+            width: 50px; /* Tamaño más pequeño para alinear */
+            height: 50px; /* Tamaño más pequeño para alinear */
             background-repeat: no-repeat;
             background-size: 100% 100%;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none'%3E%3Cpath fill='%23000' fill-rule='evenodd' d='M3.172 3.172C2 4.343 2 6.229 2 10v4c0 3.771 0 5.657 1.172 6.828S6.229 22 10 22h4c3.771 0 5.657 0 6.828-1.172S22 17.771 22 14v-4c0-2.84 0-4.61-.5-5.811V17a3.62 3.62 0 0 1-2.56-1.06l-.752-.752c-.722-.722-1.082-1.082-1.491-1.234a2 2 0 0 0-1.394 0c-.409.152-.77.512-1.49 1.234l-.114.113c-.585.585-.878.878-1.189.932a1 1 0 0 1-.699-.134c-.268-.166-.431-.547-.758-1.308L11 14.667c-.75-1.75-1.124-2.624-1.778-2.952a2 2 0 0 0-1.065-.205c-.729.062-1.401.735-2.747 2.08L3.5 15.5V2.887q-.174.129-.328.285' clip-rule='evenodd'/%3E%3Cpath stroke='%23000' stroke-width='2' d='M3 10c0-1.914.002-3.249.138-4.256c.131-.978.372-1.496.74-1.865c.37-.37.888-.61 1.866-.741C6.751 3.002 8.086 3 10 3h4c1.914 0 3.249.002 4.256.138c.978.131 1.496.372 1.865.74c.37.37.61.888.742 1.866C20.998 6.751 21 8.086 21 10v4c0 1.914-.002 3.249-.137 4.256c-.132.978-.373 1.496-.742 1.865c-.369.37-.887.61-1.865.742c-1.007.135-2.342.137-4.256.137h-4c-1.914 0-3.249-.002-4.256-.137c-.978-.132-1.496-.373-1.865-.742c-.37-.369-.61-.887-.741-1.865C3.002 17.249 3 15.914 3 14z'/%3E%3Ccircle cx='15' cy='9' r='2' fill='%23000'/%3E%3C/g%3E%3C/svg%3E");
@@ -424,7 +504,7 @@
             background-color: #3f51b5;
         }
 
-      
+
         @media (max-width: 520px) {
             #carousel-container {
                 gap: 10px;
@@ -441,13 +521,14 @@
             }
         }
 
-        a {
+        /* Removido el estilo 'a' global para evitar conflictos y aplicado localmente */
+        /* a {
             color: white;
             text-decoration: none;
             font-size: 16px;
             padding: 6px 10px;
             transition: background 0.3s;
-        }
+        } */
     </style>
 </head>
 
@@ -457,7 +538,7 @@
             <span class="header-title">Actividades</span>
         </div>
         <div class="user-section" id="user-section">
-            <span id="nombre"><a href="javascript:history.back()">Volver</a></span>
+            <span id="nombre"><a href="javascript:history.back()" style="color:white; text-decoration: none; font-size: 16px; padding: 6px 10px; transition: background 0.3s;">Volver</a></span>
         </div>
     </nav>
 
@@ -469,15 +550,47 @@
     <script>
         // Función para navegar entre páginas
         function navigateTo(path) {
-            // drawer y overlay no están definidos en este snippet,
-            // pero se asume que existen en el contexto completo de la aplicación.
-            // Para evitar errores en este snippet, los comentamos o asegúrate de definirlos.
-            // if (typeof drawer !== 'undefined') drawer.classList.remove('show');
-            // if (typeof overlay !== 'undefined') overlay.classList.remove('show');
             setTimeout(() => {
                 window.location.href = path;
             }, 300);
         }
+
+        // --- Inicio de los cambios ---
+
+        // Declara estas variables en un ámbito más global
+        let estudianteId;
+        let topicId;
+
+        window.onload = () => {
+            // Obtener los parámetros de la URL
+            const params = new URLSearchParams(window.location.search);
+
+            // Asignar los valores a las variables globales declaradas arriba
+            estudianteId = params.get('estudianteId');
+            topicId = params.get('topicId'); // ¡Ahora topicId se obtiene de la URL!
+
+            console.log("Estudiante ID obtenido de URL:", estudianteId);
+            console.log("Topic ID obtenido de URL:", topicId);
+
+            // Llama a la función principal para cargar los refuerzos
+            // Asegúrate de que ambos IDs existan antes de llamar a la función
+            if (estudianteId && topicId) {
+                cargarRefuerzoPorUsuario(estudianteId, topicId);
+            } else {
+                console.error("Error: estudianteId o topicId no encontrados en la URL.");
+                const container = document.getElementById('generated-container');
+                container.innerHTML = `
+                    <div class="no-resources-message">
+                        <span class="icon-placeholder">&#128218;</span>
+                        <p>No se pudo cargar la información. Faltan datos del estudiante o el tema.</p>
+                        <p>Por favor, regrese e intente de nuevo.</p>
+                    </div>
+                `;
+            }
+        };
+
+        // --- Fin de los cambios en window.onload y declaración de variables ---
+
 
         // Función para cerrar sesión
         function logout() {
@@ -485,21 +598,32 @@
             window.location.href = 'index.html';
         }
 
-        async function cargarRefuerzoPorUsuario(estudianteId) {
-            if (!estudianteId) {
-                alert('No se proporcionó el ID del estudiante.');
+        // Modifica esta función para que acepte tanto estudianteId como topicId
+        async function cargarRefuerzoPorUsuario(estudianteId, topicId) {
+            if (!estudianteId || !topicId) { // Ahora verifica ambos IDs aquí también
+                console.error('No se proporcionaron el ID del estudiante o el ID del tema.');
+                // Muestra un mensaje más amigable al usuario si esto sucede
+                const container = document.getElementById('generated-container');
+                container.innerHTML = `
+                    <div class="no-resources-message">
+                        <span class="icon-placeholder">&#128218;</span>
+                        <p>¡Ups! Parece que faltan datos para cargar tus refuerzos.</p>
+                        <p>Por favor, asegúrate de haber seleccionado un estudiante y un tema válidos.</p>
+                    </div>
+                `;
                 return;
             }
 
             const token = localStorage.getItem('accessToken');
             if (!token) {
-                alert('No se encontró el token de acceso.');
+                alert('No se encontró el token de acceso. Por favor, inicie sesión de nuevo.');
                 window.location.href = 'index.html';
                 return;
             }
 
             try {
-                const res = await fetch(`https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/academic-support/${estudianteId}`, {
+                // Usa ambos IDs en la URL de la API
+                const res = await fetch(`https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/academic-support/user/${estudianteId}/topic/${topicId}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -523,28 +647,45 @@
                 console.log('Datos obtenidos:', data);
 
                 if (typeof data.generated === 'string') {
-                    data.generated = JSON.parse(data.generated);
+                    try {
+                        data.generated = JSON.parse(data.generated);
+                    } catch (e) {
+                        console.error('Error al parsear data.generated:', e);
+                        data.generated = null;
+                    }
                 }
 
-                if (data.generated) {
+                if (data.generated && (data.generated.recursos_recomendados || data.generated.actividad_de_refuerzo)) {
                     mostrarGenerated(data.generated);
                 } else {
+                    // Mostrar el mensaje bonito cuando no hay recursos
                     const container = document.getElementById('generated-container');
-                    container.innerHTML = '<p>No hay información de refuerzo disponible para este estudiante.</p>';
+                    container.innerHTML = `
+                        <div class="no-resources-message">
+                            <span class="icon-placeholder">&#128218;</span> <p>¡Ups! Parece que no tienes recursos asignados en este momento.</p>
+                            <p>Por favor, consulta con tu profesor para más información.</p>
+                        </div>
+                    `;
                 }
 
             } catch (error) {
                 console.error('Error cargando refuerzos:', error);
-                alert(`Error cargando refuerzos: ${error.message}`);
+                // Mostrar el mensaje bonito en caso de error de la API
+                const container = document.getElementById('generated-container');
+                container.innerHTML = `
+                    <div class="no-resources-message">
+                        <span class="icon-placeholder">&#128218;</span> <p>¡Ups! Parece que no tienes recursos asignados en este momento.</p>
+                        <p>Por favor, consulta con tu profesor para más información.</p>
+                    </div>
+                `;
             }
         }
 
         // Función para mostrar la info de generated con iconos y carrusel mejorado
         function mostrarGenerated(generatedObj) {
             const container = document.getElementById('generated-container');
-            container.innerHTML = '';
+            container.innerHTML = ''; // Limpiar el contenedor antes de añadir contenido
 
-            // Mostrar nombre del estudiante si está disponible
             const nombreUsuario = localStorage.getItem('nombreUsuario');
             const nombreUsuarioSpan = document.getElementById('nombre-usuario');
             if (nombreUsuarioSpan) {
@@ -555,17 +696,18 @@
                 }
             }
 
-
+            // Sección de Recursos Recomendados
+            const recursosDiv = document.createElement('div');
+            recursosDiv.innerHTML = `<h2>📘 Recursos Recomendados</h2>`;
             if (generatedObj.recursos_recomendados && generatedObj.recursos_recomendados.length > 0) {
-                const recursosDiv = document.createElement('div');
-                recursosDiv.innerHTML = `<h2>📘 Recursos Recomendados</h2>`;
-
                 generatedObj.recursos_recomendados.forEach(recurso => {
+                    // Usamos un nuevo contenedor para cada recurso con la clase 'recurso-item'
                     const recursoElem = document.createElement('div');
-                    recursoElem.style.marginBottom = '10px';
-                    recursoElem.style.display = 'flex';
-                    recursoElem.style.alignItems = 'center';
-                    recursoElem.style.gap = '12px';
+                    recursoElem.className = 'recurso-item'; // Aplica el estilo flexbox aquí
+
+                    // Wrapper para el icono para mejor control de tamaño y alineación
+                    const iconWrapper = document.createElement('div');
+                    iconWrapper.className = 'icon-wrapper';
 
                     let iconClass = '';
                     const tipo = (recurso.tipo || '').toLowerCase();
@@ -581,100 +723,82 @@
 
                     const iconSpan = document.createElement('span');
                     iconSpan.className = iconClass;
-                    iconSpan.style.cursor = 'pointer';
+                    iconSpan.style.cursor = 'pointer'; // Mantén el cursor de puntero si es clickeable
                     if (urlRecurso) {
                         iconSpan.onclick = () => {
                             window.open(urlRecurso, '_blank');
                         };
                     }
+                    iconWrapper.appendChild(iconSpan);
 
-                    const textDiv = document.createElement('div');
-                    textDiv.innerHTML = `
-                        <strong>${recurso.titulo}</strong> (${recurso.tipo})<br/>
+                    // Contenedor para el texto (título, tipo, enlace)
+                    const textContentDiv = document.createElement('div');
+                    textContentDiv.className = 'text-content';
+
+                    textContentDiv.innerHTML = `
+                        <strong>${recurso.titulo}</strong>
+                        <span>(${recurso.tipo})</span>
                         <a href="${urlRecurso}" target="_blank" rel="noopener noreferrer">Abrir recurso</a>
                     `;
 
-                    recursoElem.appendChild(iconSpan);
-                    recursoElem.appendChild(textDiv);
+                    recursoElem.appendChild(iconWrapper);
+                    recursoElem.appendChild(textContentDiv);
 
                     recursosDiv.appendChild(recursoElem);
                 });
-
-                container.appendChild(recursosDiv);
             } else {
-                const recursosDiv = document.createElement('div');
-                recursosDiv.innerHTML = `<h2>📘 Recursos Recomendados</h2><p>No hay recursos recomendados disponibles.</p>`;
-                container.appendChild(recursosDiv);
+                // Mensaje bonito para recursos no asignados
+                recursosDiv.innerHTML += `
+                    <div class="no-resources-message">
+                        <span class="icon-placeholder">&#128218;</span>
+                        <p>No tienes **recursos recomendados** asignados.</p>
+                    </div>
+                `;
             }
+            container.appendChild(recursosDiv);
 
-            if (generatedObj.actividad_de_refuerzo) {
+            // Sección de Actividad de Refuerzo
+            const actividadDiv = document.createElement('div');
+            actividadDiv.style.marginTop = '30px';
+            actividadDiv.innerHTML = `<h2 style="color:#07376c; font-weight: 700;">📗 Actividad de Refuerzo</h2>`;
+
+            if (generatedObj.actividad_de_refuerzo && generatedObj.actividad_de_refuerzo.pasos && generatedObj.actividad_de_refuerzo.pasos.length > 0) {
                 const actividad = generatedObj.actividad_de_refuerzo;
-                const actividadDiv = document.createElement('div');
-                actividadDiv.style.marginTop = '30px';
-                actividadDiv.innerHTML = `
-                    <h2 style="color:#07376c; font-weight: 700;">📗 Actividad de Refuerzo</h2>
+                actividadDiv.innerHTML += `
                     <h4><strong>Descripción general</strong></h4>
                     <p style="font-size: 15px; line-height: 1.6; color: #333;">${actividad.descripcion_general}</p>
 
                     <div id="carousel-container">
                         <button id="carousel-prev" class="carousel-button" aria-label="Anterior paso">&#8592;</button>
-
                         <div id="carousel-step" aria-live="polite" aria-atomic="true"></div>
-
                         <button id="carousel-next" class="carousel-button" aria-label="Siguiente paso">&#8594;</button>
                     </div>
-
                     <div id="carousel-indicators" role="tablist" aria-label="Indicadores de pasos"></div>
                 `;
                 container.appendChild(actividadDiv);
 
-                const pasos = actividad.pasos || [];
+                const pasos = actividad.pasos;
                 let current = 0;
                 const stepDiv = actividadDiv.querySelector('#carousel-step');
                 const prevBtn = actividadDiv.querySelector('#carousel-prev');
                 const nextBtn = actividadDiv.querySelector('#carousel-next');
                 const indicatorsContainer = actividadDiv.querySelector('#carousel-indicators');
 
-                function renderStep() {
-                    if (!pasos.length) {
-                        stepDiv.textContent = 'No hay pasos disponibles.';
-                        prevBtn.disabled = true;
-                        nextBtn.disabled = true;
-                        indicatorsContainer.style.display = 'none';
-                        return;
-                    }
+            // MODIFICACIÓN DENTRO DE renderStep
+function renderStep() {
+    stepDiv.style.opacity = 0;
+    setTimeout(() => {
+        // Opción 1.1: Simplemente muestra el contenido del paso tal cual (asumiendo que ya viene numerado del backend)
+        stepDiv.innerHTML = `Paso: ${pasos[current]}`;
+        // O si quieres que el "Paso" inicial sea solo una pequeña etiqueta y el número del backend sea el principal:
+        // stepDiv.innerHTML = `<span style="font-weight: bold; margin-right: 5px;">Paso:</span> ${pasos[current]}`;
 
-                    stepDiv.style.opacity = 0;
-                    setTimeout(() => {
-                        stepDiv.innerHTML = `<strong>Paso ${current + 1}:</strong> ${pasos[current]}`;
-                        stepDiv.style.opacity = 1;
-                    }, 200);
 
-                    prevBtn.disabled = current === 0;
-                    nextBtn.disabled = current === pasos.length - 1;
+        stepDiv.style.opacity = 1;
+    }, 200);
 
-                    indicatorsContainer.innerHTML = '';
-                    pasos.forEach((_, i) => {
-                        const dot = document.createElement('div');
-                        dot.className = 'carousel-indicator' + (i === current ? ' active' : '');
-                        dot.setAttribute('role', 'tab');
-                        dot.setAttribute('aria-selected', i === current ? 'true' : 'false');
-                        dot.setAttribute('tabindex', '0');
-                        dot.addEventListener('click', () => {
-                            current = i;
-                            renderStep();
-                        });
-                        dot.addEventListener('keydown', (e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                current = i;
-                                renderStep();
-                            }
-                        });
-                        indicatorsContainer.appendChild(dot);
-                    });
-                }
-
+    // ... el resto de tu función renderStep ...
+}
                 prevBtn.onclick = () => {
                     if (current > 0) {
                         current--;
@@ -690,30 +814,28 @@
 
                 renderStep();
             } else {
-                const actividadDiv = document.createElement('div');
-                actividadDiv.style.marginTop = '30px';
-                actividadDiv.innerHTML = `
-                    <h2 style="color:#07376c; font-weight: 700;">📗 Actividad de Refuerzo</h2>
-                    <p>No hay actividad de refuerzo disponible.</p>
+                // Mensaje bonito para actividad no asignada
+                actividadDiv.innerHTML += `
+                    <div class="no-resources-message">
+                        <span class="icon-placeholder">&#128218;</span>
+                        <p>No tienes **actividades de refuerzo** asignadas.</p>
+                    </div>
                 `;
                 container.appendChild(actividadDiv);
             }
         }
 
-        // Inicio
-        // Ensure this targets an element that actually exists in your nav
+        // El evento DOMContentLoaded se mantiene, pero la lógica de obtención de IDs
+        // se ha movido a window.onload para consolidar el punto de entrada.
         document.addEventListener('DOMContentLoaded', () => {
             const userSectionElement = document.getElementById('user-section');
             if (userSectionElement) {
+                // Asegúrate de que el enlace "Volver" tenga los estilos correctos directamente si eliminas el estilo global 'a'
+                // O vuelve a poner un estilo 'a' más específico que no afecte el contenido dinámico
                 userSectionElement.onclick = () => {
                     window.location.href = 'perfil.html';
                 };
             }
-
-            const params = new URLSearchParams(window.location.search);
-            const estudianteId = params.get("estudianteId");
-            console.log('Estudiante ID:', estudianteId);
-            cargarRefuerzoPorUsuario(estudianteId);
         });
     </script>
 </body>

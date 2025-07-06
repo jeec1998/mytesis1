@@ -32,7 +32,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const App: React.FC = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+ 
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerTitleAlign: 'center' }}>

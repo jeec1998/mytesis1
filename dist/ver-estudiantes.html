@@ -2,353 +2,624 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Asignar Alumnos a Materia</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Asignar Alumnos a Materia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f8f9fa;
-      color: #333;
-    }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
 
-    nav {
-      background-color: #07376c;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 24px;
-      color: white;
-    }
+        .volver-icono {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #28a745;
+            /* verde bonito */
+            font-size: 25px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.3s, transform 0.2s;
+        }
 
-    nav a {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 18px;
-    }
+        .volver-icono:hover {
+            color: #218838;
+            transform: scale(1.05);
+            /* Cambiado de 1.25 a 1.05 para un efecto más sutil */
+        }
 
-    nav .logo {
-      font-size: 22px;
-      font-weight: bold;
-    }
+        .volver-icono i {
+            font-size: 30px;
+        }
 
-    main {
-      padding: 30px;
-      max-width: 1200px;
-      margin: auto;
-    }
+        nav {
+            background-color: #07376c;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            color: white;
+        }
 
-    h2 {
-      color: #07376c;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #07376c;
-      padding-bottom: 10px;
-    }
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-      border-radius: 12px;
-      overflow: hidden;
-      margin-top: 20px;
-    }
+        nav .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
 
-    th,
-    td {
-      padding: 15px;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
-      vertical-align: middle;
-    }
+        main {
+            padding: 30px;
+            margin: auto;
+        }
 
-    th {
-      background-color: #07376c;
-      color: white;
-      text-align: left;
-    }
+        h2 {
+            color: #07376c;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #07376c;
+            padding-bottom: 10px;
+        }
 
-    tr:hover {
-      background-color: #f1f1f1;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
 
-    .table-container {
-      margin-top: 40px;
-    }
+        th,
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            vertical-align: middle;
+        }
 
-    #alertaContainer {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 9999;
-    }
+        th {
+            background-color: #07376c;
+            color: white;
+            text-align: left;
+        }
 
-    .alerta {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #333;
-      padding: 14px 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      margin-bottom: 12px;
-      opacity: 1;
-      transition: opacity 0.5s;
-    }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
 
-    .alerta-success {
-      background-color: #d4edda;
-      color: #155724;
-    }
+        .table-container {
+            margin-top: 40px;
+        }
 
-    .alerta-error {
-      background-color: #f8d7da;
-      color: #721c24;
-    }
+        #alertaContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
 
-    .alerta .icono {
-      font-size: 20px;
-    }
+        .alerta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #333;
+            padding: 14px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 12px;
+            opacity: 1;
+            transition: opacity 0.5s;
+        }
 
-    .action-button {
-      border: none;
-      padding: 8px 14px;
-      border-radius: 6px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
+        .alerta-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
 
-    .action-button:hover {
-      transform: scale(1.05);
-    }
+        .alerta-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
 
-    .btn-agregar {
-      background-color: #28a745;
-    }
+        .alerta .icono {
+            font-size: 20px;
+        }
 
-    .btn-quitar {
-      background-color: #dc3545;
-    }
-  </style>
+        .action-button {
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .action-button:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-agregar {
+            background-color: #28a745;
+        }
+
+        .btn-quitar {
+            background-color: #dc3545;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 6px 10px;
+            transition: background 0.3s;
+        }
+
+        /* Estilos para los controles de paginación */
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .pagination-controls button {
+            background-color: #07376c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .pagination-controls button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .pagination-controls span {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* Estilo para el filtro de curso/paralelo */
+        .filtro-container {
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .filtro-container select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+    </style>
 </head>
 
 <body>
 
-  <div id="alertaContainer"></div>
+    <div id="alertaContainer"></div>
 
-  <nav>
-    <div class="logo">Panel de Asignación</div>
-    <a href="javascript:history.back()">Volver</a>
-  </nav>
+    <nav>
+        <div class="logo">Panel de Asignación</div>
+        <ul>
+            <li><a href="admin.html" id="volverInicio">Inicio</a></li>
+            <li><a href="perfil.html">Perfil</a></li>
+        </ul>
+    </nav>
 
-  <main>
-    <div class="table-container">
-      <h2>Estudiantes Agregados a esta Materia</h2>
-      <div class="buscarContainer">
-        <input type="text" id="buscadorAgregado" placeholder="Buscar alumno por nombre..."
-          style="width:100%; padding:10px; margin-bottom:20px; border:1px solid #ccc; border-radius:6px;" />
-      </div>
-      <table id="tablaAgregados">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Teléfono</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-    </div>
-    <div class="table-container">
-      <h2>Estudiantes Disponibles para Asignar</h2>
-      <div class="buscarContainer">
-        <input type="text" id="buscadorAlumno" placeholder="Buscar alumno por nombre..."
-          style="width:100%; padding:10px; margin-bottom:20px; border:1px solid #ccc; border-radius:6px; " />
-      </div>
-      <table id="tablaDisponibles">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Teléfono</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-    </div>
-  </main>
+    <main>
+        <a href="javascript:history.back()" class="volver-icono">
+            <i class="fas fa-circle-arrow-left"></i>
+        </a>
+        <div class="table-container">
+            <h2>Estudiantes Agregados a esta Materia</h2>
+            <div class="buscarContainer">
+                <input type="text" id="buscadorAgregado" placeholder="Buscar alumno por nombre..."
+                    style="width:100%; padding:10px; margin-bottom:20px; border:1px solid #ccc; border-radius:6px;" />
+            </div>
+            <table id="tablaAgregados">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div class="pagination-controls">
+                <button id="prevPageAgregados">❮ Anterior</button>
+                <span id="pageInfoAgregados">Página 1 de 1</span>
+                <button id="nextPageAgregados">Siguiente ❯</button>
+            </div>
+        </div>
+        <div class="table-container">
+            <h2>Estudiantes Disponibles para Asignar</h2>
+            <div class="buscarContainer">
+                <input type="text" id="buscadorAlumno" placeholder="Buscar alumno por nombre..."
+                    style="width:100%; padding:10px; margin-bottom:20px; border:1px solid #ccc; border-radius:6px; " />
+            </div>
 
-  <script>
-    const API_BASE = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/users';
-    const tablaDisponiblesBody = document.querySelector('#tablaDisponibles tbody');
-    const tablaAgregadosBody = document.querySelector('#tablaAgregados tbody');
+            <div class="filtro-container">
+                <select id="filtroCursoParaleloDisponibles">
+                    <option value="">Todos los Cursos y Paralelos</option>
+                    <option value="8A">Octavo EGB - A</option>
+                    <option value="8B">Octavo EGB - B</option>
+                    <option value="8C">Octavo EGB - C</option>
+                    <option value="8D">Octavo EGB - D</option>
+                    <option value="8E">Octavo EGB - E</option>
+                    <option value="8F">Octavo EGB - F</option>
+                    <option value="8G">Octavo EGB - G</option>
+                    <option value="8H">Octavo EGB - H</option>
+                    <option value="8I">Octavo EGB - I</option>
 
-    const params = new URLSearchParams(window.location.search);
-    const materiaId = params.get('materiaId');
+                    <option value="9A">Noveno EGB - A</option>
+                    <option value="9B">Noveno EGB - B</option>
+                    <option value="9C">Noveno EGB - C</option>
+                    <option value="9D">Noveno EGB - D</option>
+                    <option value="9E">Noveno EGB - E</option>
+                    <option value="9F">Noveno EGB - F</option>
+                    <option value="9G">Noveno EGB - G</option>
+                    <option value="9H">Noveno EGB - H</option>
+                    <option value="9I">Noveno EGB - I</option>
 
-    const buscadorAlumno = document.getElementById('buscadorAlumno');
-    const buscadorAgregado = document.getElementById('buscadorAgregado'); // Nuevo buscador
-    let alumnosDisponiblesGlobal = [];
-    let alumnosAgregadosGlobal = []; // Nueva variable global para alumnos agregados
+                    <option value="10A">Décimo EGB - A</option>
+                    <option value="10B">Décimo EGB - B</option>
+                    <option value="10C">Décimo EGB - C</option>
+                    <option value="10D">Décimo EGB - D</option>
+                    <option value="10E">Décimo EGB - E</option>
+                    <option value="10F">Décimo EGB - F</option>
+                    <option value="10G">Décimo EGB - G</option>
+                    <option value="10H">Décimo EGB - H</option>
+                    <option value="10I">Décimo EGB - I</option>
 
-    // Event listener para el buscador de alumnos disponibles
-    buscadorAlumno.addEventListener('input', () => {
-      buscadorAlumno.value = buscadorAlumno.value.toUpperCase();
-      const termino = buscadorAlumno.value.toLowerCase();
-      const filtrados = alumnosDisponiblesGlobal.filter(a => a.name.toLowerCase().includes(termino));
-      renderTabla(tablaDisponiblesBody, filtrados, 'disponible');
-    });
+                    <option value="1A">Primero BGU - A</option>
+                    <option value="1B">Primero BGU - B</option>
+                    <option value="1C">Primero BGU - C</option>
+                    <option value="1D">Primero BGU - D</option>
+                    <option value="1E">Primero BGU - E</option>
+                    <option value="1F">Primero BGU - F</option>
+                    <option value="1G">Primero BGU - G</option>
+                    <option value="1H">Primero BGU - H</option>
+                    <option value="1I">Primero BGU - I</option>
 
-    // Nuevo event listener para el buscador de alumnos agregados
-    buscadorAgregado.addEventListener('input', () => {
+                    <option value="2A">Segundo BGU - A</option>
+                    <option value="2B">Segundo BGU - B</option>
+                    <option value="2C">Segundo BGU - C</option>
+                    <option value="2D">Segundo BGU - D</option>
+                    <option value="2E">Segundo BGU - E</option>
+                    <option value="2F">Segundo BGU - F</option>
+                    <option value="2G">Segundo BGU - G</option>
+                    <option value="2H">Segundo BGU - H</option>
+                    <option value="2I">Segundo BGU - I</option>
 
-      buscadorAgregado.value = buscadorAgregado.value.toUpperCase();
-      const termino = buscadorAgregado.value.toLowerCase();
-      const filtrados = alumnosAgregadosGlobal.filter(a => a.name.toLowerCase().includes(termino));
-      renderTabla(tablaAgregadosBody, filtrados, 'agregado');
-    });
+                    <option value="3A">Tercero BGU - A</option>
+                    <option value="3B">Tercero BGU - B</option>
+                    <option value="3C">Tercero BGU - C</option>
+                    <option value="3D">Tercero BGU - D</option>
+                    <option value="3E">Tercero BGU - E</option>
+                    <option value="3F">Tercero BGU - F</option>
+                    <option value="3G">Tercero BGU - G</option>
+                    <option value="3H">Tercero BGU - H</option>
+                    <option value="3I">Tercero BGU - I</option>
+                </select>
+            </div>
 
-    // --- LÓGICA DE LA API ---
 
-    async function cargarYDistribuirEstudiantes() {
-      if (!materiaId) {
-        mostrarAlerta('ID de materia no encontrado en la URL.', 'error');
-        return;
-      }
-      try {
-        const resAgregados = await fetch(`${API_BASE}/materia/${materiaId}`, { headers: getAuthHeaders() });
-        const resTodos = await fetch(`${API_BASE}`, { headers: getAuthHeaders() });
+            <table id="tablaDisponibles">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div class="pagination-controls">
+                <button id="prevPageDisponibles">❮ Anterior</button>
+                <span id="pageInfoDisponibles">Página 1 de 1</span>
+                <button id="nextPageDisponibles">Siguiente ❯</button>
+            </div>
+        </div>
+    </main>
 
-        if (!resAgregados.ok || !resTodos.ok) {
-          const errorData = await (resAgregados.ok ? resTodos.json() : resAgregados.json());
-          throw new Error(errorData.message || 'No se pudo obtener la lista de estudiantes.');
+    <script>
+        const API_BASE = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/users';
+        const tablaDisponiblesBody = document.querySelector('#tablaDisponibles tbody');
+        const tablaAgregadosBody = document.querySelector('#tablaAgregados tbody');
+
+        const params = new URLSearchParams(window.location.search);
+        const materiaId = params.get('materiaId');
+
+        const buscadorAlumno = document.getElementById('buscadorAlumno'); // Buscador para disponibles
+        const buscadorAgregado = document.getElementById('buscadorAgregado'); // Buscador para agregados
+        const filtroCursoParaleloDisponibles = document.getElementById('filtroCursoParaleloDisponibles'); // Nuevo filtro para disponibles
+
+        let alumnosDisponiblesGlobal = []; // Alumnos que aún no están asignados a esta materia
+        let alumnosAgregadosGlobal = []; // Alumnos que ya están asignados a esta materia
+
+        // --- Variables de Paginación ---
+        const alumnosPerPage = 10;
+
+        // Para la tabla de disponibles
+        let currentPageDisponibles = 1;
+        let filteredDisponibles = []; // Alumnos disponibles después de aplicar búsqueda y filtro de curso
+        const prevPageDisponiblesBtn = document.getElementById('prevPageDisponibles');
+        const nextPageDisponiblesBtn = document.getElementById('nextPageDisponibles');
+        const pageInfoDisponiblesSpan = document.getElementById('pageInfoDisponibles');
+
+        // Para la tabla de agregados
+        let currentPageAgregados = 1;
+        let filteredAgregados = []; // Alumnos agregados después de aplicar búsqueda
+        const prevPageAgregadosBtn = document.getElementById('prevPageAgregados');
+        const nextPageAgregadosBtn = document.getElementById('nextPageAgregados');
+        const pageInfoAgregadosSpan = document.getElementById('pageInfoAgregados');
+
+
+        // Event listener para el buscador de alumnos disponibles
+        buscadorAlumno.addEventListener('input', () => {
+            aplicarFiltrosYBusquedasDisponibles();
+        });
+
+        // Event listener para el filtro de curso/paralelo de alumnos disponibles
+        filtroCursoParaleloDisponibles.addEventListener('change', () => {
+            aplicarFiltrosYBusquedasDisponibles();
+        });
+
+        // Event listener para el buscador de alumnos agregados
+        buscadorAgregado.addEventListener('input', () => {
+            aplicarFiltrosYBusquedasAgregados();
+        });
+
+        // Event listeners para los botones de paginación de disponibles
+        prevPageDisponiblesBtn.addEventListener('click', () => {
+            if (currentPageDisponibles > 1) {
+                currentPageDisponibles--;
+                renderTabla(tablaDisponiblesBody, filteredDisponibles, 'disponible', currentPageDisponibles, pageInfoDisponiblesSpan, prevPageDisponiblesBtn, nextPageDisponiblesBtn);
+            }
+        });
+
+        nextPageDisponiblesBtn.addEventListener('click', () => {
+            const totalPages = Math.ceil(filteredDisponibles.length / alumnosPerPage);
+            if (currentPageDisponibles < totalPages) {
+                currentPageDisponibles++;
+                renderTabla(tablaDisponiblesBody, filteredDisponibles, 'disponible', currentPageDisponibles, pageInfoDisponiblesSpan, prevPageDisponiblesBtn, nextPageDisponiblesBtn);
+            }
+        });
+
+        // Event listeners para los botones de paginación de agregados
+        prevPageAgregadosBtn.addEventListener('click', () => {
+            if (currentPageAgregados > 1) {
+                currentPageAgregados--;
+                renderTabla(tablaAgregadosBody, filteredAgregados, 'agregado', currentPageAgregados, pageInfoAgregadosSpan, prevPageAgregadosBtn, nextPageAgregadosBtn);
+            }
+        });
+
+        nextPageAgregadosBtn.addEventListener('click', () => {
+            const totalPages = Math.ceil(filteredAgregados.length / alumnosPerPage);
+            if (currentPageAgregados < totalPages) {
+                currentPageAgregados++;
+                renderTabla(tablaAgregadosBody, filteredAgregados, 'agregado', currentPageAgregados, pageInfoAgregadosSpan, prevPageAgregadosBtn, nextPageAgregadosBtn);
+            }
+        });
+
+        // --- LÓGICA DE FILTRADO Y BÚSQUEDA ---
+        function aplicarFiltrosYBusquedasDisponibles() {
+            let alumnosFiltrados = [...alumnosDisponiblesGlobal]; // Empezamos con todos los disponibles
+
+            // 1. Aplicar filtro por curso/paralelo
+            const filtroCursoValor = filtroCursoParaleloDisponibles.value;
+            if (filtroCursoValor) {
+                alumnosFiltrados = alumnosFiltrados.filter(a => a.curso === filtroCursoValor);
+            }
+
+            // 2. Aplicar búsqueda por nombre
+            const terminoBusqueda = buscadorAlumno.value.toLowerCase();
+            if (terminoBusqueda) {
+                alumnosFiltrados = alumnosFiltrados.filter(a => a.name.toLowerCase().includes(terminoBusqueda));
+            }
+
+            filteredDisponibles = alumnosFiltrados;
+            currentPageDisponibles = 1; // Reiniciar página al aplicar nuevos filtros/búsquedas
+            renderTabla(tablaDisponiblesBody, filteredDisponibles, 'disponible', currentPageDisponibles, pageInfoDisponiblesSpan, prevPageDisponiblesBtn, nextPageDisponiblesBtn);
         }
 
-        const agregados = await resAgregados.json();
-        const todosLosAlumnos = (await resTodos.json()).filter(u => u.role === 'alumno');
+        function aplicarFiltrosYBusquedasAgregados() {
+            let alumnosFiltrados = [...alumnosAgregadosGlobal];
 
-        const idsAgregados = new Set(agregados.map(a => a._id));
-        const disponibles = todosLosAlumnos.filter(a => !idsAgregados.has(a._id));
+            const terminoBusqueda = buscadorAgregado.value.toLowerCase();
+            if (terminoBusqueda) {
+                alumnosFiltrados = alumnosFiltrados.filter(a => a.name.toLowerCase().includes(terminoBusqueda));
+            }
 
-        // Almacenar en las variables globales
-        alumnosAgregadosGlobal = agregados;
-        alumnosDisponiblesGlobal = disponibles;
+            filteredAgregados = alumnosFiltrados;
+            currentPageAgregados = 1; // Reiniciar página
+            renderTabla(tablaAgregadosBody, filteredAgregados, 'agregado', currentPageAgregados, pageInfoAgregadosSpan, prevPageAgregadosBtn, nextPageAgregadosBtn);
+        }
 
-        // Renderizar las tablas con las listas completas inicialmente
-        renderTabla(tablaAgregadosBody, alumnosAgregadosGlobal, 'agregado');
-        renderTabla(tablaDisponiblesBody, alumnosDisponiblesGlobal, 'disponible');
 
-      } catch (error) {
-        console.error('Error al cargar estudiantes:', error);
-        mostrarAlerta(error.message, 'error');
-      }
-    }
+        // --- LÓGICA DE LA API ---
 
-    function renderTabla(tbody, estudiantes, tipo) {
-      tbody.innerHTML = '';
-      const esAgregado = tipo === 'agregado';
+        async function cargarYDistribuirEstudiantes() {
+            if (!materiaId) {
+                mostrarAlerta('ID de materia no encontrado en la URL.', 'error');
+                return;
+            }
+            try {
+                const resAgregados = await fetch(`${API_BASE}/materia/${materiaId}`, { headers: getAuthHeaders() });
+                const resTodos = await fetch(`${API_BASE}`, { headers: getAuthHeaders() });
 
-      if (estudiantes.length === 0) {
-        const mensaje = esAgregado ? 'Aún no se han agregado estudiantes a esta materia.' : 'No hay estudiantes disponibles para agregar.';
-        tbody.innerHTML = `<tr><td colspan="4">${mensaje}</td></tr>`;
-        return;
-      }
+                if (!resAgregados.ok || !resTodos.ok) {
+                    const errorData = await (resAgregados.ok ? resTodos.json() : resAgregados.json());
+                    throw new Error(errorData.message || 'No se pudo obtener la lista de estudiantes.');
+                }
 
-      estudiantes.forEach(estudiante => {
-        const row = tbody.insertRow();
-        row.id = `${tipo}-${estudiante._id}`;
-        row.innerHTML = `
-                    <td>${estudiante.name.toUpperCase()}</td>
-                    <td>${estudiante.email}</td>
+                const agregados = await resAgregados.json();
+                const todosLosAlumnos = (await resTodos.json()).filter(u => u.role === 'alumno');
+
+                const idsAgregados = new Set(agregados.map(a => a._id));
+                const disponiblesSinFiltrar = todosLosAlumnos.filter(a => !idsAgregados.has(a._id));
+
+                alumnosAgregadosGlobal = agregados;
+                alumnosDisponiblesGlobal = disponiblesSinFiltrar; // Mantener la lista completa sin filtrar por curso
+
+                // Aplicar filtros iniciales y renderizar
+                aplicarFiltrosYBusquedasAgregados();
+                aplicarFiltrosYBusquedasDisponibles();
+
+            } catch (error) {
+                console.error('Error al cargar estudiantes:', error);
+                mostrarAlerta(error.message, 'error');
+            }
+        }
+
+        // Esta función ahora es genérica para ambas tablas
+        function renderTabla(tbody, estudiantes, tipo, currentPage, pageInfoSpan, prevBtn, nextBtn) {
+            tbody.innerHTML = ''; // Limpiar la tabla
+
+            if (estudiantes.length === 0) {
+                const mensaje = tipo === 'agregado' ? 'Aún no se han agregado estudiantes a esta materia.' : 'No hay estudiantes disponibles para agregar que coincidan con los filtros.';
+                tbody.innerHTML = `<tr><td colspan="4">${mensaje}</td></tr>`;
+                pageInfoSpan.textContent = 'Página 0 de 0'; // Actualizar info de página
+                prevBtn.disabled = true; // Deshabilitar botones
+                nextBtn.disabled = true; // Deshabilitar botones
+                return;
+            }
+
+            const totalPages = Math.ceil(estudiantes.length / alumnosPerPage);
+
+            // Asegurarse de que la página actual no exceda el número total de páginas
+            if (currentPage > totalPages) {
+                currentPage = totalPages;
+            }
+            if (currentPage < 1) {
+                currentPage = 1;
+            }
+
+            const startIndex = (currentPage - 1) * alumnosPerPage;
+            const endIndex = startIndex + alumnosPerPage;
+            const alumnosToDisplay = estudiantes.slice(startIndex, endIndex);
+
+            alumnosToDisplay.forEach(estudiante => {
+                const row = tbody.insertRow();
+                row.id = `${tipo}-${estudiante._id}`;
+                row.innerHTML = `
+                    <td>${estudiante.name ? estudiante.name.toUpperCase() : '-'}</td>
+                    <td>${estudiante.email || '-'}</td>
                     <td>${estudiante.telefono || '-'}</td>
                     <td>
-                        <button 
-                            class="action-button ${esAgregado ? 'btn-quitar' : 'btn-agregar'}" 
-                            onclick="${esAgregado ? `quitarEstudiante('${estudiante._id}')` : `agregarEstudiante('${estudiante._id}')`}">
-                            ${esAgregado ? '❌ Quitar' : '➕ Agregar'}
+                        <button
+                            class="action-button ${tipo === 'agregado' ? 'btn-quitar' : 'btn-agregar'}"
+                            onclick="${tipo === 'agregado' ? `quitarEstudiante('${estudiante._id}')` : `agregarEstudiante('${estudiante._id}')`}">
+                            ${tipo === 'agregado' ? '❌ Quitar' : '➕ Agregar'}
                         </button>
                     </td>
                 `;
-      });
-    }
+            });
 
-    async function agregarEstudiante(estudianteId) {
-      try {
-        const res = await fetch(`${API_BASE}/${estudianteId}/add-subjects`, {
-          method: 'PUT',
-          headers: getAuthHeaders(),
-          body: JSON.stringify({ subjectIds: [materiaId] })
-        });
-
-        if (res.ok) {
-          mostrarAlerta('Estudiante agregado correctamente ✅');
-          cargarYDistribuirEstudiantes(); // Recargar y redistribuir
-        } else {
-          const error = await res.json();
-          throw new Error(error.message || 'Error al agregar al estudiante.');
+            pageInfoSpan.textContent = `Página ${currentPage} de ${totalPages}`;
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
         }
-      } catch (error) {
-        console.error('Error en agregarEstudiante:', error);
-        mostrarAlerta(error.message, 'error');
-      }
-    }
 
-    async function quitarEstudiante(estudianteId) {
-      try {
-        const res = await fetch(`${API_BASE}/${estudianteId}/remove-subject/${materiaId}`, {
-          method: 'DELETE',
-          headers: getAuthHeaders()
-        });
 
-        if (res.ok) {
-          mostrarAlerta('Estudiante quitado de la materia.');
-          cargarYDistribuirEstudiantes(); // Recargar y redistribuir
-        } else {
-          const error = await res.json();
-          throw new Error(error.message || 'Error al quitar al estudiante.');
+        async function agregarEstudiante(estudianteId) {
+            try {
+                const res = await fetch(`${API_BASE}/${estudianteId}/add-subjects`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ subjectIds: [materiaId] })
+                });
+
+                if (res.ok) {
+                    mostrarAlerta('Estudiante agregado correctamente ✅');
+                    cargarYDistribuirEstudiantes(); // Recargar y redistribuir
+                } else {
+                    const error = await res.json();
+                    throw new Error(error.message || 'Error al agregar al estudiante.');
+                }
+            } catch (error) {
+                console.error('Error en agregarEstudiante:', error);
+                mostrarAlerta(error.message, 'error');
+            }
         }
-      } catch (error) {
-        console.error('Error en quitarEstudiante:', error);
-        mostrarAlerta(error.message, 'error');
-      }
-    }
 
-    // --- FUNCIONES AUXILIARES ---
+        async function quitarEstudiante(estudianteId) {
+            try {
+                const res = await fetch(`${API_BASE}/${estudianteId}/remove-subject/${materiaId}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
 
-    function getAuthHeaders() {
-      const token = localStorage.getItem('accessToken');
-      return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
-    }
+                if (res.ok) {
+                    mostrarAlerta('Estudiante quitado de la materia.');
+                    cargarYDistribuirEstudiantes(); // Recargar y redistribuir
+                } else {
+                    const error = await res.json();
+                    throw new Error(error.message || 'Error al quitar al estudiante.');
+                }
+            } catch (error) {
+                console.error('Error en quitarEstudiante:', error);
+                mostrarAlerta(error.message, 'error');
+            }
+        }
 
-    function mostrarAlerta(mensaje, tipo = 'success') {
-      const alertaContainer = document.getElementById('alertaContainer');
-      const alerta = document.createElement('div');
-      alerta.className = `alerta alerta-${tipo}`;
-      alerta.innerHTML = `<span class="icono">${tipo === 'success' ? '✅' : '❌'}</span><span>${mensaje}</span>`;
-      alertaContainer.appendChild(alerta);
-      setTimeout(() => {
-        alerta.style.opacity = '0';
-        setTimeout(() => alerta.remove(), 500);
-      }, 3000);
-    }
+        // --- FUNCIONES AUXILIARES ---
 
-    // --- INICIALIZACIÓN ---
-    window.onload = cargarYDistribuirEstudiantes;
-  </script>
+        function getAuthHeaders() {
+            const token = localStorage.getItem('accessToken');
+            return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
+        }
+
+        function mostrarAlerta(mensaje, tipo = 'success') {
+            const alertaContainer = document.getElementById('alertaContainer');
+            const alerta = document.createElement('div');
+            alerta.className = `alerta alerta-${tipo}`;
+            alerta.innerHTML = `<span class="icono">${tipo === 'success' ? '✅' : '❌'}</span><span>${mensaje}</span>`;
+            alertaContainer.appendChild(alerta);
+            setTimeout(() => {
+                alerta.style.opacity = '0';
+                setTimeout(() => alerta.remove(), 500);
+            }, 3000);
+        }
+
+        // --- INICIALIZACIÓN ---
+        window.onload = cargarYDistribuirEstudiantes;
+    </script>
 </body>
 
 </html>

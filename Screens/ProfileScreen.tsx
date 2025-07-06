@@ -29,6 +29,7 @@ const ProfileScreen: React.FC<Props> = ({ navigation, onLogout }) => {
     correo: '',
     nombreUsuario: '',
     telefono: '',
+    estilo: '',
   });
 
   const [originalUser, setOriginalUser] = useState(user); // Para guardar datos originales
@@ -61,7 +62,8 @@ const ProfileScreen: React.FC<Props> = ({ navigation, onLogout }) => {
         nombreUsuario: data.usuario.nombreUsuario || '',
         correo: data.usuario.correo || '',
         telefono: data.usuario.telefono || '',
-      };
+        estilo: data.usuario.estilo || '',
+            };
       setUser(perfil);
       setOriginalUser(perfil); // Guarda el perfil original
     } catch (error) {
@@ -200,6 +202,17 @@ const ProfileScreen: React.FC<Props> = ({ navigation, onLogout }) => {
             <Text style={[styles.value, styles.uppercaseText]}>📱 {user.telefono}</Text>
           )}
         </View>
+       <View style={styles.card}>
+  <Text style={styles.label}>Estilo de aprendizaje</Text>
+  {isEditing ? (
+    // Si está en modo edición, mostrar el TextInput (cambiado para que no sea editable)
+    <Text style={styles.value}>{user.estilo}</Text>
+  ) : (
+    // Si no está en modo edición, solo mostrar el estilo como texto
+    <Text style={[styles.value, styles.uppercaseText]}>{user.estilo}</Text>
+  )}
+</View>
+
  
         <Modal
           animationType="fade"

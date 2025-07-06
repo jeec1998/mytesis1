@@ -76,8 +76,8 @@
         }
 
         .card {
-            width: 220px;
-            min-height: 110px;
+            width: 320px;
+            max-height: 320px;
             background: white;
             border-radius: 14px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -146,7 +146,7 @@
             left: -260px;
             width: 260px;
             height: 100%;
-            background-color: #07376c;
+            background-color: #D6E6F2;
             padding: 50px 20px 30px;
             box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
             transition: left 0.3s ease;
@@ -179,7 +179,7 @@
             font-size: 18px;
             padding: 15px 0;
             border-bottom: 1px solid #A7C7E7;
-            color: white; /* Cambiado a blanco para que se vea en el nav oscuro */
+            color: #07376c; /* Cambiado a blanco para que se vea en el nav oscuro */
             cursor: pointer;
             font-weight: 500;
         }
@@ -217,8 +217,9 @@
     <div id="drawer-overlay"></div>
     <nav id="drawer" role="navigation" aria-label="Menú lateral">
         <div>
+             <div class="drawer-item" tabindex="0" onclick="navigateTo('perfil.html')">👤 Perfil</div>
             <div class="drawer-item" tabindex="0" onclick="navigateTo('home-alumno.html')">🏠 Materias</div>
-            <div class="drawer-item" tabindex="0" onclick="navigateTo('perfil.html')">👤 Perfil</div>
+           
         </div>
         <div class="drawer-item logout" tabindex="0" onclick="logout()">📤 Cerrar sesión</div>
     </nav>
@@ -455,14 +456,16 @@
                     btnVer.textContent = 'Ver Refuerzo';
                     btnVer.style.margin = '10px auto 0 auto';
                     btnVer.style.padding = '8px 12px';
-                    btnVer.style.backgroundColor = '#07376c'; /* Color del botón */
+                    btnVer.style.backgroundColor = '#07376c'; 
                     btnVer.style.border = 'none';
                     btnVer.style.borderRadius = '6px';
                     btnVer.style.color = 'white';
                     btnVer.style.fontWeight = 'bold';
                     btnVer.style.cursor = 'pointer';
                     btnVer.style.display = 'block';
-                    btnVer.style.width = '90%';
+                    btnVer.style.position = 'apsolute';
+                    btnVer.style.bottom = '10px';
+                    btnVer.style.width = '60%';
                     btnVer.onmouseenter = () => btnVer.style.backgroundColor = '#052c52'; // Hover effect
                     btnVer.onmouseleave = () => btnVer.style.backgroundColor = '#07376c'; // Hover effect
                     btnVer.onclick = () => {

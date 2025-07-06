@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Materias del Docente</title>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             box-sizing: border-box;
@@ -17,7 +18,26 @@
             background-color: white;
             color: #333;
         }
+.volver-icono {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #28a745; /* verde bonito */
+  font-size: 25px;
+  font-weight: bold;
+  text-decoration: none;
+  margin-bottom: 20px;
+  transition: color 0.3s, transform 0.2s;
+}
 
+.volver-icono:hover {
+  color: #218838;
+  transform: scale(1.25);
+}
+
+.volver-icono i {
+  font-size: 30px;
+}
         nav {
             background-color: #07376c;
             display: flex;
@@ -299,12 +319,15 @@
     <nav>
         <div class="logo">Materias</div>
         <ul>
-            <li><a href="javascript:history.back()" id="volverInicio">Volver</a></li>
+            <li><a href="perfil.html">Perfil</a></li>
         </ul>
     </nav>
 
     <main>
-        <h2 id="tituloDocente">Materias del Docente</h2>
+          <a href="javascript:history.back()" class="volver-icono">
+  <i class="fas fa-circle-arrow-left"></i> 
+</a>
+        <h2 id="tituloDocente">Docente</h2>
 
         <button id="btnMostrarFormMateria">➕ Agregar Materia</button>
 
@@ -498,7 +521,7 @@
             const nombre = params.get('nombre');
             const titulo = document.getElementById('tituloDocente');
             if (nombre) {
-                titulo.textContent = `Materias del Docente: ${decodeURIComponent(nombre)}`;
+                titulo.textContent = `Docente: ${decodeURIComponent(nombre)}`;
             }
         }
 
@@ -548,10 +571,7 @@
                 <div class="card-content">
                     <p><strong>📘 Curso:</strong> ${m.curso || 'Sin curso'}</p>
                     <div class="card-buttons">
-                        <div class="card-row">
-                            <button onclick="agregarTemas('${m._id}')">📚 Temas</button>
-                            <button onclick="agregarRecursos('${m._id}')">🔗 Recursos</button>
-                        </div>
+                    
                         <div class="card-row single">
                             <button onclick="verEstudiantes('${m._id}')">👥 Estudiantes</button>
                         </div>

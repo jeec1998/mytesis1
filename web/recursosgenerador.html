@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Refuerzo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             box-sizing: border-box;
@@ -19,7 +20,7 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            min-height: 10vh;
+
             flex-direction: column;
         }
 
@@ -52,9 +53,10 @@
         nav ul li a {
             color: white;
             text-decoration: none;
-            font-size: 16px;
+            font-size: 18px;
             padding: 6px 10px;
             transition: background 0.3s;
+            font-weight: bold;
         }
 
         nav ul li a:hover {
@@ -129,19 +131,16 @@
         table th:nth-child(1),
         table td:nth-child(1) {
             width: 40%;
-            /* Ajustado para dar espacio al nuevo botón */
         }
 
         table th:nth-child(2),
         table td:nth-child(2) {
             width: 30%;
-            /* Ajustado para dar espacio al nuevo botón */
         }
 
         table th:nth-child(3),
         table td:nth-child(3) {
             width: 30%;
-            /* Nuevo ancho para el botón de WhatsApp */
         }
 
 
@@ -182,10 +181,66 @@
             table th,
             table td {
                 padding: 8px;
-                /* Reducir padding en pantallas pequeñas */
                 font-size: 14px;
-                /* Reducir tamaño de fuente */
             }
+        }
+
+        /* Estilos para alertas (mantenerlos para mostrarAlerta) */
+        .alerta {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .alerta-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alerta-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alerta-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .alerta .icono {
+            font-size: 1.2em;
+        }
+
+        .volver-icono {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #28a745;
+            /* verde bonito */
+            font-size: 25px;
+            font-weight: bold;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: color 0.3s, transform 0.2s;
+        }
+
+        .volver-icono:hover {
+            color: #218838;
+            transform: scale(1.25);
+        }
+
+        .volver-icono i {
+            font-size: 30px;
         }
     </style>
 </head>
@@ -195,23 +250,18 @@
     <div id="alertaContainer"></div>
 
     <nav>
-        <div class="logo">Calificaciones</div>
+        <div class="logo">Refuerzos</div>
         <ul>
-            <li><a href="javascript:history.back()">Volver</a></li>
             <li><a href="perfil.html">Perfil</a></li>
         </ul>
     </nav>
 
     <main>
-        <h2>Seleccione una Materia y un Tema</h2>
+        <a href="javascript:history.back()" class="volver-icono">
+            <i class="fas fa-circle-arrow-left"></i>
+        </a>
+        <h2>Seleccione un Tema</h2>
         <div class="selector-container">
-            <div>
-                <label for="materiasContainer">Materia:</label>
-                <select id="materiasContainer">
-                    <option value="">Seleccione una materia</option>
-                </select>
-            </div>
-
             <div>
                 <label for="topicSelect">Tema:</label>
                 <select id="topicSelect">
@@ -220,7 +270,6 @@
             </div>
         </div>
 
-        <h2>Alumnos Registrados</h2>
         <table id="tablaAlumnos">
             <thead>
                 <tr>
@@ -240,8 +289,7 @@
         const tablaAlumnosBody = document.querySelector('#tablaAlumnos tbody');
         let materiaId;
         let listaTopics = [];
-        let alumnosCargados = []; // Para almacenar los datos completos de los alumnos
-
+        let alumnosCargados = [];
 
         function getAuthHeaders() {
             const token = localStorage.getItem('accessToken');
@@ -251,55 +299,18 @@
             };
         }
 
-        async function cargarMaterias() {
-            const docenteId = localStorage.getItem('userId');
-            try {
-                const res = await fetch(`${API}/usuario/${docenteId}`, {
-                    method: 'GET',
-                    headers: getAuthHeaders()
-                });
-
-                if (res.ok) {
-                    const materias = await res.json();
-                    renderMaterias(materias);
-                } else {
-                    throw new Error('No se pudieron cargar las materias.');
-                }
-            } catch (error) {
-                console.error('Error al cargar materias:', error);
-                mostrarAlerta('Error al cargar materias.', 'error');
-            }
+        function getMateriaIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('materiaId');
         }
-
-        function renderMaterias(materias) {
-            const materiasContainer = document.getElementById('materiasContainer');
-            materiasContainer.innerHTML = '<option value="">Seleccione una materia</option>';
-            materias.forEach(m => {
-                const option = document.createElement('option');
-                option.value = m._id;
-                option.textContent = m.name;
-                materiasContainer.appendChild(option);
-            });
-        }
-
-        document.getElementById('materiasContainer').addEventListener('change', (e) => {
-            materiaId = e.target.value;
-            const topicSelect = document.getElementById('topicSelect');
-            topicSelect.innerHTML = '<option value="">Seleccione un tema</option>';
-            if (materiaId) {
-                cargarTemas();
-                // Limpiar la tabla de alumnos cuando se cambia la materia
-                tablaAlumnosBody.innerHTML = '';
-            } else {
-                // Si no hay materia seleccionada, limpiar también los alumnos
-                tablaAlumnosBody.innerHTML = '';
-            }
-        });
 
         async function cargarTemas() {
             try {
                 const headers = getAuthHeaders();
                 const res = await fetch(`${API_TOPICS}/materia/${materiaId}`, { headers });
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
                 listaTopics = await res.json();
                 const topicSelect = document.getElementById('topicSelect');
 
@@ -324,24 +335,28 @@
 
                 const resAlumnos = await fetch(`${API_ALUMNOS}/materia/${materiaId}`, { headers });
                 if (!resAlumnos.ok) throw new Error('Error al cargar alumnos.');
-                alumnosCargados = await resAlumnos.json(); // Almacenar los alumnos completos
+                alumnosCargados = await resAlumnos.json();
 
-                // Obtener el nombre del tema seleccionado para el mensaje de WhatsApp
                 const temaSeleccionado = listaTopics.find(t => t._id === topicId);
                 const nombreTema = temaSeleccionado ? temaSeleccionado.name : 'Tema Desconocido';
 
-
                 tablaAlumnosBody.innerHTML = '';
+
+                // Obtenemos el topicId seleccionado una única vez al inicio del bucle
+                // Esto es crucial para que la variable selectedTopicId esté definida
+                const topicSelectElement = document.getElementById('topicSelect');
+                const selectedTopicId = topicSelectElement.value; 
+
 
                 alumnosCargados.forEach(alumno => {
                     const fila = document.createElement('tr');
 
                     fila.innerHTML = `
-                    <td>${alumno.name}</td>
+                    <td>${alumno.name.toUpperCase()}</td> 
                     <td style="text-align: center;">
                         <button
                             style="background-color:#07376c; color:white; padding: 8px 18px; border:none; border-radius:6px; cursor:pointer;"
-                            onclick="window.location.href='recursosasignadosestudiante.html?estudianteId=${alumno._id}'">
+                            onclick="window.location.href='recursosasignadosestudiante.html?estudianteId=${alumno._id}&topicId=${selectedTopicId}'">
                             VER
                         </button>
                     </td>
@@ -364,11 +379,7 @@
 
         function generateWhatsappLink(telefono, mensaje) {
             const telefonoLimpio = telefono.replace(/\D/g, '');
-            // Si el número de teléfono ya incluye el código de país (ej. 593...),
-            // no necesitas agregar '593' aquí. Si solo es el número local, agrégalo.
-            // Para Ecuador, si es número de 10 dígitos (09xxxxxxxxx), sería 5939xxxxxxxxx.
-            // Ajusta esto según cómo almacenes los números en tu DB.
-            const telefonoFinal = telefonoLimpio; // Asume que ya viene con código de país.
+            const telefonoFinal = telefonoLimpio;
 
             return `https://wa.me/${telefonoFinal}?text=${encodeURIComponent(mensaje)}`;
         }
@@ -383,14 +394,13 @@
             }
 
             const telefonoRepresentante = alumno.telefonorepresentante;
-            const nombreAlumno = alumno.name; // Usar el nombre del alumno cargado
+            const nombreAlumno = alumno.name;
 
             try {
                 const headers = getAuthHeaders();
                 const topicSelectElement = document.getElementById('topicSelect');
                 const selectedTopicId = topicSelectElement.value;
 
-                // Obtener las calificaciones específicas para el alumno y el tema
                 const resGrades = await fetch(`${API_GRADES}/user/${estudianteId}/topic/${selectedTopicId}`, { headers });
                 if (!resGrades.ok) {
                     const errorText = await resGrades.text();
@@ -402,25 +412,16 @@
                 }
                 const gradesParaAlumnoYTema = await resGrades.json();
 
-                // Obtener los nombres de los subtemas para el mensaje de WhatsApp
-                const temaSeleccionado = listaTopics.find(t => t._id === selectedTopicId);
-                let subtopicsData = {}; // Objeto para mapear subTopicId a su nombre
-                if (temaSeleccionado && temaSeleccionado.subtopics) {
-                    temaSeleccionado.subtopics.forEach(sub => {
-                        subtopicsData[sub._id] = sub.name;
-                    });
-                }
+                const mensajeNotas = generarMensajeNotas(gradesParaAlumnoYTema, nombreTema, {}); // Pasamos un objeto vacío
 
 
-                const mensajeNotas = generarMensajeNotas(gradesParaAlumnoYTema, nombreTema, subtopicsData);
-
-
-                // *** CORRECCIÓN CLAVE AQUÍ: Construir mensajeCompleto correctamente ***
-                const mensajeCompleto = `¡Hola! Soy el/la docente de ${nombreMateriaSeleccionada()}. Le informo sobre las calificaciones de ${nombreAlumno} en el tema *"${nombreTema}"*:\n\n${mensajeNotas}\n\nPor favor, revise con su representado/a. ¡Saludos!`;
-
+                const nombreMateria = await obtenerNombreMateriaPorId(materiaId);
+                const mensajeCompleto = `¡Saludos cordiales! Soy el/la docente de ${nombreMateria}. Le informo sobre las calificaciones de ${nombreAlumno} en el tema *"${nombreTema}"*:\n\n${mensajeNotas}\n\nPor favor, revise con su representado/a. ¡Saludos!`;
 
                 const whatsappLink = generateWhatsappLink(telefonoRepresentante, mensajeCompleto);
                 window.open(whatsappLink, '_blank');
+                mostrarAlerta('Mensaje de WhatsApp generado exitosamente.', 'success');
+
 
             } catch (error) {
                 console.error('Error al enviar nota por WhatsApp:', error);
@@ -428,55 +429,47 @@
             }
         }
 
-        // Función auxiliar para obtener el nombre de la materia seleccionada
-        function nombreMateriaSeleccionada() {
-            const materiasContainer = document.getElementById('materiasContainer');
-            const selectedOption = materiasContainer.options[materiasContainer.selectedIndex];
-            return selectedOption ? selectedOption.textContent : 'la materia';
+        async function obtenerNombreMateriaPorId(id) {
+            try {
+                const headers = getAuthHeaders();
+                const res = await fetch(`${API}/${id}`, { headers });
+                if (!res.ok) throw new Error('No se pudo obtener el nombre de la materia.');
+                const materia = await res.json();
+                return materia.name || 'la materia';
+            } catch (error) {
+                console.error('Error al obtener nombre de materia:', error);
+                return 'la materia';
+            }
         }
 
         // Función para formatear las notas en un mensaje de texto
-        function generarMensajeNotas(grades, nombreTema, subtopicsData) {
+        function generarMensajeNotas(grades, nombreTema, subtopicsData) { // subtopicsData ya no se usará directamente
             let mensaje = '';
 
             if (!grades || grades.length === 0) {
                 return `El alumno aún no tiene calificaciones registradas para el tema *"${nombreTema}"*.`;
             }
 
-            const gradeDocument = grades[0]; // Asumimos que es un solo documento de calificación por alumno/tema
+            const gradeDocument = grades[0];
 
-            if (!gradeDocument || !gradeDocument.subTopics || gradeDocument.subTopics.length === 0) {
-                mensaje += `No se encontraron detalles de subtemas calificados para el tema *"${nombreTema}"*.`;
-            } else {
-                mensaje += `*Desglose por subtema:*\n`;
-                gradeDocument.subTopics.forEach(subTopic => {
-                    const subtopicName = subtopicsData[subTopic.subTopicId] || `Subtema ${subTopic.subTopicId}`;
-                    mensaje += `  - ${subtopicName}: ${subTopic.grade !== undefined ? subTopic.grade : 'N/A'}`;
-                    if (subTopic.recoveryGrade !== undefined && subTopic.recoveryGrade !== null) {
-                        line += ` (Recuperación: ${subTopic.recoveryGrade})`;
-                    }
-                    mensaje += `\n`;
-                });
-            }
 
-            // Agregar la calificación total si está disponible
+
+            // Solo agregar la calificación total si está disponible
             if (gradeDocument && gradeDocument.totalGrade !== undefined) {
-                mensaje += `\n*Calificación Total del Tema:* ${gradeDocument.totalGrade}`;
+                mensaje += `*Calificación Total del Tema:* ${gradeDocument.totalGrade}`;
                 if (gradeDocument.totalRecoveryGrade !== undefined && gradeDocument.totalRecoveryGrade !== null) {
                     mensaje += ` (Recuperación Total: ${gradeDocument.totalRecoveryGrade})`;
                 }
                 mensaje += `\n`;
             } else {
-                mensaje += `\n*Calificación Total del Tema:* No disponible\n`;
+                mensaje += `*Calificación Total del Tema:* No disponible\n`;
             }
 
             return mensaje;
         }
 
-
         function mostrarAlerta(message, type) {
             const alertaContainer = document.getElementById('alertaContainer');
-            // Limpiar alertas previas
             alertaContainer.innerHTML = '';
 
             const alerta = document.createElement('div');
@@ -489,9 +482,17 @@
                 setTimeout(() => alerta.remove(), 500);
             }, 3000);
         }
+        function verDetallesTopic(topicId) {
+            // Guarda el topicId en el localStorage
+            localStorage.setItem('topicId', topicId);
+            // Redirige a la página de detalles
+            window.location.href = `recursosasignadosestudiante.html`; // O la página que desees
+        }
+
 
         document.getElementById('topicSelect').addEventListener('change', (e) => {
             const topicId = e.target.value;
+            // Solo cargar alumnos si se seleccionó un tema válido
             if (materiaId && topicId) {
                 cargarAlumnos(materiaId, topicId);
             } else {
@@ -500,7 +501,12 @@
         });
 
         window.onload = () => {
-            cargarMaterias();
+            materiaId = getMateriaIdFromUrl();
+            if (materiaId) {
+                cargarTemas();
+            } else {
+                mostrarAlerta('No se ha proporcionado un ID de materia en la URL.', 'error');
+            }
         };
     </script>
 </body>

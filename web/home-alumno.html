@@ -106,13 +106,15 @@
       width: 100%;
     }
 
-    .header-rojo { background: linear-gradient(135deg, #f44336, #e53935); }
-    .header-amarillo { background: linear-gradient(135deg, #ffeb3b, #fbc02d); color: #333; }
-    .header-verde { background: linear-gradient(135deg, #4caf50, #43a047); }
-    .header-azul { background: linear-gradient(135deg, #07376c, #07376c); color: white; }
-    .header-naranja { background: linear-gradient(135deg, #ff9800, #f57c00); }
-    .header-morado { background: linear-gradient(135deg, #9c27b0, #7b1fa2); }
-    .header-cian { background: linear-gradient(135deg, #00bcd4, #0097a7); }
+    .header-rojo { background: linear-gradient(135deg, #C0392B, #D35400); } /* Rojo ladrillo y Naranja fuerte */
+.header-amarillo { background: linear-gradient(135deg, #F1C40F, #F39C12); color: #333; } /* Amarillo */
+.header-verde { background: linear-gradient(135deg, #2ECC71, #27AE60); } /* Verde esmeralda oscuro */
+.header-azul { background: linear-gradient(135deg, #3498DB, #2980B9); color: white; } /* Azul */
+.header-naranja { background: linear-gradient(135deg, #E67E22, #D35400); } /* Naranja */
+.header-morado { background: linear-gradient(135deg, #8E44AD, #9B59B6); } /* Morado oscuro y Púrpura */
+.header-cian { background: linear-gradient(135deg, #1ABC9C, #16A085); } /* Turquesa */
+.header-gris { background: linear-gradient(135deg, #34495E, #2C3E50); } /* Gris oscuro y Azul muy oscuro */
+
 
     .card-gif {
       width: 160px;
@@ -122,26 +124,53 @@
       margin-bottom: 12px;
     }
 
-    #drawer {
-      position: fixed;
-      top: 0;
-      left: -260px;
-      width: 260px;
-      height: 100%;
-      background-color: #D6E6F2;
-      padding: 50px 20px 30px;
-      box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
-      transition: left 0.3s ease;
-      z-index: 1001;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .drawer-item { font-size: 18px; padding: 15px 0; border-bottom: 1px solid #A7C7E7; color: #2F4F6E; cursor: pointer; font-weight: 500; }
-    .logout { color: #C62828; border-bottom-color: #C62828; }
-    #drawer-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.3); display: none; z-index: 1000; }
-    #drawer-overlay.show, #drawer.show { display: block; }
-    #drawer.show { left: 0; }
+     #drawer {
+            position: fixed;
+            top: 0;
+            left: -260px;
+            width: 260px;
+            height: 100%;
+            background-color: #D6E6F2;
+            padding: 50px 20px 30px;
+            box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
+            transition: left 0.3s ease;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        #drawer.show {
+            left: 0;
+        }
+
+        #drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 1000;
+        }
+
+        #drawer-overlay.show {
+            display: block;
+        }
+
+        .drawer-item {
+            font-size: 18px;
+            padding: 15px 0;
+            border-bottom: 1px solid #A7C7E7;
+            color: #07376c; /* Cambiado a blanco para que se vea en el nav oscuro */
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .logout {
+    color: #C62828;
+    border-bottom-color: #C62828;
+}
   </style>
 </head>
 
@@ -162,21 +191,31 @@
   <div id="drawer">
     <div>
       <div class="drawer-item" onclick="navigateTo('perfil.html')">👤 Perfil</div>
-      <div class="drawer-item" onclick="navigateTo('home-alumno.html')">🏠 Materias</div>
+     
     </div>
     <div class="drawer-item logout" onclick="logout()">📤 Cerrar sesión</div>
   </div>
 
   <script>
-    function obtenerClaseColor(materia) {
-      materia = materia.toLowerCase();
-      if (materia.includes('lengua')) return 'header-naranja';
-      if (materia.includes('sociales')) return 'header-morado';
-      if (materia.includes('matemáticas')) return 'header-verde';
-      if (materia.includes('naturales')) return 'header-rojo';
-      if (materia.includes('inglés')) return 'header-amarillo';
-      return 'header-azul';
-    }
+   function obtenerClaseColor(materia) {
+    materia = materia.toLowerCase();
+    if (materia.includes('matemáticas')) return 'header-rojo'; // Rojo
+    if (materia.includes('lengua y literatura')) return 'header-azul'; // Azul
+    if (materia.includes('ciencias naturales')) return 'header-verde'; // Verde
+    if (materia.includes('estudios sociales')) return 'header-amarillo'; // Amarillo
+    if (materia.includes('inglés')) return 'header-morado'; // Púrpura
+    if (materia.includes('educación física')) return 'header-cian'; // Turquesa
+    if (materia.includes('educación cultural y artística')) return 'header-naranja'; // Naranja
+    if (materia.includes('emprendimiento y gestión')) return 'header-gris'; // Gris oscuro
+    if (materia.includes('física')) return 'header-naranja'; // Naranja fuerte
+    if (materia.includes('química')) return 'header-rojo'; // Rojo ladrillo
+    if (materia.includes('biología')) return 'header-verde'; // Verde esmeralda oscuro
+    if (materia.includes('historia')) return 'header-morado'; // Morado oscuro
+    if (materia.includes('filosofía')) return 'header-gris'; // Gris azulado
+    if (materia.includes('educación para la ciudadanía')) return 'header-azul'; // Azul muy oscuro
+    return 'header-azul'; // Azul por defecto
+}
+
 
     function getUserIdFromToken(token) {
       if (!token) return null;

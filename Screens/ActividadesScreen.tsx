@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -38,27 +38,38 @@ const ActividadesScreen: React.FC<Props> = ({ navigation }) => {
   const [topicData, setTopicData] = useState<TopicData | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Function to decode JWT token and extract user ID
   const getUserIdFromToken = (token: string | null): string | null => {
     if (!token) return null;
     try {
+      // Split the token into its parts (header, payload, signature)
       const payload = token.split('.')[1];
+      // Decode the base64-encoded payload
       const decoded = atob(payload);
+      // Parse the JSON string to an object
       const obj = JSON.parse(decoded);
+      // Return the user ID, checking for common field names
       return obj._id || obj.id || null;
-    } catch {
+    } catch (error) {
+      // Log any errors during decoding or parsing
+      console.error('Error decoding token:', error);
       return null;
     }
   };
 
+  // Effect hook to fetch activities data when the component mounts
   useEffect(() => {
     const fetchActividades = async () => {
       try {
+        // Retrieve the access token from AsyncStorage
         const token = await AsyncStorage.getItem('accessToken');
         if (!token) {
           console.warn('Token no disponible');
           setLoading(false);
           return;
         }
+
+        // Extract userId from the token
         const userId = getUserIdFromToken(token);
         if (!userId) {
           console.warn('No se encontró userId en el token');
@@ -66,25 +77,33 @@ const ActividadesScreen: React.FC<Props> = ({ navigation }) => {
           return;
         }
 
+        // Make the API call to fetch academic support data
         const res = await fetch(
           `https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/academic-support/${userId}`,
           {
             method: 'GET',
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${token}`, // Include the token in the Authorization header
             },
           }
         );
 
+        // Check if the response was successful
+        if (!res.ok) {
+          // If not, throw an error with the status
+          const errorText = await res.text();
+          throw new Error(`Error al obtener actividades: ${res.status} - ${errorText}`);
+        }
 
-        if (!res.ok) throw new Error('Error al obtener actividades');
-
+        // Parse the JSON response
         const data = await res.json();
 
+        // Validate the structure of the fetched data
         if (data && data.topic && Array.isArray(data.subtopics)) {
+          // Set the topic data, mapping subtopics to the correct structure
           setTopicData({
             topic: {
-              _id: data.topic.id || '', // revisa cuál es el campo correcto
+              _id: data.topic.id || '', // Use 'id' or '_id' as appropriate
               titulo: data.topic.titulo || data.topic.name || 'Sin título',
             },
             subtopics: data.subtopics.map((s: any) => ({
@@ -95,20 +114,42 @@ const ActividadesScreen: React.FC<Props> = ({ navigation }) => {
             })),
           });
         } else {
+          // If data structure is unexpected, set topicData to null
           setTopicData(null);
+          console.warn('La estructura de datos de la API no es la esperada:', data);
         }
       } catch (error) {
+        // Catch and log any errors during the fetch process
         console.error('Error cargando actividades:', error);
+        // Display an alert to the user
         Alert.alert('Error', 'No se pudieron cargar las actividades');
       } finally {
+        // Ensure loading state is set to false regardless of success or failure
         setLoading(false);
       }
-
     };
 
-    fetchActividades();
-  }, []);
+    fetchActividades(); // Call the fetch function
+  }, []); // Empty dependency array means this effect runs once after the initial render
 
+  // Calculate the total score and determine the header color dynamically
+  const { totalScore, headerColor } = useMemo(() => {
+    let sumNotas = 0;
+    if (topicData && topicData.subtopics) {
+      // Sum all 'nota' values from subtopics, treating undefined/null as 0
+      sumNotas = topicData.subtopics.reduce((acc, sub) => acc + (sub.nota || 0), 0);
+    }
+
+    let color = '#4caf50'; // Default green
+    if (sumNotas < 5) {
+      color = '#f44336'; // Red
+    } else if (sumNotas >= 5 && sumNotas < 7) {
+      color = '#ffeb3b'; // Yellow
+    }
+    return { totalScore: sumNotas, headerColor: color };
+  }, [topicData]); // Recalculate if topicData changes
+
+  // Display a loading indicator while data is being fetched
   if (loading) {
     return (
       <SafeAreaView style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
@@ -117,6 +158,7 @@ const ActividadesScreen: React.FC<Props> = ({ navigation }) => {
     );
   }
 
+  // Display a message if no activities are available after loading
   if (!topicData) {
     return (
       <SafeAreaView style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
@@ -130,8 +172,11 @@ const ActividadesScreen: React.FC<Props> = ({ navigation }) => {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.card}>
-            <View style={[styles.cardHeader, styles.headerVerde]}>
-              <Text style={styles.headerText}>{topicData.topic.titulo}</Text>
+            {/* Dynamic header background color based on totalScore */}
+            <View style={[styles.cardHeader, { backgroundColor: headerColor }]}>
+              <Text style={styles.headerText}>
+                {topicData.topic.titulo} (Total: {totalScore.toFixed(2)}) {/* Display total score */}
+              </Text>
             </View>
 
             <View style={styles.cardContent}>
@@ -159,7 +204,6 @@ const ActividadesScreen: React.FC<Props> = ({ navigation }) => {
             >
               <Text style={styles.btnVerText}>Ver Refuerzo</Text>
             </TouchableOpacity>
-
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -186,9 +230,7 @@ const styles = StyleSheet.create({
   cardHeader: {
     padding: 14,
   },
-  headerVerde: {
-    backgroundColor: '#4caf50',
-  },
+  // headerVerde is no longer needed as color is dynamic
   headerText: {
     fontWeight: 'bold',
     color: 'white',
@@ -220,14 +262,13 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#444',
     textAlign: 'center',
-
   },
   cellTitle: {
     flex: 2,
     textAlign: 'left',
   },
   cellCenter: {
-
+    // No specific styles needed here, flex: 1 is applied by tableCell
   },
   btnVer: {
     margin: 10,

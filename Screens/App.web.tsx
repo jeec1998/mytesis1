@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,32 +7,36 @@ import {
   StyleSheet,
 } from 'react-native';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
-interface JwtPayload {
-  _id: string;
-  email: string;
-  role: 'admin' | 'docente' | 'alumno';
-  iat?: number;
-  exp?: number;
-}
-
-const decodeToken = (token: string): JwtPayload | null => {
+// Simple JWT decode function (does not verify signature)
+function decodeToken(token: string): any {
   try {
-    const base64Payload = token.split('.')[1];
-    const decodedPayload = atob(base64Payload);
-    return JSON.parse(decodedPayload);
-  } catch (err) {
-    console.error('Error decodificando el token:', err);
+    const payload = token.split('.')[1];
+    const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+    return JSON.parse(decoded);
+  } catch (e) {
     return null;
   }
-};
-
+}
 
 const App = () => {
   const [nombreUsuario, setNombreUsuario] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isEdge, setIsEdge] = useState(false);
+
+  // Detectar si el navegador es Microsoft Edge
+  useEffect(() => {
+    const userAgent = window.navigator.userAgent;
+
+    // Verifica si el navegador es Edge
+    if (userAgent.includes('Edge') || userAgent.includes('Edg')) {
+      setIsEdge(true);  // Si es Edge, actualizar el estado
+    }
+  }, []);
 
   const handleLoginWeb = async () => {
     try {
@@ -46,18 +50,15 @@ const App = () => {
         const data = await res.json();
         localStorage.setItem('accessToken', data.accessToken);
 
-
         const payload = decodeToken(data.accessToken);
         if (!payload) {
           setError('Token inválido');
           return;
         }
 
-
         localStorage.setItem('userId', payload._id);
         localStorage.setItem('userEmail', payload.email);
         localStorage.setItem('userRole', payload.role);
-
 
         if (payload.role === 'admin') {
           window.location.href = '/admin.html';
@@ -85,11 +86,12 @@ const App = () => {
       <TextInput
         style={styles.input}
         placeholder="Usuario"
+        placeholderTextColor="#777b7f"
         value={nombreUsuario}
         onChangeText={setNombreUsuario}
         autoCapitalize="none"
       />
- <View style={styles.inputPasswordContainer}>
+      <View style={styles.inputPasswordContainer}>
         <TextInput
           style={styles.inputPassword}
           placeholder="Contraseña"
@@ -98,19 +100,24 @@ const App = () => {
           onChangeText={setPassword}
           secureTextEntry={!showPassword}
         />
-        <TouchableOpacity
-          onPress={() => setShowPassword(!showPassword)}
-          style={styles.eyeIcon}
-          activeOpacity={0.7}
-        >
-          <Text style={{ fontSize: 24 }}>{showPassword ? '👁️' : '🙈'}</Text>
-        </TouchableOpacity>
+        {/* Mostrar ícono solo si no es Edge */}
+        {!isEdge && (
+          <TouchableOpacity
+            onPress={() => setShowPassword(!showPassword)}
+            style={styles.eyeIcon}
+            activeOpacity={0.7}
+          >
+            <FontAwesomeIcon 
+              icon={showPassword ? faEye : faEyeSlash} 
+              
+            />
+          </TouchableOpacity>
+        )}
       </View>
 
       <TouchableOpacity style={styles.button} onPress={handleLoginWeb}>
         <Text style={styles.buttonText}>Ingresar</Text>
       </TouchableOpacity>
-      
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
     </View>
@@ -138,13 +145,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   input: {
-    height: 48,
+    height: 45,
     borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 16,
-    backgroundColor: '#f9f9f9',
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingRight: 40, 
+    color: 'black',
   },
   button: {
     backgroundColor: '#07376C',
@@ -163,7 +170,7 @@ const styles = StyleSheet.create({
     marginTop: 14,
     textAlign: 'center',
   },
-   eyeIcon: {
+  eyeIcon: {
     position: 'absolute',
     right: 10,
     top: 7,
@@ -172,11 +179,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 5,
   },
-    inputPasswordContainer: {
+  inputPasswordContainer: {
     width: '100%',
     position: 'relative',
+    marginTop: 15,
     marginBottom: 15,
-   
   },
   inputPassword: {
     height: 45,
