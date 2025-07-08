@@ -78,8 +78,9 @@
 
         .selector-container {
             display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 15px;
             margin-bottom: 10px;
             flex-wrap: wrap;
         }
@@ -102,7 +103,7 @@
         }
 
         button {
-            background-color: #29ff03;
+            background-color: #07376c;
             color: white;
             font-weight: bold;
             border: none;
@@ -164,6 +165,7 @@
             right: 20px;
             z-index: 9999;
         }
+
 
         /* Responsive: Ajustar los selectores en pantallas pequeñas */
         @media screen and (max-width: 768px) {
@@ -262,14 +264,17 @@
         </a>
         <h2>Seleccione un Tema</h2>
         <div class="selector-container">
-            <div>
-                <label for="topicSelect">Tema:</label>
-                <select id="topicSelect">
-                    <option value="">Seleccione un tema</option>
-                </select>
-            </div>
+            <label for="topicSelect">Tema:</label>
+            <select id="topicSelect">
+                <option value="">Seleccione un tema</option>
+            </select>
+            <button id="refuerzoBtn">Generar Refuerzo</button>
         </div>
-
+        <div id="alertaRecursosGenerados" class="alerta alerta-info"
+            style="display: none; justify-content: center; margin-top: 20px;">
+            <i class="fas fa-info-circle icono"></i>
+            <span>Los recursos ya fueron generados.</span>
+        </div>
         <table id="tablaAlumnos">
             <thead>
                 <tr>
@@ -280,12 +285,18 @@
             </thead>
             <tbody></tbody>
         </table>
+
+        <div style="text-align: center; margin-top: 20px;">
+
+        </div>
+
     </main>
     <script>
         const API = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/Subjects';
         const API_TOPICS = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/topics';
         const API_ALUMNOS = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/users';
         const API_GRADES = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/grades';
+        const API_ACADEMIC_SUPPORT = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/academic-support';
         const tablaAlumnosBody = document.querySelector('#tablaAlumnos tbody');
         let materiaId;
         let listaTopics = [];
@@ -345,7 +356,7 @@
                 // Obtenemos el topicId seleccionado una única vez al inicio del bucle
                 // Esto es crucial para que la variable selectedTopicId esté definida
                 const topicSelectElement = document.getElementById('topicSelect');
-                const selectedTopicId = topicSelectElement.value; 
+                const selectedTopicId = topicSelectElement.value;
 
 
                 alumnosCargados.forEach(alumno => {
@@ -416,7 +427,7 @@
 
 
                 const nombreMateria = await obtenerNombreMateriaPorId(materiaId);
-                const mensajeCompleto = `¡Saludos cordiales! Soy el/la docente de ${nombreMateria}. Le informo sobre las calificaciones de ${nombreAlumno} en el tema *"${nombreTema}"*:\n\n${mensajeNotas}\n\nPor favor, revise con su representado/a. ¡Saludos!`;
+                const mensajeCompleto = `¡Saludos cordiales! Soy el/la docente de ${nombreMateria}. Le informo sobre las calificaciones de ${nombreAlumno} en el tema *"${nombreTema}"*:\n${mensajeNotas}\nPor favor, se le recomienda revisar con su representado/a.`;
 
                 const whatsappLink = generateWhatsappLink(telefonoRepresentante, mensajeCompleto);
                 window.open(whatsappLink, '_blank');
@@ -455,32 +466,47 @@
 
 
             // Solo agregar la calificación total si está disponible
-            if (gradeDocument && gradeDocument.totalGrade !== undefined) {
-                mensaje += `*Calificación Total del Tema:* ${gradeDocument.totalGrade}`;
-                if (gradeDocument.totalRecoveryGrade !== undefined && gradeDocument.totalRecoveryGrade !== null) {
-                    mensaje += ` (Recuperación Total: ${gradeDocument.totalRecoveryGrade})`;
+            const linkRecuperacionDirecta = 'https://drive.google.com/file/d/11P5YQ-z2cehrmeYWY3eZpvyq3kTxQWzx/view?usp=sharing';
+            const linkRecuperacionPorRefuerzo = 'https://drive.google.com/file/d/11P5YQ-z2cehrmeYWY3eZpvyq3kTxQWzx/view?usp';
+
+            // Verificamos que la nota exista
+            if (gradeDocument && gradeDocument.totalGrade !== undefined && gradeDocument.totalGrade !== null) {
+                const calificacion = `*Calificación Total del Tema:* ${gradeDocument.totalGrade}\n\n`;
+
+                // Si la nota es 7 o más
+                if (gradeDocument.totalGrade >= 7) {
+                    mensaje = calificacion +
+                        `Oficio para la *recuperación directa*.\n\n` +
+                        `${linkRecuperacionDirecta}`;
                 }
-                mensaje += `\n`;
-            } else {
-                mensaje += `*Calificación Total del Tema:* No disponible\n`;
+                // Si la nota es menor a 7
+                else {
+                    mensaje = calificacion +
+                        `Oficio para la *recuperación por refuerzo académico*.\n\n` +
+                        `${linkRecuperacionPorRefuerzo}`;
+                }
+            }
+            // Si la nota no está disponible
+            else {
+                mensaje = `*Calificación Total del Tema:* No disponible.`;
             }
 
             return mensaje;
         }
 
-        function mostrarAlerta(message, type) {
+        function mostrarAlerta(message, type = 'success') {
             const alertaContainer = document.getElementById('alertaContainer');
-            alertaContainer.innerHTML = '';
-
-            const alerta = document.createElement('div');
-            alerta.className = `alerta alerta-${type}`;
-            alerta.innerHTML = `<span class="icono">${type === 'success' ? '✅' : (type === 'error' ? '❌' : 'ℹ️')}</span><span>${message}</span>`;
-            alertaContainer.appendChild(alerta);
-
+            const alertDiv = document.createElement('div');
+            alertDiv.style.backgroundColor = type === 'error' ? '#f8d7da' : '#d4edda';
+            alertDiv.style.color = type === 'error' ? '#721c24' : '#155724';
+            alertDiv.style.padding = '12px';
+            alertDiv.style.borderRadius = '5px';
+            alertDiv.style.marginBottom = '10px';
+            alertDiv.textContent = message;
+            alertaContainer.appendChild(alertDiv);
             setTimeout(() => {
-                alerta.style.opacity = '0';
-                setTimeout(() => alerta.remove(), 500);
-            }, 3000);
+                alertDiv.remove();
+            }, 4000);
         }
         function verDetallesTopic(topicId) {
             // Guarda el topicId en el localStorage
@@ -490,15 +516,71 @@
         }
 
 
-        document.getElementById('topicSelect').addEventListener('change', (e) => {
+        document.getElementById('topicSelect').addEventListener('change', async (e) => { // 1. Hacer la función async
             const topicId = e.target.value;
-            // Solo cargar alumnos si se seleccionó un tema válido
+            const alerta = document.getElementById('alertaRecursosGenerados');
+            const boton = document.getElementById('refuerzoBtn');
+
             if (materiaId && topicId) {
-                cargarAlumnos(materiaId, topicId);
+                try {
+                    // 2. Verificamos si los recursos existen
+                    const headers = getAuthHeaders();
+                    const res = await fetch(`${API_ACADEMIC_SUPPORT}/topic/${topicId}/exists`, { headers });
+                    const { exists } = await res.json();
+
+                    // 3. Actualizamos la UI basado en la respuesta
+                    if (exists) {
+                        // ✅ Si existen, muestra la alerta y deshabilita el botón
+                        alerta.style.display = 'flex';
+                        boton.textContent = 'Generar Refuerzo';
+                        boton.disabled = true;
+                    } else {
+                        // ❌ Si no existen, oculta la alerta y habilita el botón
+                        alerta.style.display = 'none';
+                        boton.textContent = 'Generar Refuerzo';
+                        boton.disabled = false;
+                    }
+
+                    // 4. Cargamos los alumnos, como ya lo hacías
+                    cargarAlumnos(materiaId, topicId);
+
+                } catch (error) {
+                    console.error("Error verificando recursos:", error);
+                    // En caso de error, ocultamos la alerta para no confundir
+                    alerta.style.display = 'none';
+                }
             } else {
-                tablaAlumnosBody.innerHTML = ''; // Limpiar la tabla si no hay tema seleccionado
+                // Si se deselecciona el tema, reseteamos todo
+                tablaAlumnosBody.innerHTML = '';
+                alerta.style.display = 'none';
+                boton.textContent = 'Generar Refuerzo';
+                boton.disabled = false;
             }
         });
+        async function sendRefuerzo() {
+            const topicId = document.getElementById('topicSelect').value;
+            if (!topicId) {
+                mostrarAlerta('Por favor, seleccione un tema para generar el refuerzo.', 'error');
+                return;
+            }
+            try {
+                const response = await fetch(`https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/academic-support/${topicId}/generate`, {
+                    method: 'GET',
+                    headers: getAuthHeaders(),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error en la petición: ${response.status}`);
+                }
+                const data = await response.json();
+                mostrarAlerta('Refuerzo académico generado correctamente.');
+            } catch (error) {
+                console.error('Error al generar refuerzo académico:', error);
+                mostrarAlerta('Hubo un error al generar el refuerzo académico.', 'error');
+            }
+        }
+
+        document.getElementById('refuerzoBtn').addEventListener('click', sendRefuerzo);
 
         window.onload = () => {
             materiaId = getMateriaIdFromUrl();
