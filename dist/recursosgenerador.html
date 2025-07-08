@@ -427,7 +427,7 @@
 
 
                 const nombreMateria = await obtenerNombreMateriaPorId(materiaId);
-                const mensajeCompleto = `¡Saludos cordiales! Soy el/la docente de ${nombreMateria}. Le informo sobre las calificaciones de ${nombreAlumno} en el tema *"${nombreTema}"*:\n${mensajeNotas}\nPor favor, se le recomienda revisar con su representado/a.`;
+                const mensajeCompleto = `¡Saludos cordiales! Soy el/la docente de ${nombreMateria}. Le informo sobre la calificacion de ${nombreAlumno} en el tema *"${nombreTema}"*:\n${mensajeNotas}\nPor favor, se le recomienda revisar con su representado/a.`;
 
                 const whatsappLink = generateWhatsappLink(telefonoRepresentante, mensajeCompleto);
                 window.open(whatsappLink, '_blank');
