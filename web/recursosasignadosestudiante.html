@@ -656,7 +656,12 @@
                 console.error("Error: estudianteId o topicId no encontrados en la URL.");
                 const container = document.getElementById('generated-container');
                 container.innerHTML = `
+                 <div class="titulo-contenedor">
+                            <a href="javascript:history.back()" class="volver-icono">
+                                <i class="fas fa-circle-arrow-left"></i>
+                            </a></div>
                     <div class="no-resources-message">
+                       
                         <span class="icon-placeholder">&#128218;</span>
                         <p>No se pudo cargar la información. Faltan datos del estudiante o el tema.</p>
                         <p>Por favor, regrese e intente de nuevo.</p>
@@ -681,7 +686,12 @@
                 // Muestra un mensaje más amigable al usuario si esto sucede
                 const container = document.getElementById('generated-container');
                 container.innerHTML = `
+                 <div class="titulo-contenedor">
+                            <a href="javascript:history.back()" class="volver-icono">
+                                <i class="fas fa-circle-arrow-left"></i>
+                            </a></div>
                     <div class="no-resources-message">
+                         
                         <span class="icon-placeholder">&#128218;</span>
                         <p>¡Ups! Parece que faltan datos para cargar tus refuerzos.</p>
                         <p>Por favor, asegúrate de haber seleccionado un estudiante y un tema válidos.</p>
@@ -737,7 +747,12 @@
                     // Mostrar el mensaje bonito cuando no hay recursos
                     const container = document.getElementById('generated-container');
                     container.innerHTML = `
+                     <div class="titulo-contenedor">
+                            <a href="javascript:history.back()" class="volver-icono">
+                                <i class="fas fa-circle-arrow-left"></i>
+                            </a></div>
                         <div class="no-resources-message">
+                              
                             <span class="icon-placeholder">&#128218;</span> <p>¡Ups! Parece que no tienes recursos asignados en este momento.</p>
                             <p>Por favor, consulta con tu profesor para más información.</p>
                         </div>
@@ -749,7 +764,12 @@
                 // Mostrar el mensaje bonito en caso de error de la API
                 const container = document.getElementById('generated-container');
                 container.innerHTML = `
+                 <div class="titulo-contenedor">
+                            <a href="javascript:history.back()" class="volver-icono">
+                                <i class="fas fa-circle-arrow-left"></i>
+                            </a></div>
                     <div class="no-resources-message">
+                        
                         <span class="icon-placeholder">&#128218;</span> <p>¡Ups! Parece que no tienes recursos asignados en este momento.</p>
                         <p>Por favor, consulta con tu profesor para más información.</p>
                     </div>
@@ -830,7 +850,12 @@
             } else {
                 // Mensaje bonito para recursos no asignados
                 recursosDiv.innerHTML += `
+                 <div class="titulo-contenedor">
+                            <a href="javascript:history.back()" class="volver-icono">
+                                <i class="fas fa-circle-arrow-left"></i>
+                            </a></div>
                     <div class="no-resources-message">
+                         
                         <span class="icon-placeholder">&#128218;</span>
                         <p>No tienes **recursos recomendados** asignados.</p>
                     </div>
@@ -897,7 +922,12 @@
             } else {
                 // Mensaje bonito para actividad no asignada
                 actividadDiv.innerHTML += `
+                 <div class="titulo-contenedor">
+                            <a href="javascript:history.back()" class="volver-icono">
+                                <i class="fas fa-circle-arrow-left"></i>
+                            </a></div>
                     <div class="no-resources-message">
+                        
                         <span class="icon-placeholder">&#128218;</span>
                         <p>No tienes **actividades de refuerzo** asignadas.</p>
                     </div>
