@@ -221,7 +221,52 @@
             border-radius: 6px;
             border: 1px solid #ccc;
         }
-    </style>
+          /* --- ESTILOS PARA EL MENÚ DESPLEGABLE --- */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      right: 0; /* <-- AQUÍ ESTÁ EL CAMBIO para que se abra a la izquierda */
+    }
+
+    .dropdown-content a {
+     color: white;
+      background-color: #07386c;
+      font-weight: bold;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      font-size: 14px;
+    }
+
+    .dropdown-content a:hover {
+      background-color:#034284f7;
+;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    
+    .dropbtn {
+  color: white;
+      text-decoration: none;
+      font-weight: bold;
+     padding: 15px 0;
+         cursor: pointer;
+    }
+    /* --- FIN DE ESTILOS DEL MENÚ --- */
+         </style>
 </head>
 
 <body>
@@ -232,7 +277,13 @@
         <div class="logo">Panel de Asignación</div>
         <ul>
             <li><a href="admin.html" id="volverInicio">Inicio</a></li>
-            <li><a href="perfil.html">Perfil</a></li>
+             <li class="dropdown">
+        <a class="dropbtn">Perfil</a>
+        <div class="dropdown-content">
+          <a href="perfil.html">Ir a Perfil</a>
+          <a href="#" onclick="logout()">Cerrar sesión</a>
+        </div>
+      </li>
         </ul>
     </nav>
 
@@ -358,6 +409,14 @@
     </main>
 
     <script>
+         function logout() {
+ 
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('userRole');
+      window.location.href = 'index.html';
+    }
         const API_BASE = 'https://mentoria-api-cyffg2cdemdyfdbt.eastus2-01.azurewebsites.net/users';
         const tablaDisponiblesBody = document.querySelector('#tablaDisponibles tbody');
         const tablaAgregadosBody = document.querySelector('#tablaAgregados tbody');
