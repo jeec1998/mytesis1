@@ -77,10 +77,11 @@
     }
 
     .buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
-    }
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Añade un espacio de 20px entre los botones */
+  margin-top: 20px;
+}
 
     button {
       margin-top: 20px;
@@ -244,7 +245,51 @@
     font-size: 0.9em;
     font-weight: 600;
     border: 1px solid #c8d9ea;
-}
+}/* --- ESTILOS PARA EL MENÚ DESPLEGABLE --- */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      right: 0; /* <-- AQUÍ ESTÁ EL CAMBIO para que se abra a la izquierda */
+    }
+
+    .dropdown-content a {
+     color: white;
+      background-color: #07386c;
+      font-weight: bold;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      font-size: 14px;
+    }
+
+    .dropdown-content a:hover {
+      background-color:#034284f7;
+;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    
+    .dropbtn {
+  color: white;
+      text-decoration: none;
+      font-weight: bold;
+     padding: 15px 0;
+         cursor: pointer;
+    }
+    /* --- FIN DE ESTILOS DEL MENÚ --- */
   </style>
 </head>
 
@@ -254,6 +299,13 @@
     <div class="logo">Perfil</div>
     <ul>
       <li><a href="javascript:history.back()" id="volverInicio">Inicio</a></li>
+       <li class="dropdown">
+        <a class="dropbtn">Perfil</a>
+        <div class="dropdown-content">
+          <a href="javascript:history.back()">Volver</a>
+          <a href="#" onclick="logout()">Cerrar sesión</a>
+        </div>
+      </li>
     </ul>
   </nav>
 
@@ -283,7 +335,7 @@
 
       <div class="buttons">
         <button type="submit">Actualizar Perfil</button>
-        <button type="button" onclick="cerrarSesion()">Cerrar sesión</button>
+       <!--  <button type="button" onclick="cerrarSesion()">Cerrar sesión</button> -->
         <button type="button" id="btnCambiarContrasena">Cambiar Contraseña</button>
       </div>
     </form>
@@ -325,6 +377,14 @@
   <script src="https://unpkg.com/imask"></script>
 
   <script>
+    function logout() {
+ 
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('userRole');
+      window.location.href = 'index.html';
+    }
         const isEdge = /Edge|Edg/.test(window.navigator.userAgent);
     if (isEdge) {
       const eyeButtons = document.querySelectorAll('.toggle-password');
@@ -474,14 +534,14 @@
       }
     });
 
-    function cerrarSesion() {
+    /* function cerrarSesion() {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('userId');
       localStorage.removeItem('userEmail');
       localStorage.removeItem('userRole');
       window.location.href = 'index.html';
     }
-
+ */
     document.addEventListener('DOMContentLoaded', () => {
       const role = getRoleFromToken();
       const rutaInicio = getInicioPorRol(role);

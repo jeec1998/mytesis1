@@ -105,6 +105,11 @@ module.exports = {
       to: 'recursosasignadosestudiante.html',                                // destino en la carpeta dist
     },
     {
+      from: path.resolve(__dirname, 'web/actividadesEstudiante.html'),  // carpeta con tus imágenes
+      to: 'actividadesEstudiante.html',                                // destino en la carpeta dist
+    },
+    
+    {
       from: path.resolve(__dirname, 'web/img'),  // carpeta con tus imágenes
       to: 'img',                                // destino en la carpeta dist
     },
