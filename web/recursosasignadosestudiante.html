@@ -568,7 +568,7 @@
 
         /* Contenedor para el título y el ícono */
         .titulo-contenedor {
-            display: flex;
+            
             align-items: center;
             /* Alinea verticalmente el ícono y el texto */
             justify-content: center;
@@ -603,19 +603,67 @@
             padding: 6px 10px;
             transition: background 0.3s;
         } */
+         /* --- ESTILOS PARA EL MENÚ DESPLEGABLE --- */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      right: 0; /* <-- AQUÍ ESTÁ EL CAMBIO para que se abra a la izquierda */
+    }
+
+    .dropdown-content a {
+     color: white;
+      background-color: #07386c;
+      font-weight: bold;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      font-size: 14px;
+    }
+
+    .dropdown-content a:hover {
+      background-color:#034284f7;
+;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    
+    .dropbtn {
+  color: white;
+      text-decoration: none;
+      font-weight: bold;
+     padding: 15px 0;
+         cursor: pointer;
+    }
+    /* --- FIN DE ESTILOS DEL MENÚ --- */
     </style>
 </head>
 
 <body>
     <nav>
-        <div class="left-section">
-            <span class="header-title">Actividades</span>
+    <div class="logo">Actividades</div>
+    <ul>
+       <li class="dropdown">
+        <a class="dropbtn">Perfil</a>
+        <div class="dropdown-content">
+          <a href="javascript:history.back()">Volver</a>
+          <a href="#" onclick="logout()">Cerrar sesión</a>
         </div>
-        <div class="user-section" id="user-section">
-            <span id="nombre"><a href="javascript:history.back()"
-                    style="color:white; text-decoration: none; font-size: 16px; padding: 6px 10px; transition: background 0.3s;"></a></span>
-        </div>
-    </nav>
+      </li>
+    </ul>
+  </nav>
 
     <main>
 
@@ -675,10 +723,14 @@
 
         // Función para cerrar sesión
         function logout() {
-            localStorage.clear();
-            window.location.href = 'index.html';
-        }
-
+ 
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('userRole');
+      window.location.href = 'index.html';
+    }
+        
         // Modifica esta función para que acepte tanto estudianteId como topicId
         async function cargarRefuerzoPorUsuario(estudianteId, topicId) {
             if (!estudianteId || !topicId) { // Ahora verifica ambos IDs aquí también
