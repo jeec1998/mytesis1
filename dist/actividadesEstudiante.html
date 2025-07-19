@@ -569,7 +569,7 @@
 
         /* Contenedor para el título y el ícono */
         .titulo-contenedor {
-            
+
             align-items: center;
             /* Alinea verticalmente el ícono y el texto */
             justify-content: center;
@@ -604,67 +604,69 @@
             padding: 6px 10px;
             transition: background 0.3s;
         } */
-         /* --- ESTILOS PARA EL MENÚ DESPLEGABLE --- */
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
+        /* --- ESTILOS PARA EL MENÚ DESPLEGABLE --- */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
 
-    .dropdown-content {
-      display: none;
-      position: absolute;
+        .dropdown-content {
+            display: none;
+            position: absolute;
 
-      min-width: 160px;
-      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-      z-index: 1;
-      border-radius: 8px;
-      overflow: hidden;
-      right: 0; /* <-- AQUÍ ESTÁ EL CAMBIO para que se abra a la izquierda */
-    }
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            right: 0;
+            /* <-- AQUÍ ESTÁ EL CAMBIO para que se abra a la izquierda */
+        }
 
-    .dropdown-content a {
-     color: white;
-      background-color: #07386c;
-      font-weight: bold;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-      font-size: 14px;
-    }
+        .dropdown-content a {
+            color: white;
+            background-color: #07386c;
+            font-weight: bold;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+        }
 
-    .dropdown-content a:hover {
-      background-color:#034284f7;
-;
-    }
+        .dropdown-content a:hover {
+            background-color: #034284f7;
+            ;
+        }
 
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-    
-    .dropbtn {
-  color: white;
-      text-decoration: none;
-      font-weight: bold;
-     padding: 15px 0;
-         cursor: pointer;
-    }
-    /* --- FIN DE ESTILOS DEL MENÚ --- */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropbtn {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 15px 0;
+            cursor: pointer;
+        }
+
+        /* --- FIN DE ESTILOS DEL MENÚ --- */
     </style>
 </head>
 
 <body>
     <nav>
-    <div class="logo">Actividades</div>
-    <ul>
-       <li class="dropdown">
-        <a class="dropbtn">Perfil</a>
-        <div class="dropdown-content">
-          <a href="javascript:history.back()">Volver</a>
-          <a href="#" onclick="logout()">Cerrar sesión</a>
-        </div>
-      </li>
-    </ul>
-  </nav>
+        <div class="logo">Actividades</div>
+        <ul>
+            <li class="dropdown">
+                <a class="dropbtn">Perfil</a>
+                <div class="dropdown-content">
+                    <a href="javascript:history.back()">Volver</a>
+                    <a href="#" onclick="logout()">Cerrar sesión</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
 
     <main>
 
@@ -724,14 +726,14 @@
 
         // Función para cerrar sesión
         function logout() {
- 
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('userId');
-      localStorage.removeItem('userEmail');
-      localStorage.removeItem('userRole');
-      window.location.href = 'index.html';
-    }
-        
+
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userRole');
+            window.location.href = 'index.html';
+        }
+
         // Modifica esta función para que acepte tanto estudianteId como topicId
         async function cargarRefuerzoPorUsuario(estudianteId, topicId) {
             if (!estudianteId || !topicId) { // Ahora verifica ambos IDs aquí también
@@ -830,167 +832,189 @@
             }
         }
 
-        // Función para mostrar la info de generated con iconos y carrusel mejorado
-        function mostrarGenerated(generatedObj) {
-            const container = document.getElementById('generated-container');
-            container.innerHTML = ''; // Limpiar el contenedor antes de añadir contenido
+// Función para mostrar la info de generated con iconos y carrusel mejorado
+function mostrarGenerated(generatedObj) {
+    const container = document.getElementById('generated-container');
+    container.innerHTML = ''; // Limpiar el contenedor antes de añadir contenido
 
-            const nombreUsuario = localStorage.getItem('nombreUsuario');
-            const nombreUsuarioSpan = document.getElementById('nombre-usuario');
-            if (nombreUsuarioSpan) {
-                if (nombreUsuario) {
-                    nombreUsuarioSpan.textContent = nombreUsuario;
-                } else {
-                    nombreUsuarioSpan.textContent = 'Estudiante';
-                }
-            }
+    const nombreUsuario = localStorage.getItem('nombreUsuario');
+    const nombreUsuarioSpan = document.getElementById('nombre-usuario');
+    if (nombreUsuarioSpan) {
+        if (nombreUsuario) {
+            nombreUsuarioSpan.textContent = nombreUsuario;
+        } else {
+            nombreUsuarioSpan.textContent = 'Estudiante';
+        }
+    }
 
-            // Sección de Recursos Recomendados
-            const recursosDiv = document.createElement('div');
-            recursosDiv.innerHTML = `<div class="titulo-contenedor">
+    // Sección de Recursos Recomendados
+    const recursosDiv = document.createElement('div');
+    recursosDiv.innerHTML = `<div class="titulo-contenedor">
   <a href="javascript:history.back()" class="volver-icono">
     <i class="fas fa-circle-arrow-left"></i>
   </a>
   <h2>📘 Recursos Recomendados</h2>
 </div>`;
-            if (generatedObj.recursos_recomendados && generatedObj.recursos_recomendados.length > 0) {
-                generatedObj.recursos_recomendados.forEach(recurso => {
-                    // Usamos un nuevo contenedor para cada recurso con la clase 'recurso-item'
-                    const recursoElem = document.createElement('div');
-                    recursoElem.className = 'recurso-item'; // Aplica el estilo flexbox aquí
+    if (generatedObj.recursos_recomendados && generatedObj.recursos_recomendados.length > 0) {
+        generatedObj.recursos_recomendados.forEach(recurso => {
+            // Usamos un nuevo contenedor para cada recurso con la clase 'recurso-item'
+            const recursoElem = document.createElement('div');
+            recursoElem.className = 'recurso-item'; // Aplica el estilo flexbox aquí
 
-                    // Wrapper para el icono para mejor control de tamaño y alineación
-                    const iconWrapper = document.createElement('div');
-                    iconWrapper.className = 'icon-wrapper';
+            // Wrapper para el icono para mejor control de tamaño y alineación
+            const iconWrapper = document.createElement('div');
+            iconWrapper.className = 'icon-wrapper';
 
-                    let iconClass = '';
-                    const tipo = (recurso.tipo || '').toLowerCase();
-                    if (tipo.includes('pdf')) iconClass = 'material-icon-theme--pdf';
-                    else if (tipo.includes('word') || tipo.includes('doc')) iconClass = 'vscode-icons--file-type-word';
-                    else if (tipo.includes('excel')) iconClass = 'vscode-icons--file-type-excel2';
-                    else if (tipo.includes('video') || tipo.includes('mp4') || tipo.includes('youtube')) iconClass = 'logos--youtube-icon';
-                    else if (tipo.includes('imagen') || tipo.includes('image') || tipo.includes('jpeg') || tipo.includes('jpg') || tipo.includes('png')) iconClass = 'lets-icons--img-box-fill';
-                    else if (tipo.includes('audio')) iconClass = 'flat-color-icons--audio-file';
-                    else iconClass = '';
+            let iconClass = '';
+            const tipo = (recurso.tipo || '').toLowerCase();
+            if (tipo.includes('pdf')) iconClass = 'material-icon-theme--pdf';
+            else if (tipo.includes('word') || tipo.includes('doc')) iconClass = 'vscode-icons--file-type-word';
+            else if (tipo.includes('excel')) iconClass = 'vscode-icons--file-type-excel2';
+            else if (tipo.includes('video') || tipo.includes('mp4') || tipo.includes('youtube')) iconClass = 'logos--youtube-icon';
+            else if (tipo.includes('imagen') || tipo.includes('image') || tipo.includes('jpeg') || tipo.includes('jpg') || tipo.includes('png')) iconClass = 'lets-icons--img-box-fill';
+            else if (tipo.includes('audio')) iconClass = 'flat-color-icons--audio-file';
+            else iconClass = '';
 
-                    const urlRecurso = recurso.dropbox_url || recurso.dropbuxUrl;
+            const urlRecurso = recurso.dropbox_url || recurso.dropbuxUrl;
 
-                    const iconSpan = document.createElement('span');
-                    iconSpan.className = iconClass;
-                    iconSpan.style.cursor = 'pointer'; // Mantén el cursor de puntero si es clickeable
-                    if (urlRecurso) {
-                        iconSpan.onclick = () => {
-                            window.open(urlRecurso, '_blank');
-                        };
-                    }
-                    iconWrapper.appendChild(iconSpan);
+            const iconSpan = document.createElement('span');
+            iconSpan.className = iconClass;
+            iconSpan.style.cursor = 'pointer'; // Mantén el cursor de puntero si es clickeable
+            if (urlRecurso) {
+                iconSpan.onclick = () => {
+                    window.open(urlRecurso, '_blank');
+                };
+            }
+            iconWrapper.appendChild(iconSpan);
 
-                    // Contenedor para el texto (título, tipo, enlace)
-                    const textContentDiv = document.createElement('div');
-                    textContentDiv.className = 'text-content';
+            // Contenedor para el texto (título, tipo, enlace)
+            const textContentDiv = document.createElement('div');
+            textContentDiv.className = 'text-content';
 
-                    textContentDiv.innerHTML = `
+            textContentDiv.innerHTML = `
                         <strong>${recurso.titulo}</strong>
                         <span>(${recurso.tipo})</span>
                         <a href="${urlRecurso}" target="_blank" rel="noopener noreferrer">Abrir recurso</a>
                     `;
 
-                    recursoElem.appendChild(iconWrapper);
-                    recursoElem.appendChild(textContentDiv);
+            recursoElem.appendChild(iconWrapper);
+            recursoElem.appendChild(textContentDiv);
 
-                    recursosDiv.appendChild(recursoElem);
-                });
-            } else {
-                // Mensaje bonito para recursos no asignados
-                recursosDiv.innerHTML += `
-                 <div class="titulo-contenedor">
+            recursosDiv.appendChild(recursoElem);
+        });
+    } else {
+        // Mensaje bonito para recursos no asignados
+        recursosDiv.innerHTML += `
+           <div class="titulo-contenedor">
                             <a href="javascript:history.back()" class="volver-icono">
                                 <i class="fas fa-circle-arrow-left"></i>
                             </a></div>
-                    <div class="no-resources-message">
-                         
-                        <span class="icon-placeholder">&#128218;</span>
-                        <p>No tienes **recursos recomendados** asignados.</p>
-                    </div>
-                `;
-            }
-            container.appendChild(recursosDiv);
+            <div class="no-resources-message">
+                
+                <span class="icon-placeholder">&#128218;</span>
+                <p>No tienes **recursos recomendados** asignados.</p>
+                <p>Por favor, consulta con tu profesor para más información.</p>
+            </div>
+        `;
+    }
+    container.appendChild(recursosDiv);
 
-            // Sección de Actividad de Refuerzo
-            const actividadDiv = document.createElement('div');
-            actividadDiv.style.marginTop = '30px';
-            actividadDiv.innerHTML = `<h2 style="color:#07376c; font-weight: 700;">📗 Actividad de Refuerzo</h2>`;
+    // Sección de Actividad de Refuerzo
+    const actividadDiv = document.createElement('div');
+    actividadDiv.style.marginTop = '30px';
+    actividadDiv.innerHTML = `<h2 style="color:#07376c; font-weight: 700;">📗 Actividad de Refuerzo</h2>`;
 
-            if (generatedObj.actividad_de_refuerzo && generatedObj.actividad_de_refuerzo.pasos && generatedObj.actividad_de_refuerzo.pasos.length > 0) {
-                const actividad = generatedObj.actividad_de_refuerzo;
-                actividadDiv.innerHTML += `
-                    <h4><strong>Descripción general</strong></h4>
-                    <p style="font-size: 15px; line-height: 1.6; color: #333;">${actividad.descripcion_general}</p>
+    if (generatedObj.actividad_de_refuerzo && generatedObj.actividad_de_refuerzo.pasos && generatedObj.actividad_de_refuerzo.pasos.length > 0) {
+        const actividad = generatedObj.actividad_de_refuerzo;
+        actividadDiv.innerHTML += `
+            <h4><strong>Descripción general</strong></h4>
+            <p style="font-size: 15px; line-height: 1.6; color: #333;">${actividad.descripcion_general}</p>
 
-                    <div id="carousel-container">
-                        <button id="carousel-prev" class="carousel-button" aria-label="Anterior paso">&#8592;</button>
-                        <div id="carousel-step" aria-live="polite" aria-atomic="true"></div>
-                        <button id="carousel-next" class="carousel-button" aria-label="Siguiente paso">&#8594;</button>
-                    </div>
-                    <div id="carousel-indicators" role="tablist" aria-label="Indicadores de pasos"></div>
-                `;
-                container.appendChild(actividadDiv);
+            <div id="carousel-container">
+                <button id="carousel-prev" class="carousel-button" aria-label="Anterior paso">&#8592;</button>
+                <div id="carousel-step" aria-live="polite" aria-atomic="true"></div>
+                <button id="carousel-next" class="carousel-button" aria-label="Siguiente paso">&#8594;</button>
+            </div>
+            <div id="carousel-indicators" role="tablist" aria-label="Indicadores de pasos"></div>
+        `;
+        container.appendChild(actividadDiv);
 
-                const pasos = actividad.pasos;
-                let current = 0;
-                const stepDiv = actividadDiv.querySelector('#carousel-step');
-                const prevBtn = actividadDiv.querySelector('#carousel-prev');
-                const nextBtn = actividadDiv.querySelector('#carousel-next');
-                const indicatorsContainer = actividadDiv.querySelector('#carousel-indicators');
+        const pasos = actividad.pasos;
+        let current = 0;
+        const stepDiv = actividadDiv.querySelector('#carousel-step');
+        const prevBtn = actividadDiv.querySelector('#carousel-prev');
+        const nextBtn = actividadDiv.querySelector('#carousel-next');
+        const indicatorsContainer = actividadDiv.querySelector('#carousel-indicators');
 
-                // MODIFICACIÓN DENTRO DE renderStep
-                function renderStep() {
-                    stepDiv.style.opacity = 0;
-                    setTimeout(() => {
-                        // Opción 1.1: Simplemente muestra el contenido del paso tal cual (asumiendo que ya viene numerado del backend)
-                        stepDiv.innerHTML = `Paso: ${pasos[current]}`;
-                        // O si quieres que el "Paso" inicial sea solo una pequeña etiqueta y el número del backend sea el principal:
-                        // stepDiv.innerHTML = `<span style="font-weight: bold; margin-right: 5px;">Paso:</span> ${pasos[current]}`;
-
-
-                        stepDiv.style.opacity = 1;
-                    }, 200);
-
-                    // ... el resto de tu función renderStep ...
-                }
-                prevBtn.onclick = () => {
-                    if (current > 0) {
-                        current--;
-                        renderStep();
-                    }
-                };
-                nextBtn.onclick = () => {
-                    if (current < pasos.length - 1) {
-                        current++;
-                        renderStep();
-                    }
-                };
-
-                renderStep();
-            } else {
-                // Mensaje bonito para actividad no asignada
-                actividadDiv.innerHTML += `
-                 <div class="titulo-contenedor">
-                            <a href="javascript:history.back()" class="volver-icono">
-                                <i class="fas fa-circle-arrow-left"></i>
-                            </a></div>
-                    <div class="no-resources-message">
-                        
-                        <span class="icon-placeholder">&#128218;</span>
-                        <p>No tienes **actividades de refuerzo** asignadas.</p>
-                    </div>
-                `;
-                container.appendChild(actividadDiv);
-            }
+        function updateButtons() {
+            prevBtn.disabled = current === 0;
+            nextBtn.disabled = current === pasos.length - 1;
         }
 
-        // El evento DOMContentLoaded se mantiene, pero la lógica de obtención de IDs
-        // se ha movido a window.onload para consolidar el punto de entrada.
+        function renderIndicators() {
+            indicatorsContainer.innerHTML = '';
+            pasos.forEach((_, index) => {
+                const indicator = document.createElement('span');
+                indicator.className = `carousel-indicator ${index === current ? 'active' : ''}`;
+                indicator.setAttribute('role', 'tab');
+                indicator.setAttribute('aria-selected', index === current);
+                indicator.setAttribute('aria-controls', `carousel-step-${index}`);
+                indicator.setAttribute('tabindex', '0');
+                indicator.addEventListener('click', () => {
+                    current = index;
+                    renderStep();
+                });
+                indicatorsContainer.appendChild(indicator);
+            });
+        }
+
+        // MODIFICACIÓN DENTRO DE renderStep
+        function renderStep() {
+            stepDiv.style.opacity = 0;
+            setTimeout(() => {
+                // Opción 1.2: Si deseas poner "Paso:" en negrita y luego mostrar el número en el contenido:
+                stepDiv.innerHTML = `<span style="font-weight: bold; margin-right: 5px;">Paso ${current + 1}:</span> ${pasos[current]}`;
+                stepDiv.style.opacity = 1;
+            }, 200);
+
+            // Actualiza el estado de los botones de navegación
+            updateButtons();
+            // Actualiza los indicadores de paso
+            renderIndicators();
+        }
+
+        prevBtn.onclick = () => {
+            if (current > 0) {
+                current--;
+                renderStep();
+            }
+        };
+        nextBtn.onclick = () => {
+            if (current < pasos.length - 1) {
+                current++;
+                renderStep();
+            }
+        };
+
+        // Renderiza el primer paso al cargar la actividad
+        renderStep();
+    } else {
+        // Mensaje bonito para actividad no asignada
+        actividadDiv.innerHTML += `
+           <div class="titulo-contenedor">
+                            <a href="javascript:history.back()" class="volver-icono">
+                                <i class="fas fa-circle-arrow-left"></i>
+                            </a></div>
+            <div class="no-resources-message">
+                
+                <span class="icon-placeholder">&#128218;</span>
+                <p>No tienes **actividades de refuerzo** asignadas.</p>
+                <p>Por favor, consulta con tu profesor para más información.</p>
+            </div>
+        `;
+        container.appendChild(actividadDiv);
+    }
+}
         document.addEventListener('DOMContentLoaded', () => {
             const userSectionElement = document.getElementById('user-section');
             if (userSectionElement) {
